@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>0.0.2</Version>
+    <Version>1.0.1</Version>
     <Authors>P.Bony</Authors>
     <Company>PRF</Company>
     <Description>Basics extensions for manipulating FileInfo, DirectoryInfo, String, Type, Random, ...</Description>
@@ -14,6 +14,7 @@
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Berreip/PRF.Utils.Core/master/PRF_Icon.png</PackageIconUrl>
+    <PackageLicenseUrl>https://github.com/Berreip/PRF.Utils.Core/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

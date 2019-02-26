@@ -9,6 +9,8 @@
     <PackageTags>Static, Trace, TraceSource, TraceListener</PackageTags>
     <Description>Provide custom traceSource and TraceListener to collect and aggregate static call to Trace.TraceInformation(), TraceWarning() ...</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseUrl>https://github.com/Berreip/PRF.Utils.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
