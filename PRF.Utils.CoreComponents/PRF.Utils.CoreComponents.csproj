@@ -2,6 +2,23 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Version>0.0.1</Version>
+    <Authors>P.Bony</Authors>
+    <Company>PRF</Company>
+    <Description>Basics extensions for manipulating FileInfo, DirectoryInfo, String, Type, Random, ...</Description>
+    <Copyright>PRF</Copyright>
+    <PackageTags>FileInfo, DirectoryInfo, Basics</PackageTags>
+    <PackageReleaseNotes>First release</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\OneDrive\Documents\Code\Projets C#\PRF\Utils\Core\PRF.Utils.Core\PRF.Utils.CoreComponents\PRF.Utils.CoreComponents.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\OneDrive\Documents\Code\Projets C#\PRF\Utils\Core\PRF.Utils.Core\PRF.Utils.CoreComponents\PRF.Utils.CoreComponents.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
