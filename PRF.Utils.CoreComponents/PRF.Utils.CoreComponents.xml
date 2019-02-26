@@ -562,12 +562,50 @@
             <param name="fileContent">le contenu du fichier à ajouter sous forme de bytes</param>
             <param name="compressionLevel">le niveau de compression (optimal par défaut)</param>
         </member>
-        <member name="T:PRF.Utils.CoreComponents.XML.XmlSerializerWrapper">
+        <member name="T:PRF.Utils.CoreComponents.JSON.JsonSerializerWrapper">
             <summary>
             Gestionnaire de sérialization et désérialization
             </summary>
         </member>
-        <member name="M:PRF.Utils.CoreComponents.XML.XmlSerializerWrapper.DeserializeAsync``1(System.IO.FileInfo)">
+        <member name="M:PRF.Utils.CoreComponents.JSON.JsonSerializerWrapper.DeserializeAsync``1(System.IO.FileInfo)">
+            <summary>
+            Désérialise en asynchrone un fichier json
+            </summary>
+            <typeparam name="T">le type d'objet à renvoyer</typeparam>
+            <param name="file">le fichier json à désérialiser</param>
+            <returns>la Task générant l'objet désérialisé</returns>
+        </member>
+        <member name="M:PRF.Utils.CoreComponents.JSON.JsonSerializerWrapper.SerializeAsync``1(System.IO.FileInfo,``0)">
+            <summary>
+            Sérialise en asynchrone un objet en json
+            </summary>
+            <typeparam name="T">le type de l'objet à sérialiser</typeparam>
+            <param name="file">le fichier json cible</param>
+            <param name="data">l'objet à sérialiser</param>
+            <returns>la Task représentant la fin de la tache</returns>
+        </member>
+        <member name="M:PRF.Utils.CoreComponents.JSON.JsonSerializerWrapper.DeserializeFromJson``1(System.String)">
+            <summary>
+            Désérialise en synchrone un string json en objet de type T
+            </summary>
+            <typeparam name="T">le type d'objet à renvoyer</typeparam>
+            <param name="jsonString">la string à désérialiser (le contenu d'un fichier json par exemple)</param>
+            <returns>L'objet désérialisé</returns>
+        </member>
+        <member name="M:PRF.Utils.CoreComponents.JSON.JsonSerializerWrapper.SerializeToJson``1(``0)">
+            <summary>
+            Sérialise en synchrone un objet en json
+            </summary>
+            <typeparam name="T">le type d'objet à sérialiser</typeparam>
+            <param name="data">l'objet à sérialiser</param>
+            <returns>la représentation en string de l'objet sérialisé</returns>
+        </member>
+        <member name="T:PRF.Utils.CoreComponents.XML.JsonSerializerWrapper">
+            <summary>
+            Gestionnaire de sérialization et désérialization
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.CoreComponents.XML.JsonSerializerWrapper.DeserializeAsync``1(System.IO.FileInfo)">
             <summary>
             Désérialise en asynchrone un fichier xml
             </summary>
@@ -575,7 +613,7 @@
             <param name="file">le fichier xml à désérialiser</param>
             <returns>la Task générant l'objet désérialisé</returns>
         </member>
-        <member name="M:PRF.Utils.CoreComponents.XML.XmlSerializerWrapper.SerializeAsync``1(System.IO.FileInfo,``0)">
+        <member name="M:PRF.Utils.CoreComponents.XML.JsonSerializerWrapper.SerializeAsync``1(System.IO.FileInfo,``0)">
             <summary>
             Sérialise en asynchrone un objet en xml
             </summary>
@@ -584,15 +622,15 @@
             <param name="data">l'objet à sérialiser</param>
             <returns>la Task représentant la fin de la tache</returns>
         </member>
-        <member name="M:PRF.Utils.CoreComponents.XML.XmlSerializerWrapper.Deserialize``1(System.String)">
+        <member name="M:PRF.Utils.CoreComponents.XML.JsonSerializerWrapper.DeserializeFromXML``1(System.String)">
             <summary>
-            Désérialise en synchrone un string
+            Désérialise en synchrone un string XML en objet de type T
             </summary>
             <typeparam name="T">le type d'objet à renvoyer</typeparam>
             <param name="xmlString">la string à désérialiser (le contenu d'un fichier xml par exemple)</param>
             <returns>L'objet désérialisé</returns>
         </member>
-        <member name="M:PRF.Utils.CoreComponents.XML.XmlSerializerWrapper.Serialize``1(``0)">
+        <member name="M:PRF.Utils.CoreComponents.XML.JsonSerializerWrapper.SerializeToXml``1(``0)">
             <summary>
             Sérialise en synchrone un objet en xml
             </summary>

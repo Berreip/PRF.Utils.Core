@@ -1,10 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
 
-namespace PRF.Utils.CoreComponents.XML
+namespace PRF.Utils.CoreComponents.JSON
 {
     /// <summary>
     /// Gestionnaire de sérialization et désérialization
@@ -14,17 +14,17 @@ namespace PRF.Utils.CoreComponents.XML
         private const int BUFFER_SIZE = 4096;
 
         /// <summary>
-        /// Désérialise en asynchrone un fichier xml
+        /// Désérialise en asynchrone un fichier json
         /// </summary>
         /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
-        /// <param name="file">le fichier xml à désérialiser</param>
+        /// <param name="file">le fichier json à désérialiser</param>
         /// <returns>la Task générant l'objet désérialisé</returns>
         public static async Task<T> DeserializeAsync<T>(this FileInfo file) where T : class
         {
             // si le fichier est plus petit que le buffer, on fait une lecture synchrone
             if (file.Length < BUFFER_SIZE)
             {
-                return DeserializeFromXML<T>(File.ReadAllText(file.FullName));
+                return DeserializeFromJson<T>(File.ReadAllText(file.FullName));
             }
             var sb = new StringBuilder();
             using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, BUFFER_SIZE, true))
@@ -35,20 +35,20 @@ namespace PRF.Utils.CoreComponents.XML
                 {
                     sb.Append(Encoding.Unicode.GetString(buffer, 0, numRead));
                 }
-                return DeserializeFromXML<T>(sb.ToString());
+                return DeserializeFromJson<T>(sb.ToString());
             }
         }
 
         /// <summary>
-        /// Sérialise en asynchrone un objet en xml
+        /// Sérialise en asynchrone un objet en json
         /// </summary>
         /// <typeparam name="T">le type de l'objet à sérialiser</typeparam>
-        /// <param name="file">le fichier xml cible</param>
+        /// <param name="file">le fichier json cible</param>
         /// <param name="data">l'objet à sérialiser</param>
         /// <returns>la Task représentant la fin de la tache</returns>
         public static async Task SerializeAsync<T>(this FileInfo file, T data) where T : class
         {
-            var stringData = SerializeToXml(data);
+            var stringData = SerializeToJson(data);
             using (var fs = new FileStream(file.FullName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, 4096, true))
             {
                 var encodedText = Encoding.Unicode.GetBytes(stringData);
@@ -57,42 +57,37 @@ namespace PRF.Utils.CoreComponents.XML
         }
 
         /// <summary>
-        /// Désérialise en synchrone un string XML en objet de type T
+        /// Désérialise en synchrone un string json en objet de type T
         /// </summary>
         /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
-        /// <param name="xmlString">la string à désérialiser (le contenu d'un fichier xml par exemple)</param>
+        /// <param name="jsonString">la string à désérialiser (le contenu d'un fichier json par exemple)</param>
         /// <returns>L'objet désérialisé</returns>
-        public static T DeserializeFromXML<T>(this string xmlString) where T : class
+        public static T DeserializeFromJson<T>(this string jsonString) where T : class
         {
-            if (string.IsNullOrEmpty(xmlString)) return default(T);
+            if (string.IsNullOrEmpty(jsonString)) return default(T);
 
-            var deserializer = new XmlSerializer(typeof(T));
-            using (var reader = new StringReader(xmlString))
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonString)))
             {
-                return (T)deserializer.Deserialize(reader);
+                return new DataContractJsonSerializer(typeof(T)).ReadObject(ms) as T;
             }
         }
 
         /// <summary>
-        /// Sérialise en synchrone un objet en xml
+        /// Sérialise en synchrone un objet en json
         /// </summary>
         /// <typeparam name="T">le type d'objet à sérialiser</typeparam>
         /// <param name="data">l'objet à sérialiser</param>
         /// <returns>la représentation en string de l'objet sérialisé</returns>
-        public static string SerializeToXml<T>(this T data) where T : class
+        public static string SerializeToJson<T>(this T data) where T : class
         {
-            var serializerNamespace = new XmlSerializerNamespaces();
-            serializerNamespace.Add(string.Empty, string.Empty);
+            var serializer = new DataContractJsonSerializer(typeof(T));
 
-            var serializer = new XmlSerializer(typeof(T));
-            var str = new StringBuilder();
-
-            using (var writer = new StringWriter(str))
-            using (var xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings { Indent = false, OmitXmlDeclaration = true }))
+            using (var stream = new MemoryStream())
             {
-                serializer.Serialize(xmlWriter, data, serializerNamespace);
+                serializer.WriteObject(stream, data);
+                var array = stream.ToArray();
+                return  Encoding.UTF8.GetString(array, 0, array.Length);
             }
-            return str.ToString();
         }
     }
 }

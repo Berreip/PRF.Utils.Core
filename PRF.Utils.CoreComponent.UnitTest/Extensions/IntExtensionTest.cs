@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PRF.Utils.CoreComponents.Extensions;
 
-namespace PRF.Utils.CoreComponent.UnitTest
+namespace PRF.Utils.CoreComponent.UnitTest.Extensions
 {
     [TestClass]
     public class IntExtensionTest
