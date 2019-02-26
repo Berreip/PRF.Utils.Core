@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>P.Bony</Authors>
+    <Company>PRF</Company>
+    <PackageIconUrl>https://raw.githubusercontent.com/Berreip/PRF.Utils.Core/master/PRF_Icon.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
+    <PackageTags>Static, Trace, TraceSource, TraceListener</PackageTags>
+    <Description>Provide custom traceSource and TraceListener to collect and aggregate static call to Trace.TraceInformation(), TraceWarning() ...</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\OneDrive\Documents\Code\Projets C#\PRF\Utils\Core\PRF.Utils.Core\PRF.Utils.Tracer\PRF.Utils.Tracer.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\OneDrive\Documents\Code\Projets C#\PRF\Utils\Core\PRF.Utils.Core\PRF.Utils.Tracer\PRF.Utils.Tracer.xml</DocumentationFile>
+  </PropertyGroup>
+
+</Project>

@@ -117,6 +117,32 @@
             Enregistre un type dans le conteneur d'injection avec une méthode d'initialisation
             </summary>
         </member>
+        <member name="M:PRF.Utils.Injection.Containers.IInjectionContainerRegister.RegisterInterceptor``1(PRF.Utils.Injection.Utils.LifeTime)">
+            <summary>
+            Enregistre un intercepteur dans le container. Il est également possible d'utiliser directement un container.Register
+            </summary>
+            <typeparam name="T">le type de l'intercepteur</typeparam>
+            <param name="lifetime">le comportement du container lors d'une demande d'un intercepteur (transient Vs Singleton)</param>
+        </member>
+        <member name="M:PRF.Utils.Injection.Containers.IInjectionContainerRegister.RegisterInterceptor(PRF.Utils.Injection.Utils.PredefinedInterceptors,PRF.Utils.Injection.Utils.LifeTime)">
+            <summary>
+            Enregistre un intercepteur pré-défini dans le container
+            </summary>
+            <param name="predefinedInterceptor">le type de l'intercepteur prédéfini</param>
+            <param name="lifetime">le comportement du container lors d'une demande d'un intercepteur (transient Vs Singleton)</param>
+        </member>
+        <member name="M:PRF.Utils.Injection.Containers.IInjectionContainerRegister.Intercept``1">
+            <summary>
+            Intercepte le type demandé
+            </summary>
+            <typeparam name="T">le type à intercepter</typeparam>
+        </member>
+        <member name="M:PRF.Utils.Injection.Containers.IInjectionContainerRegister.InterceptAny(System.Func{System.Type,System.Boolean})">
+            <summary>
+            Intercepte  en fonction d'une lambda
+            </summary>
+            <param name="predicate"> le prédicat pour permettre d'intercepter dans différentes situations</param>
+        </member>
         <member name="M:PRF.Utils.Injection.Containers.IInjectionContainerRegister.Register``3(PRF.Utils.Injection.Utils.LifeTime)">
             <summary>
             Enregistre un type dans le conteneur d'injection derrière plusieurs interfaces (la résolution de l'un ou de l'autre renvoie le même type). 
@@ -181,6 +207,11 @@
         <member name="T:PRF.Utils.Injection.Containers.InjectionContainer">
             <inheritdoc cref="T:PRF.Utils.Injection.Containers.IInjectionContainer"/>
         </member>
+        <member name="F:PRF.Utils.Injection.Containers.InjectionContainer._convertLifestyles">
+            <summary>
+            Dictionnaire de conversion entre un LifeTime externe et l'implémentation SimpleInjector
+            </summary>
+        </member>
         <member name="F:PRF.Utils.Injection.Containers.InjectionContainer._internalContainer">
             <summary>
             Le conteneur d'injection interne utilisé (dans notre cas, un conteneur SimpleInjector)
@@ -199,6 +230,18 @@
         </member>
         <member name="M:PRF.Utils.Injection.Containers.InjectionContainer.RegisterWithInitializer``2(PRF.Utils.Injection.Utils.LifeTime,System.Action{``1})">
             <inheritdoc/>
+        </member>
+        <member name="M:PRF.Utils.Injection.Containers.InjectionContainer.RegisterInterceptor``1(PRF.Utils.Injection.Utils.LifeTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:PRF.Utils.Injection.Containers.InjectionContainer.RegisterInterceptor(PRF.Utils.Injection.Utils.PredefinedInterceptors,PRF.Utils.Injection.Utils.LifeTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:PRF.Utils.Injection.Containers.InjectionContainer.Intercept``1">
+            <inheritdoc />
+        </member>
+        <member name="M:PRF.Utils.Injection.Containers.InjectionContainer.InterceptAny(System.Func{System.Type,System.Boolean})">
+            <inheritdoc />
         </member>
         <member name="M:PRF.Utils.Injection.Containers.InjectionContainer.RegisterWithInitializer``3(PRF.Utils.Injection.Utils.LifeTime,System.Action{``2})">
             <inheritdoc/>
@@ -247,6 +290,160 @@
             <remarks>Cette méthode n'est pas exposé depuis les interfaces car elle n'est pas proposé aux consommateurs (les bootstrappers)</remarks>
             <returns>Renvoie le diagnostique des Erreurs et Warning sil y en a</returns>
         </member>
+        <member name="M:PRF.Utils.Injection.Containers.InjectionContainer.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:PRF.Utils.Injection.Containers.InjectionContainer.InterceptorFluentBindingDefinitionLambda">
+            <inheritdoc />
+        </member>
+        <member name="T:PRF.Utils.Injection.Containers.InjectionContainer.InterceptorFluentBindingDefinition">
+            <inheritdoc />
+        </member>
+        <member name="M:PRF.Utils.Injection.Containers.InjectionContainer.InterceptorFluentBindingDefinition.#ctor(SimpleInjector.Container,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="T:PRF.Utils.Injection.Interception.Helpers.InterceptionExtensions">
+            <summary>
+            Propose une façon d'intercepter des types de façon plus claire
+            </summary>
+        </member>
+        <member name="T:PRF.Utils.Injection.Interception.Helpers.InterceptorAsyncHelpers">
+            <summary>
+            Classe d'aide à la manipulation de méthodes asynchrones dans les intercepteurs.
+            Cette classe permet de créer des encapsulations génériques de taches
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.Helpers.InterceptorAsyncHelpers.InterceptAsync(System.Threading.Tasks.Task,Castle.DynamicProxy.IInvocation,System.Action,System.Action{System.Object})">
+            <summary>
+            Permet d'encaspuler une tache non générique OU générique
+            et de rajouter une action post await pour chaque cas (comme une trace de fin par exemple)
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.Helpers.InterceptorAsyncHelpers.InterceptAsync(System.Threading.Tasks.Task,System.Action)">
+            <summary>
+            Permet d'encaspuler une tache non générique et de rajouter une action post await
+            (comme une trace de fin par exemple)
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.Helpers.InterceptorAsyncHelpers.InterceptWithResultAsync(System.Threading.Tasks.Task,System.Object,System.Action{System.Object})">
+            <summary>
+            Permet d'encaspuler une tache non générique et de rajouter une action post await
+            (comme une trace de fin par exemple)
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.Helpers.InterceptorAsyncHelpers.GetTaskGenericWrapper(System.Type)">
+            <summary>
+            Récupère ou crée s'il n'existe pas déjà un délégué wrappant une tache générique
+            et rajoutant une action post await
+            </summary>
+            <param name="taskType">le type de la tache (Task[int] par exemple)</param>
+            <returns>la fonction de création du wrapper</returns>
+        </member>
+        <member name="T:PRF.Utils.Injection.Interception.InterceptionExtensions.CustomHook.HookMethodsAndSetProperties">
+            <inheritdoc />
+            <summary>
+            Intercepte les méthodes mais pas les propriétés
+            </summary>
+        </member>
+        <member name="T:PRF.Utils.Injection.Interception.InterceptionExtensions.CustomHook.HookMethodsButNoProperties">
+            <inheritdoc />
+            <summary>
+            Intercepte les méthodes mais pas les propriétés
+            </summary>
+        </member>
+        <member name="T:PRF.Utils.Injection.Interception.InterceptionExtensions.CustomHook.HookWithInterceptionAttribute">
+            <inheritdoc />
+            <summary>
+            Intercepte les méthodes et les propriétés possédant un attribut InterceptionAttribute
+            </summary>
+            <seealso cref="T:PRF.Utils.Injection.Utils.InterceptionAttribute" />
+        </member>
+        <member name="T:PRF.Utils.Injection.Interception.InterceptionExtensions.InterceptorFluentBindingDefinitionBase">
+            <inheritdoc />
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.InterceptionExtensions.InterceptorFluentBindingDefinitionBase.#ctor(SimpleInjector.Container,System.Func{System.Type,System.Boolean})">
+            <summary>
+            Constructeur avec prédicat
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.InterceptionExtensions.InterceptorFluentBindingDefinitionBase.With(PRF.Utils.Injection.Utils.PredefinedInterceptors,PRF.Utils.Injection.Utils.InterceptionHookOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.InterceptionExtensions.InterceptorFluentBindingDefinitionBase.With``1(PRF.Utils.Injection.Utils.InterceptionHookOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.InterceptionExtensions.Interceptor.CreateProxy(System.Type,Castle.DynamicProxy.IInterceptor,System.Object,Castle.DynamicProxy.ProxyGenerationOptions)">
+            <summary>
+            Méthode de création d'un proxy
+            </summary>
+        </member>
+        <member name="T:PRF.Utils.Injection.Interception.Interceptors.MethodTraceInterceptor">
+            <inheritdoc />
+            <summary>
+            Intercepteur qui trace les entrées et les sorties d'une méthode
+            Il est un peu plus compliqué car il intercepte également les méthodes asynchrones
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.Interceptors.MethodTraceInterceptor.Intercept(Castle.DynamicProxy.IInvocation)">
+            <inheritdoc />
+        </member>
+        <member name="T:PRF.Utils.Injection.Interception.Interceptors.TimeWatchInterceptor">
+            <inheritdoc />
+            <summary>
+            Intercepteur qui trace le temps passé dans une méthode
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.Injection.Interception.Interceptors.TimeWatchInterceptor.Intercept(Castle.DynamicProxy.IInvocation)">
+            <inheritdoc />
+        </member>
+        <member name="T:PRF.Utils.Injection.Utils.InterceptionHookOption">
+            <summary>
+            Les différents type d'interception disponible pour un interface
+            </summary>
+        </member>
+        <member name="F:PRF.Utils.Injection.Utils.InterceptionHookOption.MethodsAndSetProperties">
+            <summary>
+            Intercepte toute les méthodes et les setter des propriétés d'un interface
+            </summary>
+        </member>
+        <member name="F:PRF.Utils.Injection.Utils.InterceptionHookOption.MethodsOnly">
+            <summary>
+            Intercepte les méthodes seulement mais pas les propriétés d'un interface
+            </summary>
+        </member>
+        <member name="F:PRF.Utils.Injection.Utils.InterceptionHookOption.InterceptionAttributOnly">
+            <summary>
+            Intercepte les méthodes et propriétés (Get ou Set)
+            d'un interface ayant un InterceptionAttribute
+            </summary>
+            <seealso cref="T:PRF.Utils.Injection.Utils.InterceptionAttribute"/>
+            <remarks>Attention, les attributs d'interceptions ne fonctionnent
+            que sur les interfaces</remarks>
+        </member>
+        <member name="T:PRF.Utils.Injection.Utils.IInterceptorFluentBindingDefinition">
+            <summary>
+            Permet de lier un type à intercepter avec un intercepteur
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.Injection.Utils.IInterceptorFluentBindingDefinition.With(PRF.Utils.Injection.Utils.PredefinedInterceptors,PRF.Utils.Injection.Utils.InterceptionHookOption)">
+            <summary>
+            L'intercepteur à appliquer au type intercepter
+            </summary>
+        </member>
+        <member name="M:PRF.Utils.Injection.Utils.IInterceptorFluentBindingDefinition.With``1(PRF.Utils.Injection.Utils.InterceptionHookOption)">
+            <summary>
+            L'intercepteur à appliquer au type intercepter
+            </summary>
+        </member>
+        <member name="T:PRF.Utils.Injection.Utils.InterceptionAttribute">
+            <inheritdoc />
+            <summary>
+            Attribut d'interception indiquant que l'on souhaite intercepter cette méthode ou propriété. 
+            CET ATTRIBUT DOIT ETRE PLACE SUR L'INTERFACE
+            </summary>
+            <remarks>Pour l'interception de propriétés il faut mettre les attributs
+            sur le get ET sur le set indépendamment en fonction des besoins</remarks>
+        </member>
         <member name="T:PRF.Utils.Injection.Utils.LifeTime">
             <summary>
             Les différents types de durée de vie possibles pour les enregistrements d'une classe dans le conteneur d'injection
@@ -260,6 +457,22 @@
         <member name="F:PRF.Utils.Injection.Utils.LifeTime.Transient">
             <summary>
             le conteneur renverra une nouvelle instance de la classe à chaque demande faite par le consommateur
+            </summary>
+        </member>
+        <member name="T:PRF.Utils.Injection.Utils.PredefinedInterceptors">
+            <summary>
+            La liste de tous les intercepteurs pré-configurés car d'usage classique. Il est possible de définir un intercepteur custom en
+            surchargeant l'interface IInterceptor
+            </summary>
+        </member>
+        <member name="F:PRF.Utils.Injection.Utils.PredefinedInterceptors.MethodTraceInterceptor">
+            <summary>
+            Intercepteur qui trace le début et la fin de chaque méthode interceptée et fait un ToString sur les paramètres de cette méthode
+            </summary>
+        </member>
+        <member name="F:PRF.Utils.Injection.Utils.PredefinedInterceptors.TimeWatchInterceptor">
+            <summary>
+            Intercepteur qui trace le temps passé dans chaque méthode interceptée
             </summary>
         </member>
     </members>
