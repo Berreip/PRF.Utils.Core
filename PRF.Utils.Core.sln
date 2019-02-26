@@ -5,9 +5,11 @@ VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.CoreComponents", "PRF.Utils.CoreComponents\PRF.Utils.CoreComponents.csproj", "{9739A0DF-47B8-4303-826A-496136892364}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRF.Utils.CoreComponent.UnitTest", "PRF.Utils.CoreComponent.UnitTest\PRF.Utils.CoreComponent.UnitTest.csproj", "{2215E8B7-1386-4462-B357-065D9CFCAA49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.CoreComponent.UnitTest", "PRF.Utils.CoreComponent.UnitTest\PRF.Utils.CoreComponent.UnitTest.csproj", "{2215E8B7-1386-4462-B357-065D9CFCAA49}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{31D1A634-E8F6-4DDE-8902-439EE8733C63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRF.Utils.Injection", "PRF.Utils.Injection\PRF.Utils.Injection.csproj", "{5347BAD1-CD09-4DB7-9560-696A4DB06194}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{2215E8B7-1386-4462-B357-065D9CFCAA49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2215E8B7-1386-4462-B357-065D9CFCAA49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2215E8B7-1386-4462-B357-065D9CFCAA49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5347BAD1-CD09-4DB7-9560-696A4DB06194}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5347BAD1-CD09-4DB7-9560-696A4DB06194}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5347BAD1-CD09-4DB7-9560-696A4DB06194}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5347BAD1-CD09-4DB7-9560-696A4DB06194}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

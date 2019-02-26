@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>P.Bony</Authors>
+    <Company>PRF</Company>
+    <Description>Wrappers around simple injector that provide also interception facility using castle</Description>
+    <Copyright>PRF</Copyright>
+    <PackageIconUrl>https://raw.githubusercontent.com/Berreip/PRF.Utils.Core/master/PRF_Icon.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
+    <PackageTags>PRF, Injection, Interception, AOP, IOC</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\OneDrive\Documents\Code\Projets C#\PRF\Utils\Core\PRF.Utils.Core\PRF.Utils.Injection\PRF.Utils.Injection.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\OneDrive\Documents\Code\Projets C#\PRF\Utils\Core\PRF.Utils.Core\PRF.Utils.Injection\PRF.Utils.Injection.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Interception\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SimpleInjector" Version="4.4.3" />
+  </ItemGroup>
+
+</Project>
