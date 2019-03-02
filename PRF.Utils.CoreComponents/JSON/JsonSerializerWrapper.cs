@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace PRF.Utils.CoreComponents.JSON
 {
@@ -64,6 +65,29 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <returns>L'objet désérialisé</returns>
         public static T DeserializeFromJson<T>(this string jsonString) where T : class
         {
+            return JsonConvert.DeserializeObject<T>(jsonString);
+        }
+
+        /// <summary>
+        /// Sérialise en synchrone un objet en json
+        /// </summary>
+        /// <typeparam name="T">le type d'objet à sérialiser</typeparam>
+        /// <param name="data">l'objet à sérialiser</param>
+        /// <returns>la représentation en string de l'objet sérialisé</returns>
+        public static string SerializeToJson<T>(this T data) where T : class
+        {
+            return JsonConvert.SerializeObject(data);
+        }
+
+        /// <summary>
+        /// Désérialise en synchrone un string json en objet de type T
+        /// </summary>
+        /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
+        /// <param name="jsonString">la string à désérialiser (le contenu d'un fichier json par exemple)</param>
+        /// <returns>L'objet désérialisé</returns>
+        [Obsolete("NewtonSoft.Json est bcq plus performant")]
+        public static T DeserializeFromJsonWithDataContractJsonSerializer<T>(this string jsonString) where T : class
+        {
             if (string.IsNullOrEmpty(jsonString)) return default(T);
 
             using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonString)))
@@ -78,7 +102,8 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <typeparam name="T">le type d'objet à sérialiser</typeparam>
         /// <param name="data">l'objet à sérialiser</param>
         /// <returns>la représentation en string de l'objet sérialisé</returns>
-        public static string SerializeToJson<T>(this T data) where T : class
+        [Obsolete("NewtonSoft.Json est bcq plus performant")]
+        public static string SerializeToJsonWithDataContractJsonSerializer<T>(this T data) where T : class
         {
             var serializer = new DataContractJsonSerializer(typeof(T));
 

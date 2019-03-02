@@ -600,6 +600,22 @@
             <param name="data">l'objet à sérialiser</param>
             <returns>la représentation en string de l'objet sérialisé</returns>
         </member>
+        <member name="M:PRF.Utils.CoreComponents.JSON.JsonSerializerWrapper.DeserializeFromJsonWithDataContractJsonSerializer``1(System.String)">
+            <summary>
+            Désérialise en synchrone un string json en objet de type T
+            </summary>
+            <typeparam name="T">le type d'objet à renvoyer</typeparam>
+            <param name="jsonString">la string à désérialiser (le contenu d'un fichier json par exemple)</param>
+            <returns>L'objet désérialisé</returns>
+        </member>
+        <member name="M:PRF.Utils.CoreComponents.JSON.JsonSerializerWrapper.SerializeToJsonWithDataContractJsonSerializer``1(``0)">
+            <summary>
+            Sérialise en synchrone un objet en json
+            </summary>
+            <typeparam name="T">le type d'objet à sérialiser</typeparam>
+            <param name="data">l'objet à sérialiser</param>
+            <returns>la représentation en string de l'objet sérialisé</returns>
+        </member>
         <member name="T:PRF.Utils.CoreComponents.XML.JsonSerializerWrapper">
             <summary>
             Gestionnaire de sérialization et désérialization
