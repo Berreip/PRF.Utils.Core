@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\OneDrive\Documents\Code\Projets C#\PRF\Utils\Core\PRF.Utils.Core\PRF.Utils.Tracer\PRF.Utils.Tracer.xml</DocumentationFile>
+    <DocumentationFile>bin\documentation\PRF.Utils.Tracer.xml</DocumentationFile>
   </PropertyGroup>
 
 </Project>
