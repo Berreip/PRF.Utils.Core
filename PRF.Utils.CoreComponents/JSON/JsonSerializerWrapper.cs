@@ -20,7 +20,7 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
         /// <param name="file">le fichier json à désérialiser</param>
         /// <returns>la Task générant l'objet désérialisé</returns>
-        public static async Task<T> DeserializeAsync<T>(this FileInfo file) where T : class
+        public static async Task<T> DeserializeAsync<T>(this FileInfo file)
         {
             // si le fichier est plus petit que le buffer, on fait une lecture synchrone
             if (file.Length < BUFFER_SIZE)
@@ -47,7 +47,7 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <param name="file">le fichier json cible</param>
         /// <param name="data">l'objet à sérialiser</param>
         /// <returns>la Task représentant la fin de la tache</returns>
-        public static async Task SerializeAsync<T>(this FileInfo file, T data) where T : class
+        public static async Task SerializeAsync<T>(this FileInfo file, T data)
         {
             var stringData = SerializeToJson(data);
             using (var fs = new FileStream(file.FullName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, 4096, true))
@@ -63,7 +63,7 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
         /// <param name="jsonString">la string à désérialiser (le contenu d'un fichier json par exemple)</param>
         /// <returns>L'objet désérialisé</returns>
-        public static T DeserializeFromJson<T>(this string jsonString) where T : class
+        public static T DeserializeFromJson<T>(this string jsonString)
         {
             return JsonConvert.DeserializeObject<T>(jsonString);
         }
@@ -74,7 +74,7 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <typeparam name="T">le type d'objet à sérialiser</typeparam>
         /// <param name="data">l'objet à sérialiser</param>
         /// <returns>la représentation en string de l'objet sérialisé</returns>
-        public static string SerializeToJson<T>(this T data) where T : class
+        public static string SerializeToJson<T>(this T data)
         {
             return JsonConvert.SerializeObject(data);
         }
@@ -86,13 +86,13 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <param name="jsonString">la string à désérialiser (le contenu d'un fichier json par exemple)</param>
         /// <returns>L'objet désérialisé</returns>
         [Obsolete("NewtonSoft.Json est bcq plus performant")]
-        public static T DeserializeFromJsonWithDataContractJsonSerializer<T>(this string jsonString) where T : class
+        public static T DeserializeFromJsonWithDataContractJsonSerializer<T>(this string jsonString)
         {
             if (string.IsNullOrEmpty(jsonString)) return default(T);
 
             using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonString)))
             {
-                return new DataContractJsonSerializer(typeof(T)).ReadObject(ms) as T;
+                return (T)new DataContractJsonSerializer(typeof(T)).ReadObject(ms);
             }
         }
 

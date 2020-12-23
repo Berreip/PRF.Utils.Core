@@ -19,7 +19,7 @@ namespace PRF.Utils.CoreComponents.XML
         /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
         /// <param name="file">le fichier xml à désérialiser</param>
         /// <returns>la Task générant l'objet désérialisé</returns>
-        public static async Task<T> DeserializeAsync<T>(this FileInfo file) where T : class
+        public static async Task<T> DeserializeAsync<T>(this FileInfo file)
         {
             // si le fichier est plus petit que le buffer, on fait une lecture synchrone
             if (file.Length < BUFFER_SIZE)
@@ -46,7 +46,7 @@ namespace PRF.Utils.CoreComponents.XML
         /// <param name="file">le fichier xml cible</param>
         /// <param name="data">l'objet à sérialiser</param>
         /// <returns>la Task représentant la fin de la tache</returns>
-        public static async Task SerializeAsync<T>(this FileInfo file, T data) where T : class
+        public static async Task SerializeAsync<T>(this FileInfo file, T data)
         {
             var stringData = SerializeToXml(data);
             using (var fs = new FileStream(file.FullName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, 4096, true))
@@ -62,7 +62,7 @@ namespace PRF.Utils.CoreComponents.XML
         /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
         /// <param name="xmlString">la string à désérialiser (le contenu d'un fichier xml par exemple)</param>
         /// <returns>L'objet désérialisé</returns>
-        public static T DeserializeFromXML<T>(this string xmlString) where T : class
+        public static T DeserializeFromXML<T>(this string xmlString)
         {
             if (string.IsNullOrEmpty(xmlString)) return default(T);
 
@@ -79,7 +79,7 @@ namespace PRF.Utils.CoreComponents.XML
         /// <typeparam name="T">le type d'objet à sérialiser</typeparam>
         /// <param name="data">l'objet à sérialiser</param>
         /// <returns>la représentation en string de l'objet sérialisé</returns>
-        public static string SerializeToXml<T>(this T data) where T : class
+        public static string SerializeToXml<T>(this T data)
         {
             var serializerNamespace = new XmlSerializerNamespaces();
             serializerNamespace.Add(string.Empty, string.Empty);
