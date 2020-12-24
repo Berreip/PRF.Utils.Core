@@ -13,12 +13,17 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/Berreip/PRF.Utils.Core/master/PRF_Icon.png</PackageIconUrl>
-    <PackageLicenseUrl>https://github.com/Berreip/PRF.Utils.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <AssemblyVersion>1.0.3.1</AssemblyVersion>
+    <FileVersion>1.0.3.1</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\documentation\PRF.Utils.CoreComponents.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -27,6 +32,7 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="Ressources\" />
     <Folder Include="XML\" />
   </ItemGroup>
 
@@ -39,6 +45,17 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>C:\Users\pierr\.nuget\packages\newtonsoft.json\12.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Ressources\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="Ressources\PRF_Core_Component_Icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

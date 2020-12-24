@@ -1,12 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Runtime.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using PRF.Utils.CoreComponent.UnitTest.JSON;
 using PRF.Utils.CoreComponents.JSON;
-using PRF.Utils.CoreComponents.XML;
 
 namespace PRF.Utils.CoreComponent.UnitTest.JSON
 {
@@ -62,7 +57,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.JSON
             var watch = Stopwatch.StartNew();
             for (int i = 0; i < upper; i++)
             {
-#pragma warning disable 618 => exprès
+#pragma warning disable 618
                 var res = json.SerializeToJsonWithDataContractJsonSerializer();
 #pragma warning restore 618
             }

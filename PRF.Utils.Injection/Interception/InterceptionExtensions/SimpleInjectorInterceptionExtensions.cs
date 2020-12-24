@@ -9,10 +9,15 @@ using SimpleInjector;
 
 namespace PRF.Utils.Injection.Interception.InterceptionExtensions
 {
-    // Extension methods for interceptor registration
-    // NOTE: These extension methods can only intercept interfaces, not abstract types.
+    /// <summary>
+    /// Extension methods for interceptor registration
+    /// NOTE: These extension methods can only intercept interfaces, not abstract types.
+    /// </summary>
     internal static class InterceptorExtensions
     {
+        /// <summary>
+        /// Intercept the given type specifying the predicate an the hook option
+        /// </summary>
         public static void InterceptWith<TInterceptor>(this Container container, Func<Type, bool> predicate, InterceptionHookOption hookOption)
             where TInterceptor : class, IInterceptor
         {
@@ -110,6 +115,9 @@ namespace PRF.Utils.Injection.Interception.InterceptionExtensions
         }
     }
 
+    /// <summary>
+    /// Classe permettant de créer des Proxy via la méthode GetProxy
+    /// </summary>
     public static class Interceptor
     {
         private static readonly ProxyGenerator _generator = new ProxyGenerator();
