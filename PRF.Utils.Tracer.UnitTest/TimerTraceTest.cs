@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PRF.Utils.Tracer.Configuration;
@@ -24,12 +25,11 @@ namespace PRF.Utils.Tracer.UnitTest
         public async Task TimerTraceTesttV1()
         {
             // setup
-            var key = new object();
-            var datePageReceived = new List<DateTime>();
+            int pagesReceived =0;
             // la date cible est maintenant + 1 seconde
             var timeTarget = DateTime.UtcNow.AddSeconds(1);
 
-            // on décide d'envoyer une page toute les 200 ms, sur une seconde, on devrait avoir 5 pages
+            // on décide d'envoyer une page toute les 200 ms, sur une seconde, on devrait avoir 5 pages environ
             var config = new TraceConfig
             {
                 PageSize = 1000,
@@ -38,15 +38,8 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var traceListener = new TraceSourceSync(config))
             {
-                traceListener.OnTracesSent += o =>
-                {
-                    // quand on reçoit une page, on trace la date
-                    lock (key)
-                    {
-                        // enregistre la date de la page actuelle
-                        datePageReceived.Add(DateTime.UtcNow);
-                    }
-                };
+                // quand on reçoit une page, on incrémente le compteur
+                traceListener.OnTracesSent += o => Interlocked.Increment(ref pagesReceived);
 
                 // tant que la seconde n'est pas atteinte, on trace des messages (avec une attente)
                 while (DateTime.UtcNow < timeTarget)
@@ -60,9 +53,7 @@ namespace PRF.Utils.Tracer.UnitTest
             }
 
             //Verify que l'on a 6 pages ou moins (les 5 de flush + l'éventuelle dernière) PK moins? => car selon le Task.Delay, il se peut que l'on n'écrive aucune trace dans un cycle de 200ms et donc, que l'on envoie rien
-            Assert.IsTrue(datePageReceived.Count <= 6);
-            Assert.IsTrue(datePageReceived.Count > 4); // a moins d'avoir de gros pb de synchro, on doit en avoir au moins 4
-            Trace.TraceInformation($"Nombre de pages = {datePageReceived.Count}");
+            Assert.IsTrue(pagesReceived > 0 && pagesReceived <= 6, $"INVALID number of pages received = {pagesReceived}");
         }
     }
 
