@@ -254,7 +254,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             Assert.AreEqual(1, count);
             Assert.AreEqual(2, traceReceived.Length);
             Assert.AreEqual("START_IClassVoidTest.MethodCallWithParametersWithReturn(toto, 789, surchargeCustomObject)", traceReceived[0].Message);
-            Assert.AreEqual("STOP_IClassVoidTest.MethodCallWithParametersWithReturn=[569,489]", traceReceived[1].Message);
+            Assert.AreEqual("STOP_IClassVoidTest.MethodCallWithParametersWithReturn=[569.489]", traceReceived[1].Message);
         }
 
         [TestMethod]

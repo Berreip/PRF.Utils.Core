@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
@@ -19,7 +21,8 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         public void TestInitialize()
         {
             // mock:
-
+            // set the current culture to En-Us for testing
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 
             // instance de test:
             _container = new InjectionContainer();
