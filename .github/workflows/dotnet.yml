@@ -24,3 +24,8 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
       timeout-minutes: 5
+    - name: Publish to Nuget
+      uses: brandedoutcast/publish-nuget@v2
+      with:
+        PROJECT_FILE_PATH: PRF.Utils.CoreComponents/PRF.Utils.CoreComponents.csproj
+        NUGET_KEY: ${{secrets.NUGET_KEY}}
