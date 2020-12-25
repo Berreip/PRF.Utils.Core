@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PRF.Utils.CoreComponents.JSON;
 
 namespace PRF.Utils.CoreComponent.UnitTest.JSON
@@ -40,42 +38,6 @@ namespace PRF.Utils.CoreComponent.UnitTest.JSON
             //Verify
             Assert.AreEqual("Robert", res.Name);
             Assert.AreEqual(75, res.Id);
-        }
-
-        [Ignore]
-        [TestMethod]
-        public void SerializeToJsonV2()
-        {
-            //Configuration
-            var dataToSerialize = new TestClassToSerializeJson { Id = 75, Name = "Robert" };
-            var array = new[] { dataToSerialize };
-
-            var json = new List<TestClassToSerializeJson> { dataToSerialize, dataToSerialize };
-            const int upper = 100_000;
-
-            //Test
-            var watch = Stopwatch.StartNew();
-            for (int i = 0; i < upper; i++)
-            {
-#pragma warning disable 618
-                var res = json.SerializeToJsonWithDataContractJsonSerializer();
-#pragma warning restore 618
-            }
-            watch.Stop();
-            var t1 = watch.Elapsed;
-
-            watch.Restart();
-            for (int i = 0; i < upper; i++)
-            {
-                var res = json.SerializeToJson();
-            }
-            watch.Stop();
-            var t2 = watch.Elapsed;
-           
-
-            //Verify
-            Assert.Fail($"t1 = {t1.TotalMilliseconds} ms - t2 = {t2.TotalMilliseconds} ms");
-            //Assert.AreEqual(target, res);
         }
     }
 

@@ -174,7 +174,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             //Configuration
             var count = 0;
             TraceData[] traceReceived = { };
-            const int upper = 100_000;
+            const int upper = 1_000;
 
             _container.RegisterInterceptor(PredefinedInterceptors.TimeWatchInterceptor, LifeTime.Singleton);
             _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.TimeWatchInterceptor);
@@ -192,16 +192,13 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
                 };
 
                 //Test
-                var watch = Stopwatch.StartNew();
                 for (var i = 0; i < upper; i++)
                 {
                     var _ = await instance.MethodCallForPerf();
                 }
-                watch.Stop();
 
                 //Verify
                 await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
-                Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(2), $"temps passé: {watch.ElapsedMilliseconds}");
             }
 
             // un seul retour

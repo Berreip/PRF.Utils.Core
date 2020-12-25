@@ -26,14 +26,14 @@ namespace PRF.Utils.Tracer.UnitTest
         {
             // setup
             int pagesReceived =0;
-            // la date cible est maintenant + 1 seconde
-            var timeTarget = DateTime.UtcNow.AddSeconds(1);
+            // la date cible est maintenant + 0.5 seconde
+            var timeTarget = DateTime.UtcNow.AddMilliseconds(500);
 
-            // on décide d'envoyer une page toute les 200 ms, sur une seconde, on devrait avoir 5 pages environ
+            // on décide d'envoyer une page toute les 100 ms, sur une demie seconde, on devrait avoir 5 pages environ
             var config = new TraceConfig
             {
                 PageSize = 1000,
-                MaximumTimeForFlush = TimeSpan.FromMilliseconds(200)
+                MaximumTimeForFlush = TimeSpan.FromMilliseconds(100)
             };
 
             using (var traceListener = new TraceSourceSync(config))
@@ -52,7 +52,8 @@ namespace PRF.Utils.Tracer.UnitTest
                 await traceListener.FlushAndCompleteAddingAsync().ConfigureAwait(false);
             }
 
-            //Verify que l'on a 6 pages ou moins (les 5 de flush + l'éventuelle dernière) PK moins? => car selon le Task.Delay, il se peut que l'on n'écrive aucune trace dans un cycle de 200ms et donc, que l'on envoie rien
+            //Verify que l'on a 6 pages ou moins (les 5 de flush + l'éventuelle dernière) 
+            // PK moins? => car selon le Task.Delay, il se peut que l'on n'écrive aucune trace dans un cycle de 200ms et donc, que l'on envoie rien
             Assert.IsTrue(pagesReceived > 0 && pagesReceived <= 6, $"INVALID number of pages received = {pagesReceived}");
         }
     }

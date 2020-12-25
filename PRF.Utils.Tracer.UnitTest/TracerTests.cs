@@ -433,10 +433,10 @@ namespace PRF.Utils.Tracer.UnitTest
         }
         
         [TestMethod]
-        public async Task TestMethodOneMillion()
+        public async Task Trace_Performance()
         {
             // setup
-            const int upper = 1_000_000;
+            const int upper = 100_000;
             var count = 0;
             var nbTraces = 0;
             var key = new object();
@@ -445,9 +445,8 @@ namespace PRF.Utils.Tracer.UnitTest
             {
                 TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndClearAll,
                 PageSize = upper,
-                MaximumTimeForFlush = TimeSpan.FromSeconds(20)
+                MaximumTimeForFlush = TimeSpan.FromSeconds(5)
             };
-            Stopwatch watch;
             using (var ts = new TraceSourceSync(config))
             {
                 ts.OnTracesSent += t =>
@@ -459,13 +458,11 @@ namespace PRF.Utils.Tracer.UnitTest
                     }
                 };
                 
-                watch = Stopwatch.StartNew();
-                ////Test
+                //Test
                 for (var i = 0; i < upper; i++)
                 {
                     Trace.TraceError("error test trace TU");
                 }
-                watch.Stop();
 
                 //Verify
                 await ts.FlushAndCompleteAddingAsync();
@@ -473,22 +470,17 @@ namespace PRF.Utils.Tracer.UnitTest
 
             // nombre de page renvoyé == 1 seule
             Assert.AreEqual(1, count);
-
             Assert.AreEqual(upper, nbTraces);
-            // on doit mettre moins de 2 secondes pour insérer 1 million de traces
-            Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(2),
-                $"Trop lent pour insérer {upper} traces: time = {watch.ElapsedMilliseconds} ms");
         }
 
         /// <summary>
         /// trace de performance utilisant un traceData plus simple (mais pas forcément plus rapide)
         /// </summary>
-        /// <returns></returns>
         [TestMethod]
-        public async Task TestMethodOneMillionV2()
+        public async Task Trace_Performance_Trace_Data()
         {
             // setup
-            const int upper = 1_000_000;
+            const int upper = 100_000;
             var count = 0;
             var nbTraces = 0;
             var key = new object();
@@ -497,7 +489,7 @@ namespace PRF.Utils.Tracer.UnitTest
             {
                 TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndClearAll,
                 PageSize = upper,
-                MaximumTimeForFlush = TimeSpan.FromSeconds(20)
+                MaximumTimeForFlush = TimeSpan.FromSeconds(5)
             };
             Stopwatch watch;
             using (var ts = new TraceSourceSync(config))
@@ -527,9 +519,6 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.AreEqual(1, count);
 
             Assert.AreEqual(upper, nbTraces);
-            // on doit mettre moins de 2 secondes pour insérer 1 million de traces
-            Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(2),
-                $"Trop lent pour insérer {upper} traces: time = {watch.ElapsedMilliseconds} ms");
         }
 
         /// <summary>

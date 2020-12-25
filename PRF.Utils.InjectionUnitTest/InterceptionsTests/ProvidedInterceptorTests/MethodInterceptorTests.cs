@@ -443,7 +443,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             //Configuration
             var count = 0;
             TraceData[] traceReceived = { };
-            const int upper = 100_000;
+            const int upper = 1_000;
 
             _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
             _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -481,7 +481,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             //Configuration
             var count = 0;
             TraceData[] traceReceived = { };
-            const int upper = 100_000;
+            const int upper = 1_000;
 
             _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
             _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -509,29 +509,5 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             Assert.AreEqual(1, count);
             Assert.AreEqual(2 * upper, traceReceived.Length);
         }
-
-        /// <summary>
-        /// test que la création d'un GUID est peu couteux (au cas où on s'en sert pour tracer les appels)
-        /// </summary>
-        [TestMethod]
-        public void PerformanceNewGuidV1()
-        {
-            //Configuration
-
-            //Test
-            const int upper = 1_000_000;
-            var watch = Stopwatch.StartNew();
-
-            for (var i = 0; i < upper; i++)
-            {
-                var _ = Guid.NewGuid();
-            }
-            watch.Stop();
-
-            //Verify
-            Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
-                $"Trop lent pour créer {upper} GUID : time = {watch.ElapsedMilliseconds} ms > 1000 ms souhaitée");
-        }
-
     }
 }
