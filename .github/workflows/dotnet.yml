@@ -1,4 +1,4 @@
-name: .NET
+name: .NET_PRF_Core
 
 on:
   push:
@@ -23,3 +23,4 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      timeout-minutes: 5
