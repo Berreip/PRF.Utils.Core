@@ -24,8 +24,18 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
       timeout-minutes: 5
-    - name: Publish to Nuget
+    - name: Publish PRF.Utils.CoreComponents to Nuget
       uses: brandedoutcast/publish-nuget@v2
       with:
         PROJECT_FILE_PATH: PRF.Utils.CoreComponents/PRF.Utils.CoreComponents.csproj
+        NUGET_KEY: ${{secrets.NUGET_KEY}}
+    - name: Publish PRF.Utils.Injection to Nuget
+      uses: brandedoutcast/publish-nuget@v2
+      with:
+        PROJECT_FILE_PATH: PRF.Utils.Injection/PRF.Utils.Injection.csproj
+        NUGET_KEY: ${{secrets.NUGET_KEY}}
+    - name: Publish PRF.Utils.Tracer to Nuget
+      uses: brandedoutcast/publish-nuget@v2
+      with:
+        PROJECT_FILE_PATH: PRF.Utils.Tracer/PRF.Utils.Tracer.csproj
         NUGET_KEY: ${{secrets.NUGET_KEY}}
