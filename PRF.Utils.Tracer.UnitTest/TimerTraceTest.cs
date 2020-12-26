@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PRF.Utils.Tracer.Configuration;
 
 namespace PRF.Utils.Tracer.UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TimerTraceTest
     {
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             foreach (TraceListener listener in Trace.Listeners)
@@ -21,7 +20,7 @@ namespace PRF.Utils.Tracer.UnitTest
             }
         }
 
-        [TestMethod]
+        [Test]
         public async Task TimerTraceTesttV1()
         {
             // setup

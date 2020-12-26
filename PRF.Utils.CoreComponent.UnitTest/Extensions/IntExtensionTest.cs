@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions
 {
-    [TestClass]
+    [TestFixture]
     public class IntExtensionTest
     {
-        [TestMethod]
+        [Test]
         public void IsInRangeV1()
         {
             //Configuration
@@ -19,7 +19,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
             Assert.IsTrue(res);
         }
 
-        [TestMethod]
+        [Test]
         public void IsInRangeV2()
         {
             //Configuration

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 using PRF.Utils.InjectionUnitTest.ClasseForTests;
@@ -12,12 +12,12 @@ using PRF.Utils.Tracer.Configuration;
 
 namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
 {
-    [TestClass]
+    [TestFixture]
     public class InterceptionPerformancesTest
     {
         private IInjectionContainer _container;
 
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             // mock:
@@ -27,11 +27,11 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
             // instance de test:
             _container = new InjectionContainer();
         }
-            
+
         /// <summary>
         /// test que la création d'un proxy ne coute pas trop de ressources
         /// </summary>
-        [TestMethod]
+        [Test]
         public void PerformanceNewClassTestV2()
         {
             //Configuration
@@ -55,7 +55,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// <summary>
         /// test que la création d'un proxy ne coute pas trop de ressources
         /// </summary>
-        [TestMethod]
+        [Test]
         public void PerformanceNewClassTest_TransientV3()
         {
             //Configuration
@@ -85,7 +85,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// test que la création d'un proxy ne coute pas trop de ressources
         /// => En singleton, c'est les mm instances qui doivent revenir donc on doit être plus rapide
         /// </summary>
-        [TestMethod]
+        [Test]
         public void PerformanceNewClassTest_singletonV3()
         {
             //Configuration
@@ -114,7 +114,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// <summary>
         /// test que la création d'un proxy ne coute pas trop de ressources
         /// </summary>
-        [TestMethod]
+        [Test]
         public void PerformanceNewClassTestV4()
         {
             //Configuration
@@ -145,7 +145,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// <summary>
         /// Remplace la méthode d'enregistrement pour vérifier que le comportement est le même
         /// </summary>
-        [TestMethod]
+        [Test]
         public void PerformanceNewClassTestV5()
         {
             //Configuration
@@ -176,8 +176,8 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// <summary>
         /// test que l'appel d'une méthode sur un proxy ne coute pas trop de ressources
         /// </summary>
-        [TestMethod]
-        [Ignore]
+        [Test]
+        [Ignore("performance test, do not use on server")]
         public void PerformanceCallTest2()
         {
             //Configuration
@@ -203,8 +203,8 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// <summary>
         /// test que l'appel d'une méthode sur un proxy ne coute pas trop de ressources
         /// </summary>
-        [TestMethod]
-        [Ignore]
+        [Test]
+        [Ignore("performance test, do not use on server")]
         public void PerformanceCallTest3()
         {
             //Configuration

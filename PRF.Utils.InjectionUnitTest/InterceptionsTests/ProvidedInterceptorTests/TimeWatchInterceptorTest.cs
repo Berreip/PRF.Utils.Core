@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 using PRF.Utils.InjectionUnitTest.ClasseForTests;
@@ -12,13 +11,13 @@ using PRF.Utils.Tracer.Listener.Traces;
 
 namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTests
 {
-    [TestClass]
+    [TestFixture]
     public class TimeWatchInterceptorTest
     {
         private IInjectionContainer _container;
         private TraceConfig _traceConfig;
 
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             // mock:
@@ -36,7 +35,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             _container.Register<IClassVoidTest, ClassVoidTest>(LifeTime.Singleton);
         }
 
-        [TestMethod]
+        [Test]
         public async Task TimeWatchInterceptorTestV1()
         {
             //Configuration
@@ -69,7 +68,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             Assert.IsTrue(traceReceived[0].Message.StartsWith("TIME_IClassVoidTest.MethodCall = "));
         }
 
-        [TestMethod]
+        [Test]
         public async Task TimeWatchInterceptorTestV2()
         {
             //Configuration
@@ -102,7 +101,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             Assert.IsTrue(traceReceived[0].Message.StartsWith("TIME_IClassVoidTest.MethodCallWaitAsync = "));
         }
 
-        [TestMethod]
+        [Test]
         public async Task TimeWatchInterceptorTestV3()
         {
             //Configuration
@@ -135,7 +134,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             Assert.IsTrue(traceReceived[0].Message.StartsWith("TIME_IClassVoidTest.MethodCallWait = "));
         }
 
-        [TestMethod]
+        [Test]
         public async Task TimeWatchInterceptorTestV4()
         {
             //Configuration
@@ -168,7 +167,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             Assert.IsTrue(traceReceived[0].Message.StartsWith("TIME_IClassVoidTest.MethodCallWaitWithReturnDataAsync = "));
         }
 
-        [TestMethod]
+        [Test]
         public async Task TimeWatchInterceptorTestV4Perf()
         {
             //Configuration

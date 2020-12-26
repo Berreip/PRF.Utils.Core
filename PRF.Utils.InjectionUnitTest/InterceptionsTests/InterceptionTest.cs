@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 using PRF.Utils.InjectionUnitTest.ClasseForTests;
@@ -12,12 +12,12 @@ using PRF.Utils.Tracer.Listener.Traces;
 
 namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
 {
-    [TestClass]
+    [TestFixture]
     public class InterceptionTest
     {
         private IInjectionContainer _container;
 
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             // mock:
@@ -30,7 +30,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// <summary>
         /// Cas 1: test que l'interception fonctionne
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task InterceptionTestV1()
         {
             //Configuration
@@ -68,7 +68,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
             Assert.IsNotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceStatic"));
         }
 
-        [TestMethod]
+        [Test]
         public async Task InterceptionTestV2()
         {
             //Configuration
@@ -109,7 +109,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// <summary>
         /// Test pour les propriété == tracé par défaut
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task InterceptionTest_Property()
         {
             //Configuration
@@ -148,7 +148,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// <summary>
         /// Test pour les propriété == avec option sans trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task InterceptionTest_Property_With_custom_Option()
         {
             //Configuration
@@ -183,7 +183,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
         /// <summary>
         /// Test pour les attributs
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task InterceptionTest_Attribute()
         {
             //Configuration

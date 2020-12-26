@@ -1,15 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using PRF.Utils.CoreComponents.XML;
 
 namespace PRF.Utils.CoreComponent.UnitTest.XML
 {
-    [TestClass]
+    [TestFixture]
     public class JsonSerializerWrapperTest
     {
         /// <summary>
         /// Cas 1: test que la sérialisation est correctement faite en xml
         /// </summary>
-        [TestMethod]
+        [Test]
         public void SerializeToXmlV1()
         {
             //Configuration
@@ -26,7 +26,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.XML
         /// <summary>
         /// Cas 1: test que la dé-sérialisation est correctement faite en xml
         /// </summary>
-        [TestMethod]
+        [Test]
         public void DeserializeFromXml()
         {
             //Configuration

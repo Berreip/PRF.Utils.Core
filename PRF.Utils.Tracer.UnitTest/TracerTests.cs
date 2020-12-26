@@ -3,17 +3,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PRF.Utils.Tracer.Configuration;
 using PRF.Utils.Tracer.Listener;
 
 namespace PRF.Utils.Tracer.UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TracerTests
     {
-
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             foreach (TraceListener listener in Trace.Listeners)
@@ -23,7 +22,7 @@ namespace PRF.Utils.Tracer.UnitTest
             }
         }
 
-        [TestMethod]
+        [Test]
         public async Task TraceListenerTestV1()
         {
             // setup
@@ -56,7 +55,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.AreEqual(1, count);
         }
 
-        [TestMethod]
+        [Test]
         public async Task TraceListenerTestV2()
         {
             // setup
@@ -91,7 +90,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Vérifie que si on configure un tracer en DoNothing, on ne récupère pas les traces issues des traceurs statiques
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task DoNothing()
         {
             // setup
@@ -112,7 +111,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.AreEqual(0, count);
         }
         
-        [TestMethod]
+        [Test]
         public async Task DefaultTraceLevelCheck()
         {
             // setup
@@ -127,7 +126,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Vérifie qu'onne pollue pas la liste des listeners
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task CleanListenersTest()
         {
             // setup
@@ -149,7 +148,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Vérifie qu'onne pollue pas la liste des listeners
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task CleanListenersTestV2()
         {
             // setup
@@ -170,7 +169,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Vérifie qu'onne pollue pas la liste des listeners
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task CleanListenersTestV3()
         {
             // setup
@@ -190,7 +189,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Vérifie qu'onne pollue pas la liste des listeners
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task CleanListenersTestV4()
         {
             // setup
@@ -206,7 +205,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.AreEqual(0, Trace.Listeners.Count);
         }
 
-        [TestMethod]
+        [Test]
         public async Task TraceErrorTest()
         {
             // setup
@@ -233,7 +232,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.IsTrue(traceReceived.Contains(@"format {0} - {1}")); // pas de formatage par défaut => on laisse les arguments à coté
         }
 
-        [TestMethod]
+        [Test]
         public async Task TraceInformationTest()
         {
             // setup
@@ -261,7 +260,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.IsTrue(traceReceived.Contains("format TraceInformation {0} - {1}"));
         }
 
-        [TestMethod]
+        [Test]
         public async Task TraceWarningTest()
         {
             // setup
@@ -289,7 +288,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.IsTrue(traceReceived.Contains("format TraceWarning {0} - {1}"));
         }
 
-        [TestMethod]
+        [Test]
         public async Task WriteTest()
         {
             // setup
@@ -321,7 +320,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.IsTrue(traceReceived.Contains("Write+object: System.Object"));
         }
 
-        [TestMethod]
+        [Test]
         public async Task WriteIfTest()
         {
             // setup
@@ -348,7 +347,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.IsTrue(traceReceived.Contains("WriteIf true"));
         }
 
-        [TestMethod]
+        [Test]
         public async Task TraceDataTest()
         {
             // setup
@@ -375,7 +374,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.IsTrue(traceReceived.Contains("param1"), $"array == {string.Join(", ", traceReceived)}");
             Assert.IsTrue(traceReceived.Contains("param2, param3"), $"array == {string.Join(", ", traceReceived)}");
         }
-        [TestMethod]
+        [Test]
         public async Task TraceDataTest_null()
         {
             // setup
@@ -401,7 +400,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.IsTrue(traceReceived.Contains("NULL_DATA"), $"array == {string.Join(", ", traceReceived)}");
         }
 
-        [TestMethod]
+        [Test]
         public async Task TraceEventTest()
         {
             // setup
@@ -432,7 +431,7 @@ namespace PRF.Utils.Tracer.UnitTest
             Assert.IsTrue(traceReceived.Contains("format {0} - {1}"), $"array contains: {string.Join(Environment.NewLine, traceReceived)}");
         }
         
-        [TestMethod]
+        [Test]
         public async Task Trace_Performance()
         {
             // setup
@@ -476,7 +475,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// trace de performance utilisant un traceData plus simple (mais pas forcément plus rapide)
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task Trace_Performance_Trace_Data()
         {
             // setup
@@ -524,7 +523,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste que pour une page vide, on n'envoie rien quand on cloture le buffer
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task FlushAndCompleteAddingAsync_EmptyPage_Test()
         {
             // setup
@@ -546,7 +545,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste que la trace ne pose pas de problème quand on a cloturé le buffer
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TraceAfterCompleteAdding()
         {
             // setup
@@ -569,7 +568,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste que la trace ne pose pas de pb quand on a disposé le traceSource
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TraceAfterDispose()
         {
             // setup

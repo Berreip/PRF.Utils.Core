@@ -2,15 +2,15 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PRF.Utils.Tracer.Configuration;
 
 namespace PRF.Utils.Tracer.UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestSwitchLevel
     {
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             foreach (TraceListener listener in Trace.Listeners)
@@ -23,7 +23,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelInformationV1()
         {
             // setup
@@ -49,7 +49,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelInformationV2()
         {
             // setup
@@ -75,7 +75,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelInformationV3()
         {
             // setup
@@ -101,7 +101,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelInformationV4()
         {
             // setup
@@ -127,7 +127,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelErrorV1()
         {
             // setup
@@ -153,7 +153,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelErrorV2()
         {
             // setup
@@ -179,7 +179,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelErrorV3()
         {
             // setup
@@ -205,7 +205,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelErrorV4()
         {
             // setup
@@ -231,7 +231,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelWarningV1()
         {
             // setup
@@ -257,7 +257,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelWarningV2()
         {
             // setup
@@ -283,7 +283,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelWarningV3()
         {
             // setup
@@ -309,7 +309,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchLevelWarningV4()
         {
             // setup
@@ -335,7 +335,7 @@ namespace PRF.Utils.Tracer.UnitTest
         /// <summary>
         /// Teste le changement dynamique de niveau de trace
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task TestSwitchChangeLevelV1()
         {
             // setup

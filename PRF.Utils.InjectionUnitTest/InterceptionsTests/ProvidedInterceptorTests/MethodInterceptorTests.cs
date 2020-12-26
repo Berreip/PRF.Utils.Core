@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 using PRF.Utils.InjectionUnitTest.ClasseForTests;
@@ -12,15 +13,18 @@ using PRF.Utils.Tracer.Listener.Traces;
 
 namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTests
 {
-    [TestClass]
+    [TestFixture]
     public class MethodInterceptorTests
     {
         private IInjectionContainer _container;
         private TraceConfig _traceConfig;
 
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
+            // set the current culture to En-Us for testing
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
             // mock:
             _traceConfig = new TraceConfig
             {
@@ -40,7 +44,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         /// <summary>
         /// Cas 1: test que l'interception faite via MethodTraceInterceptor fonctionne
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV1()
         {
             //Configuration
@@ -77,7 +81,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         /// <summary>
         /// Cas 1: test que l'interception faite via MethodTraceInterceptor fonctionne et est performante
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestPerformanceV1()
         {
             //Configuration
@@ -119,7 +123,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         }
 
 
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV2()
         {
             //Configuration
@@ -156,7 +160,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         /// <summary>
         /// test d'interception pour les propriétés (setter exclusivement)
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV3()
         {
             //Configuration
@@ -193,7 +197,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         /// <summary>
         /// test d'interception pour les propriétés => vérifie pas de trace getter
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV4()
         {
             //Configuration
@@ -224,7 +228,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             Assert.AreEqual(0, traceReceived.Length);
         }
 
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV5()
         {
             //Configuration
@@ -257,7 +261,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             Assert.AreEqual("STOP_IClassVoidTest.MethodCallWithParametersWithReturn=[569.489]", traceReceived[1].Message);
         }
 
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV6()
         {
             //Configuration
@@ -290,7 +294,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             Assert.AreEqual("STOP_IClassVoidTest.TryGetValue=[True]", traceReceived[1].Message);
         }
 
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV7()
         {
             //Configuration
@@ -327,7 +331,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         /// <summary>
         /// Gestion des méthodes asynchrones
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV8()
         {
             //Configuration
@@ -364,7 +368,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         /// <summary>
         /// Gestion des méthodes asynchrones avec retour
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV9()
         {
             //Configuration
@@ -401,7 +405,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         /// <summary>
         /// Gestion des méthodes asynchrones avec retour
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTestV10()
         {
             //Configuration
@@ -437,7 +441,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         /// <summary>
         /// Gestion des méthodes asynchrones avec retour
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTest_PerfV10()
         {
             //Configuration
@@ -475,7 +479,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
         /// <summary>
         /// Gestion des méthodes asynchrones avec retour
         /// </summary>
-        [TestMethod]
+        [Test]
         public async Task MethodInterceptorTest_PerfV11()
         {
             //Configuration
