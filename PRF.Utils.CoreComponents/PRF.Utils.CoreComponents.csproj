@@ -48,6 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="Ressources\LICENSE.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

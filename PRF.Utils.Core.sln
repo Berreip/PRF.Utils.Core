@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2016
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.CoreComponents", "PRF.Utils.CoreComponents\PRF.Utils.CoreComponents.csproj", "{9739A0DF-47B8-4303-826A-496136892364}"
 EndProject
@@ -9,13 +9,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.CoreComponent.Uni
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{31D1A634-E8F6-4DDE-8902-439EE8733C63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRF.Utils.Injection", "PRF.Utils.Injection\PRF.Utils.Injection.csproj", "{5347BAD1-CD09-4DB7-9560-696A4DB06194}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.Injection", "PRF.Utils.Injection\PRF.Utils.Injection.csproj", "{5347BAD1-CD09-4DB7-9560-696A4DB06194}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRF.Utils.InjectionUnitTest", "PRF.Utils.InjectionUnitTest\PRF.Utils.InjectionUnitTest.csproj", "{D092C455-6E6D-46B2-84E4-791A5F03BB78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.InjectionUnitTest", "PRF.Utils.InjectionUnitTest\PRF.Utils.InjectionUnitTest.csproj", "{D092C455-6E6D-46B2-84E4-791A5F03BB78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRF.Utils.Tracer", "PRF.Utils.Tracer\PRF.Utils.Tracer.csproj", "{67C22120-48B6-4798-8E6C-9EB9ADDCE147}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.Tracer", "PRF.Utils.Tracer\PRF.Utils.Tracer.csproj", "{67C22120-48B6-4798-8E6C-9EB9ADDCE147}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRF.Utils.Tracer.UnitTest", "PRF.Utils.Tracer.UnitTest\PRF.Utils.Tracer.UnitTest.csproj", "{8648E57E-A1C5-4753-B6B2-2CC6C7F657DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.Tracer.UnitTest", "PRF.Utils.Tracer.UnitTest\PRF.Utils.Tracer.UnitTest.csproj", "{8648E57E-A1C5-4753-B6B2-2CC6C7F657DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{77402D30-2DE1-49E0-B86F-84510D8FCFF8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

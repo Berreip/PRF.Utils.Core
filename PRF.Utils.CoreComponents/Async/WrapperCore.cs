@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PRF.Utils.CoreComponents.Async
@@ -13,7 +11,7 @@ namespace PRF.Utils.CoreComponents.Async
     public static class WrapperCore
     {
         /// <summary>
-        /// Create a task and dispatch a callwith a try catch. 
+        /// Create a task and invoke a callback with a try catch
         /// </summary>
         public static async Task DispatchAndWrapAsyncBase(Action callback, Action<Exception> onErrorAction, Action onfinally = null)
         {
@@ -35,7 +33,30 @@ namespace PRF.Utils.CoreComponents.Async
         }
 
         /// <summary>
-        /// Create a task and dispatch a callwith a try catch.
+        /// Create a task and invoke a callback with a try catch. 
+        /// </summary>
+        public static async Task<T> DispatchAndWrapAsyncBase<T>(Func<T> callback, Action<Exception> onErrorAction, Action onfinally = null)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    return callback.Invoke();
+                }
+                catch (Exception e)
+                {
+                    onErrorAction?.Invoke(e);
+                    return default;
+                }
+                finally
+                {
+                    InvokeFinally(onfinally, onErrorAction);
+                }
+            }).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Create a task and invoke a callback with a try catch
         /// </summary>
         public static async Task DispatchAndWrapAsyncBase(Func<Task> callback, Action<Exception> onErrorAction, Action onfinally = null)
         {
@@ -48,6 +69,30 @@ namespace PRF.Utils.CoreComponents.Async
                 catch (Exception e)
                 {
                     onErrorAction?.Invoke(e);
+                }
+                finally
+                {
+                    InvokeFinally(onfinally, onErrorAction);
+                }
+            }).ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// Create a task and invoke a callback with a try catch
+        /// </summary>
+        public static async Task<T> DispatchAndWrapAsyncBase<T>(Func<Task<T>> callback, Action<Exception> onErrorAction, Action onfinally = null)
+        {
+            return await Task.Run(async () =>
+            {
+                try
+                {
+                    return await callback.Invoke();
+                }
+                catch (Exception e)
+                {
+                    onErrorAction?.Invoke(e);
+                    return default;
                 }
                 finally
                 {
