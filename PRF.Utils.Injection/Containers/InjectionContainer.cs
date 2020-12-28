@@ -33,6 +33,14 @@ namespace PRF.Utils.Injection.Containers
         public InjectionContainer()
         {
             _internalContainer = new Container();
+            // WARNING: Since V5, simple injector do auto-verifying of registered elements
+            // while this beaviour could make sense in some environment, it is highly unwanted when talking
+            // about windows registered as transient as ALL of them will be resolved at first resolution of any type 
+            // and all of them will never be exited. As a result, the application could never be closed...
+            // From my point of view, it is not to the container to decide this kind of behaviour. This point of
+            // view is not negociable so i do not provide a way to tweak it.
+            _internalContainer.Options.EnableAutoVerification = false;
+
             _internalContainer.ResolveUnregisteredType += RaiseResolveUnregisteredType;
             // s'enregistre soit mm dans le conteneur afin de pouvoir injecter éventuellement le conteneur
             _internalContainer.RegisterInstance<IInjectionContainer>(this);
