@@ -6,7 +6,12 @@ namespace PRF.Utils.CoreComponents.Async
     /// <summary>
     /// Class that start a new task and wrap the result in a try catch. Provide also a finally which is itself wrapped.
     /// It is better to use an extension methods inmost case. This one is to be used n one of these extensions.
-    /// When creating extensions methods of this class, you have to be carrefull to implement Task and Func[Task]    /// 
+    /// When creating extensions methods of this class, you HAVE TO BE CARREFULL TO IMPLEMENT: 
+    /// 1) Action
+    /// 2) Func[T]
+    /// 3) Func[Task]
+    /// 4) Func[Task[T]]
+    /// if you forget any one, your code may compile but you will do a fire and forget by casting an awaitable call to an action
     /// </summary>
     public static class WrapperCore
     {
