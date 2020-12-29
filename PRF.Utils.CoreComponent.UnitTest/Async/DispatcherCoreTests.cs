@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 namespace PRF.Utils.CoreComponent.UnitTest.Async
 {
     [TestFixture]
-    internal sealed class WrapperCoreTests
+    internal sealed class DispatcherCoreTests
     {
         [Test]
-        public async Task WrapperCore_DispatchAndWrapAsyncBase_Nominal()
+        public async Task DispatchAndWrapAsyncBase_Nominal()
         {
             // Arrange
             var count = 0;
             var exception = 0;
 
             // Act 
-            await WrapperCore.DispatchAndWrapAsyncBase(
+            await DispatcherCore.DispatchAndWrapAsyncBase(
                 () => Interlocked.Increment(ref count),
                 e => Interlocked.Increment(ref exception));
 
@@ -27,14 +27,56 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
         }
 
         [Test]
-        public async Task WrapperCore_DispatchAndWrapAsyncBase_Nominal_Exception()
+        public async Task DispatchAndWrapAsyncBase_with_exception_And_No_OnError_Callback()
+        {
+            // Arrange
+            var count = 0;
+
+            // Act 
+            await DispatcherCore.DispatchAndWrapAsyncBase(
+                () =>
+                {
+                    Interlocked.Increment(ref count);
+                    throw new Exception();
+                },
+                null);
+
+            // Assert
+            Assert.AreEqual(1, count);
+        }
+
+        [Test]
+        public async Task DispatchAndWrapAsyncBase_with_exception_on_finally()
+        {
+            // Arrange
+            var count = 0;
+            var countFinally = 0;
+
+            // Act 
+            await DispatcherCore.DispatchAndWrapAsyncBase(
+                () => Interlocked.Increment(ref count),
+                null,
+                () =>
+                {
+                    Interlocked.Increment(ref countFinally);
+                    throw new Exception();
+                });
+
+            // Assert
+            Assert.AreEqual(1, count);
+            Assert.AreEqual(1, countFinally);
+        }
+
+
+        [Test]
+        public async Task DispatchAndWrapAsyncBase_Nominal_Exception()
         {
             // Arrange
             var count = 0;
             var exception = 0;
 
             // Act 
-            await WrapperCore.DispatchAndWrapAsyncBase(
+            await DispatcherCore.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     Interlocked.Increment(ref count);
@@ -48,7 +90,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
         }
 
         [Test]
-        public async Task WrapperCore_DispatchAndWrapAsyncBase_Nominal_Finally()
+        public async Task DispatchAndWrapAsyncBase_Nominal_Finally()
         {
             // Arrange
             var mainCalls = 0;
@@ -56,7 +98,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            await WrapperCore.DispatchAndWrapAsyncBase(
+            await DispatcherCore.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     Interlocked.Increment(ref mainCalls);
@@ -71,14 +113,14 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
         }
 
         [Test]
-        public async Task WrapperCore_DispatchAndWrapAsyncBase_Exception_Finally()
+        public async Task DispatchAndWrapAsyncBase_Exception_Finally()
         {
             // Arrange
             var finallyCalls = 0;
             var exception = 0;
 
             // Act 
-            await WrapperCore.DispatchAndWrapAsyncBase(
+            await DispatcherCore.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     throw new Exception();
@@ -93,13 +135,13 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
 
 
         [Test]
-        public async Task WrapperCore_DispatchAndWrapAsyncBase_Double_Exception_Finally()
+        public async Task DispatchAndWrapAsyncBase_Double_Exception_Finally()
         {
             // Arrange
             var exception = 0;
 
             // Act 
-            await WrapperCore.DispatchAndWrapAsyncBase(
+            await DispatcherCore.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     throw new Exception();
@@ -115,14 +157,14 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
         }
 
         [Test]
-        public async Task WrapperCore_DispatchAndWrapAsyncBase_Nominal_Async_Action()
+        public async Task DispatchAndWrapAsyncBase_Nominal_Async_Action()
         {
             // Arrange
             var count = 0;
             var exception = 0;
 
             // Act 
-            await WrapperCore.DispatchAndWrapAsyncBase(
+            await DispatcherCore.DispatchAndWrapAsyncBase(
                 async () =>
                 {
                     await Task.Delay(50);
@@ -136,14 +178,14 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
         }
 
         [Test]
-        public async Task WrapperCore_DispatchAndWrapAsyncBase_Nominal_Async_Exception()
+        public async Task DispatchAndWrapAsyncBase_Nominal_Async_Exception()
         {
             // Arrange
             var count = 0;
             var exception = 0;
 
             // Act 
-            await WrapperCore.DispatchAndWrapAsyncBase(
+            await DispatcherCore.DispatchAndWrapAsyncBase(
                 async () =>
                 {
                     await Task.Delay(50);
@@ -158,13 +200,13 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
         }
 
         [Test]
-        public async Task WrapperCore_DispatchAndWrapAsyncBase_Nominal_With_Return()
+        public async Task DispatchAndWrapAsyncBase_Nominal_With_Return()
         {
             // Arrange
             var exception = 0;
 
             // Act 
-            var res = await WrapperCore.DispatchAndWrapAsyncBase(
+            var res = await DispatcherCore.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     return 78;
@@ -177,13 +219,13 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
         }
 
         [Test]
-        public async Task WrapperCore_DispatchAndWrapAsyncBase_Nominal_Async_With_Return()
+        public async Task DispatchAndWrapAsyncBase_Nominal_Async_With_Return()
         {
             // Arrange
             var exception = 0;
 
             // Act 
-            var res = await WrapperCore.DispatchAndWrapAsyncBase(
+            var res = await DispatcherCore.DispatchAndWrapAsyncBase(
                 async () =>
                 {
                     await Task.Delay(50);
