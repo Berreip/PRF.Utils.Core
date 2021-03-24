@@ -16,7 +16,7 @@ namespace PRF.Utils.Injection.BootStrappers
         ///  avec une politique de durée de vie.
         /// </summary> 
         ///<param name="container">le container d'injection (en mode enregistrement seulement)</param>
-        /// <see cref="Initialize"/>
+        /// <see cref="InitializeAsync"/>
         void Register(IInjectionContainerRegister container);
 
         /// <summary>
@@ -26,12 +26,6 @@ namespace PRF.Utils.Injection.BootStrappers
         ///  RAPPEL: la résolution explicite (c'est à dire l'appel à une commande Resolve) est une opération exceptionnelle
         /// qui ne doit concerner QUE les composants totalements indépendants (un récepteur de communication WCF par exemple) ou la racine 
         /// du programme (qui doit déjà exister)
-        /// </summary>
-        /// <param name="container">le container d'injection</param>
-        void Initialize(IInjectionContainer container);
-
-        /// <summary>
-        /// Permet de centraliser les résolutions asynchrones.
         /// </summary>
         /// <param name="container">le container d'injection</param>
         Task InitializeAsync(IInjectionContainer container);
@@ -46,18 +40,12 @@ namespace PRF.Utils.Injection.BootStrappers
     {
         /// <inheritdoc/>
         public abstract void Register(IInjectionContainerRegister container);
-
+        
         /// <inheritdoc />
-        public virtual void Initialize(IInjectionContainer container)
+        public virtual async Task InitializeAsync(IInjectionContainer container)
         {
             // vide si pas overiddé
-        }
-
-        /// <inheritdoc />
-        public virtual Task InitializeAsync(IInjectionContainer container)
-        {
-            // vide si pas overiddé
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
     }
 }
