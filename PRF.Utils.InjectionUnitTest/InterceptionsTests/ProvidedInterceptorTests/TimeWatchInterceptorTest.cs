@@ -29,7 +29,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTest
             };
 
             // instance de test:
-            _container = new InjectionContainer();
+            _container = new InjectionContainerSimpleInjector();
 
             // enregistre le type de la classe de test
             _container.Register<IClassVoidTest, ClassVoidTest>(LifeTime.Singleton);

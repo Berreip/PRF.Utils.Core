@@ -4,6 +4,7 @@ using PRF.Utils.Injection.Utils;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace PRF.Utils.InjectionUnitTest.Containers
@@ -23,7 +24,7 @@ namespace PRF.Utils.InjectionUnitTest.Containers
         public void InjectionContainer_Register_Nominal()
         {
             // Arrange
-            var sut = new InjectionContainer();
+            var sut = new InjectionContainerSimpleInjector();
 
             // Act 
             sut.RegisterType<FooType>(LifeTime.Singleton);
@@ -38,7 +39,7 @@ namespace PRF.Utils.InjectionUnitTest.Containers
         public void InjectionContainer_Register_Resolve_Multiple_Time()
         {
             // Arrange
-            var sut = new InjectionContainer();
+            var sut = new InjectionContainerSimpleInjector();
 
             // Act 
             sut.RegisterType<FooType>(LifeTime.Singleton);
@@ -56,7 +57,7 @@ namespace PRF.Utils.InjectionUnitTest.Containers
         public void InjectionContainer_Register_Resolve_Multiple_Time_Transient_Repro_Bug_Double_Resolve()
         {
             // Arrange
-            var sut = new InjectionContainer();
+            var sut = new InjectionContainerSimpleInjector();
 
             // Act 
             sut.RegisterType<FooType>(LifeTime.Transient);
@@ -71,7 +72,25 @@ namespace PRF.Utils.InjectionUnitTest.Containers
         public void InjectionContainer_Register_Resolve_Multiple_Time_Transient()
         {
             // Arrange
-            var sut = new InjectionContainer();
+            var sut = new InjectionContainerSimpleInjector();
+
+            // Act 
+            sut.RegisterType<FooType>(LifeTime.Transient);
+            for (int i = 0; i < 10; i++)
+            {
+                var foo = sut.Resolve<FooType>();
+                Assert.IsNotNull(foo);
+            }
+
+            // Assert
+            Assert.AreEqual(10, _counter);
+        }
+        
+        [Test]
+        public void InjectionContainer_Register_Collection()
+        {
+            // Arrange
+            var sut = new InjectionContainerSimpleInjector();
 
             // Act 
             sut.RegisterType<FooType>(LifeTime.Transient);

@@ -11,6 +11,11 @@
         Singleton,
 
         /// <summary>
+        /// Scoped lifetime: the class will be reused within th current scope (may vary depending on the injection framwork used)
+        /// </summary>
+        Scoped,
+
+        /// <summary>
         /// le conteneur renverra une nouvelle instance de la classe à chaque demande faite par le consommateur
         /// </summary>
         Transient

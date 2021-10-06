@@ -24,7 +24,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
 
 
             // instance de test:
-            _container = new InjectionContainer();
+            _container = new InjectionContainerSimpleInjector();
         }
 
         /// <summary>

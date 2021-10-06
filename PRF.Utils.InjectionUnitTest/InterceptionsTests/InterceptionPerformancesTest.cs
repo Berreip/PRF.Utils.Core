@@ -25,7 +25,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 
             // instance de test:
-            _container = new InjectionContainer();
+            _container = new InjectionContainerSimpleInjector();
         }
 
         /// <summary>

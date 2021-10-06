@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.0.6</Version>
+    <Version>2.0.0</Version>
     <Authors>P.Bony</Authors>
     <Company>PRF</Company>
     <Description>Basics extensions for manipulating FileInfo, DirectoryInfo, String, Type, Random, ...</Description>
