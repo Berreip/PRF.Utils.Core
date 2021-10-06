@@ -19,12 +19,12 @@ namespace PRF.Utils.CoreComponents.XML
         /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
         /// <param name="file">le fichier xml à désérialiser</param>
         /// <returns>la Task générant l'objet désérialisé</returns>
-        public static async Task<T> DeserializeAsync<T>(this FileInfo file)
+        public static async Task<T> DeserializeAsync<T>(this FileInfo file) where T : new()
         {
             // si le fichier est plus petit que le buffer, on fait une lecture synchrone
             if (file.Length < BUFFER_SIZE)
             {
-                return DeserializeFromXML<T>(File.ReadAllText(file.FullName));
+                return DeserializeFromXml<T>(File.ReadAllText(file.FullName));
             }
             var sb = new StringBuilder();
             using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, BUFFER_SIZE, true))
@@ -35,7 +35,7 @@ namespace PRF.Utils.CoreComponents.XML
                 {
                     sb.Append(Encoding.Unicode.GetString(buffer, 0, numRead));
                 }
-                return DeserializeFromXML<T>(sb.ToString());
+                return DeserializeFromXml<T>(sb.ToString());
             }
         }
 
@@ -62,9 +62,9 @@ namespace PRF.Utils.CoreComponents.XML
         /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
         /// <param name="xmlString">la string à désérialiser (le contenu d'un fichier xml par exemple)</param>
         /// <returns>L'objet désérialisé</returns>
-        public static T DeserializeFromXML<T>(this string xmlString)
+        public static T DeserializeFromXml<T>(this string xmlString) where T : new()
         {
-            if (string.IsNullOrEmpty(xmlString)) return default(T);
+            if (string.IsNullOrEmpty(xmlString)) return default;
 
             var deserializer = new XmlSerializer(typeof(T));
             using (var reader = new StringReader(xmlString))

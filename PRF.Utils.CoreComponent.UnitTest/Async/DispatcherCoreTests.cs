@@ -17,7 +17,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            await DispatcherCore.DispatchAndWrapAsyncBase(
+            await AsyncWrapper.DispatchAndWrapAsyncBase(
                 () => Interlocked.Increment(ref count),
                 e => Interlocked.Increment(ref exception));
 
@@ -33,7 +33,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var count = 0;
 
             // Act 
-            await DispatcherCore.DispatchAndWrapAsyncBase(
+            await AsyncWrapper.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     Interlocked.Increment(ref count);
@@ -53,7 +53,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var countFinally = 0;
 
             // Act 
-            await DispatcherCore.DispatchAndWrapAsyncBase(
+            await AsyncWrapper.DispatchAndWrapAsyncBase(
                 () => Interlocked.Increment(ref count),
                 null,
                 () =>
@@ -76,7 +76,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            await DispatcherCore.DispatchAndWrapAsyncBase(
+            await AsyncWrapper.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     Interlocked.Increment(ref count);
@@ -98,7 +98,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            await DispatcherCore.DispatchAndWrapAsyncBase(
+            await AsyncWrapper.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     Interlocked.Increment(ref mainCalls);
@@ -120,7 +120,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            await DispatcherCore.DispatchAndWrapAsyncBase(
+            await AsyncWrapper.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     throw new Exception();
@@ -141,7 +141,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            await DispatcherCore.DispatchAndWrapAsyncBase(
+            await AsyncWrapper.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     throw new Exception();
@@ -164,7 +164,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            await DispatcherCore.DispatchAndWrapAsyncBase(
+            await AsyncWrapper.DispatchAndWrapAsyncBase(
                 async () =>
                 {
                     await Task.Delay(50);
@@ -185,7 +185,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            await DispatcherCore.DispatchAndWrapAsyncBase(
+            await AsyncWrapper.DispatchAndWrapAsyncBase(
                 async () =>
                 {
                     await Task.Delay(50);
@@ -206,7 +206,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            var res = await DispatcherCore.DispatchAndWrapAsyncBase(
+            var res = await AsyncWrapper.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     return 78;
@@ -225,7 +225,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            var res = await DispatcherCore.DispatchAndWrapAsyncBase(
+            var res = await AsyncWrapper.DispatchAndWrapAsyncBase(
                 async () =>
                 {
                     await Task.Delay(50);

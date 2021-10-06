@@ -103,7 +103,7 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <param name="data">l'objet à sérialiser</param>
         /// <returns>la représentation en string de l'objet sérialisé</returns>
         [Obsolete("NewtonSoft.Json est bcq plus performant")]
-        public static string SerializeToJsonWithDataContractJsonSerializer<T>(this T data) where T : class
+        public static string SerializeToJsonWithDataContractJsonSerializer<T>(this T data)
         {
             var serializer = new DataContractJsonSerializer(typeof(T));
 

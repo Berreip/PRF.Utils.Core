@@ -60,27 +60,5 @@ namespace PRF.Utils.CoreComponents.Extensions
                 ? current
                 : items[(items.IndexOf(current) + 1) % items.Count];
         }
-
-        /// <summary>
-        /// Génère un hashSet à partir de la liste (attention, s'il y a des doublons ils seront effacés)
-        /// => peut éventuellement servir à filtrer les doublons du coup.
-        /// </summary>
-        /// <typeparam name="T">le type de la liste</typeparam>
-        /// <param name="items">la liste à extraire</param>
-        /// <param name="throwExceptionOnDuplicate">paramètre optionnel qui détermine si l'on lance une exception en cas de 
-        /// doublons dans la liste à extraire</param>
-        /// <returns>le hashSet généré</returns>
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> items, bool throwExceptionOnDuplicate = false)
-        {
-            var hash = new HashSet<T>();
-            foreach (var item in items)
-            {
-                if (!hash.Add(item) && throwExceptionOnDuplicate)
-                {
-                    throw new ArgumentException($"méthode ToHashSet: l'élément {item} est déjà présent dans le hashset et le paramètre optionnel 'throwExceptionOnDuplicate' n'autorise pas les duplicats (true)");
-                }
-            }
-            return hash;
-        }
     }
 }

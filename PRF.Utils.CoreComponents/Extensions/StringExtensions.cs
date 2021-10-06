@@ -59,6 +59,16 @@ namespace PRF.Utils.CoreComponents.Extensions
             return Regex.Replace(str, $@"^\s*[{Environment.NewLine}]*", string.Empty, RegexOptions.Multiline).TrimEnd();
         }
 
+        /// <summary>
+        /// Do a string contains in a insensitive way
+        /// </summary>
+        /// <param name="str">the string where we are loking for the searched string</param>
+        /// <param name="searchedString">the searched string</param>
+        public static bool ContainsInsensitive(this string str, string searchedString)
+        {
+            return str?.IndexOf(searchedString, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
         private static readonly string _illegal = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
 
         /// <summary>

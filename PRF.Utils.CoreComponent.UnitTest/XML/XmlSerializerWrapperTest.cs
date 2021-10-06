@@ -33,7 +33,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.XML
             var str = @"<TestClassToSerialize><Id>75</Id><Name>Robert</Name></TestClassToSerialize>";
 
             //Test
-            var res = str.DeserializeFromXML<TestClassToSerialize>();
+            var res = str.DeserializeFromXml<TestClassToSerialize>();
 
             //Verify
             Assert.AreEqual("Robert", res.Name);
