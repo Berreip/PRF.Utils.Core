@@ -13,7 +13,7 @@ namespace PRF.Utils.CoreComponents.Async
     /// 4) Func[Task[T]]
     /// if you forget any one, your code may compile but you will do a fire and forget by casting an awaitable call to an action
     /// </summary>
-    public static class AsyncWrapper
+    public static class AsyncWrapperBase
     {
         /// <summary>
         /// Create a task and invoke a callback with a try catch

@@ -1,25 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>P.Bony</Authors>
     <Company>PRF</Company>
     <Description>Basics extensions for manipulating FileInfo, DirectoryInfo, String, Type, Random, ...</Description>
     <Copyright>PRF</Copyright>
     <PackageTags>PRF, FileInfo, DirectoryInfo, Basics</PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>renomage AsyncWrapper en AsyncWrapperCore</PackageReleaseNotes>
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
     <PackageIconUrl></PackageIconUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
-    <PackageVersion>2.0.0.0</PackageVersion>
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <FileVersion>2.0.1.0</FileVersion>
+    <PackageVersion>2.0.1.0</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
