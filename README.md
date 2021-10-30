@@ -1,5 +1,9 @@
 # PRF.Utils.Core
 
+### Status:
+
+![Build](https://github.com/Berreip/PRF.Utils.Core/actions/workflows/dotnet.yml/badge.svg)
+
 This repository contains 3 modules:
 
 ## CoreComponents
