@@ -161,7 +161,7 @@ bb", res);
         public void RemoveInvalidPathCharacters_nominal()
         {
             //Arrange
-            var str = @"az/e?rty78";
+            var str = @"az/erty78";
 
             //Act
             var res = str.RemoveInvalidPathCharacters();

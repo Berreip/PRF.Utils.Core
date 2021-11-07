@@ -67,7 +67,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
             var res = file.GetRelativePath(_testDirectory.Parent.FullName);
 
             //Assert
-            Assert.AreEqual(@"Extensions\testFile.txt", res);
+            Assert.AreEqual($@"Extensions{Path.DirectorySeparatorChar}testFile.txt", res);
         }
 
         [Test]
@@ -430,7 +430,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
             //Arrange
 
             //Act
-            var res = FilesAndDirectoryInfoExtension.ContainsInvalidCharFromName("dfdsf?sdf");
+            var res = FilesAndDirectoryInfoExtension.ContainsInvalidCharFromName("dfds//fù##?<>sdf");
 
             //Assert
             Assert.IsTrue(res);
@@ -466,7 +466,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
             //Arrange
 
             //Act
-            var res = FilesAndDirectoryInfoExtension.EscapeInvalidPathFromName("dfdsf?sdf");
+            var res = FilesAndDirectoryInfoExtension.EscapeInvalidPathFromName("dfdsf/sdf");
 
             //Assert
             Assert.AreEqual("dfdsfsdf", res);
