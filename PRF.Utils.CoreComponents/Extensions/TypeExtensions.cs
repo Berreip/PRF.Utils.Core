@@ -12,16 +12,6 @@ namespace PRF.Utils.CoreComponents.Extensions
     public static class TypeExtensions
     {
         /// <summary>
-        /// Renvoie true si le type est Nullable, false sinon
-        /// </summary>
-        /// <param name="type">le type concerné</param>
-        /// <returns>true si le typee est Nullable, false sinon</returns>
-        public static bool IsNullable(this Type type)
-        {
-            return Nullable.GetUnderlyingType(type) != null;
-        }
-
-        /// <summary>
         /// Renvoie la liste des propriétés publiques du type et des types parents du type demandé (utile dans le cas d'un interface pour 
         /// connaitres propriétés des interfaces parents)
         /// </summary>

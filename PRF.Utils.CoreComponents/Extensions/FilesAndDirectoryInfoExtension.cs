@@ -43,17 +43,21 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Fait un delete si le dossier existe ET si le dossier existait, on boucle tant
-        /// que le dossier n'est pas réellement supprimé (ou que l'on atteint le timeout)
+        /// Try to delete the folder and cycle up to the confirmation taht the file is deleted or the timeout is reached (use this methods only in unit tests)
+        /// Note: the deletion is NOT sync even if Ms pretends it. so using this in unit test context may be usefull
+        /// Default timeout is 5 seconds
         /// </summary>
-        /// <returns>true si on a effacé qqch, false sinon</returns>
-        public static bool DeleteIfExistAndWaitDeletion(this DirectoryInfo fileSystemInfo, TimeSpan timeout, bool recursive = true)
+        public static bool DeleteIfExistAndWaitDeletion(this DirectoryInfo fileSystemInfo, TimeSpan? timeout = null, bool recursive = true)
         {
+            if (!timeout.HasValue)
+            {
+                timeout = TimeSpan.FromSeconds(5);
+            }
+
             if (timeout > TimeSpan.FromHours(1))
                 throw new ArgumentException("Timeout cannot exceed 1 hour.");
 
             if (!fileSystemInfo.ExistsExplicit()) return true;
-            // demande la suppression du dossier:
             fileSystemInfo.Delete(recursive);
 
             var sw = new Stopwatch();
@@ -68,6 +72,7 @@ namespace PRF.Utils.CoreComponents.Extensions
                         {
                             return true;
                         }
+
                         Thread.Sleep(50);
                     }
                     catch
@@ -80,7 +85,64 @@ namespace PRF.Utils.CoreComponents.Extensions
             {
                 sw.Stop();
             }
+
             return false;
+        }
+
+        /// <summary>
+        /// Try to delete the file and cycle up to the confirmation taht the file is deleted or the timeout is reached (use this methods only in unit tests)
+        /// Note: the deletion is NOT sync even if Ms pretends it. so using this in unit test context may be usefull
+        /// Default timeout is 5 seconds
+        /// </summary>
+        public static bool DeleteIfExistAndWaitDeletion(this FileInfo fileSystemInfo, TimeSpan? timeout = null)
+        {
+            if (!timeout.HasValue)
+            {
+                timeout = TimeSpan.FromSeconds(5);
+            }
+
+            if (timeout > TimeSpan.FromHours(1))
+                throw new ArgumentException("Timeout cannot exceed 1 hour.");
+
+            if (!fileSystemInfo.ExistsExplicit()) return true;
+            fileSystemInfo.Delete();
+
+            var sw = new Stopwatch();
+            sw.Start();
+            try
+            {
+                while (sw.Elapsed <= timeout)
+                {
+                    try
+                    {
+                        if (!fileSystemInfo.ExistsExplicit())
+                        {
+                            return true;
+                        }
+
+                        Thread.Sleep(50);
+                    }
+                    catch
+                    {
+                        Thread.Sleep(50);
+                    }
+                }
+            }
+            finally
+            {
+                sw.Stop();
+            }
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// Opens a text file, reads all the text in the file into a string, and then closes the file.
+        /// </summary>
+        public static string ReadAllText(this FileInfo file)
+        {
+            return File.ReadAllText(file.FullName);
         }
 
         /// <summary>
@@ -134,7 +196,6 @@ namespace PRF.Utils.CoreComponents.Extensions
             var wantedPath = Path.Combine(path, errorcopyTxt);
             if (wantedPath.Length >= PathExtension.MaxPathLenght)
             {
-
                 throw new PathTooLongException($@"the path provided in CopyToWithCheckLenght was too long: 
 limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path = {wantedPath}");
             }
@@ -248,17 +309,16 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Renvoie true si la string contient des charactères invalides
+        /// Return true if the name contains invalid file name chars
         /// </summary>
-        /// <param name="name">La string à vérifier</param>
         public static bool ContainsInvalidCharFromName(string name)
         {
             return Path.GetInvalidFileNameChars().Any(name.Contains);
         }
 
         /// <summary>
-        /// Renomme un fichier automatiquement si un fichier du même nom existe déjà et renvoie ce nouveau nom
-        /// => ATTENTION, NE LE CREER PAS S'IL N'EXISTE PAS
+        /// get a file name with an automatic rename in a 'windows style' with (2), (3) if it already exists.
+        /// => WARNING: THIS METHOD DOES NOT CREATE THE FILE
         /// </summary>
         public static string AutoRenameFileToAvoidDuplicate(params string[] pathparts)
         {
@@ -273,6 +333,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
             {
                 i++;
             }
+
             return $@"{file.FullName.Replace(file.Extension, string.Empty)}({i}){file.Extension}";
         }
 
@@ -284,6 +345,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         {
             if (!fileSystemInfo.ExistsExplicit()) return false;
             fileSystemInfo.Delete();
+            fileSystemInfo.Refresh();
             return true;
         }
 
@@ -300,9 +362,9 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Fait un Create si le fichier n'existe pas et ferme le FileStream (comportement par défaut mais avec un renvoie true/false)
+        /// Create the file and close the stream
         /// </summary>
-        /// <returns>true si on a crée qqch, false sinon</returns>
+        /// <returns>true if the file has been created, false otherwise</returns>
         public static bool CreateIfNotExistAndClose(this FileInfo file)
         {
             if (file.ExistsExplicit()) return false;
@@ -312,8 +374,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Nettoie l'intégralité des fichiers/dossiers présents dans le dossier en retirant au passage les attributs ReadOnly
-        /// Si le dossier n'existait pas, le créé
+        /// Clean a directory if it exists and create it if it does not
         /// </summary>
         public static DirectoryInfo CleanDirectory(this DirectoryInfo dir)
         {
@@ -323,8 +384,6 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
             }
             else
             {
-                // Attention à ne surtout pas faire de Parallel.forEach car le threadPool déconne grave si le dossier a effacer est gros 
-                // (à partir de 5-6 Go et explosion en vol sur du +10Go)
                 foreach (var f in dir.EnumerateFiles("*", SearchOption.AllDirectories))
                 {
                     f.IsReadOnly = false;
@@ -337,12 +396,13 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
                     subDir.Delete(true);
                 }
             }
+
             dir.Refresh();
             return dir;
         }
 
         /// <summary>
-        /// Créer le dossier s'il n'existait pas et tente de le nettoyer sans préoccupation du résultat
+        /// Clean a directory if it exists and create it if it does not AND IGNORE EVERY ERRORS
         /// </summary>
         public static DirectoryInfo CreateDirectoryAndTryClean(this DirectoryInfo dir)
         {
@@ -354,7 +414,6 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
             {
                 try
                 {
-                    // on tente d'effacer les fichiers qui étaient présent au moment des faits
                     foreach (var file in dir.EnumerateFiles("*", SearchOption.TopDirectoryOnly).ToList())
                     {
                         try
@@ -363,27 +422,28 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
                         }
                         catch
                         {
-                            // en cas de problème lors de l'effacement, on ignore
+                            // ignore errors
                         }
                     }
+
                     foreach (var subDir in dir.EnumerateDirectories("*", SearchOption.TopDirectoryOnly).ToList())
                     {
                         try
                         {
-                            // n'efface que les sous dossier et pas le dossier d'origine
                             subDir.Delete(true);
                         }
                         catch
                         {
-                            // en cas de problème lors de l'effacement, on ignore
+                            // ignore errors
                         }
                     }
                 }
                 catch
                 {
-                    // en cas de problème lors de l'effacement, on ignore
+                    // ignore errors
                 }
             }
+
             dir.Refresh();
             return dir;
         }
@@ -445,7 +505,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         /// <param name="autoRename">on renvoie simplement le FileInfo correspondant si autoRename = false
         ///  on trouve un nom disponible, on créer le fichier et on le renvoie si autoRename = true</param>
         /// <returns>le fichier (existant ou nouvellement crée)</returns>
-        public static FileInfo CreateFileIfNotExist(this DirectoryInfo dir, string name, bool autoRename)
+        public static FileInfo CreateFileIfNotExist(this DirectoryInfo dir, string name, bool autoRename = true)
         {
             var file = autoRename
                 ? new FileInfo(AutoRenameFileToAvoidDuplicate(dir.FullName, name))
@@ -480,31 +540,58 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Renvoie un FileInfo du fichier dont le nom est fourni s'il existe. sinon, renvoie null
-        ///  => Uniquement TopDirectoryOnly
+        /// return a fileInfo in the given directory EVEN if the file does not exists
         /// </summary>
-        /// <param name="dir">le directoryInfo parent</param>
-        /// <param name="name">le nom du fichier souhaité</param>
-        /// <returns>le fichier (existant ou null)</returns>
         public static FileInfo GetFile(this DirectoryInfo dir, string name)
         {
-            if (string.IsNullOrEmpty(name)) return null;
-            var file = new FileInfo(Path.Combine(dir.FullName, name));
-            return file.Exists ? file : null;
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            return new FileInfo(Path.Combine(dir.FullName, name));
         }
 
         /// <summary>
-        /// Renvoie un DirectoryInfo du dossier dont le nom est fourni s'il existe. sinon, renvoie null
-        ///  => Uniquement TopDirectoryOnly
+        /// return true and out the file info if any one is found in the given directory with the given name
         /// </summary>
-        /// <param name="dir">le directoryInfo parent</param>
-        /// <param name="name">le nom du directory souhaité</param>
-        /// <returns>le directoryInfo (existant ou null)</returns>
+        public static bool TryGetFile(this DirectoryInfo dir, string name, out FileInfo file)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var fileFound = new FileInfo(Path.Combine(dir.FullName, name));
+                if (fileFound.Exists)
+                {
+                    file = fileFound;
+                    return true;
+                }
+            }
+            file = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Return a sub directory EVEN if it does not exists
+        /// </summary>
         public static DirectoryInfo GetDirectory(this DirectoryInfo dir, string name)
         {
-            if (string.IsNullOrEmpty(name)) return null;
-            var subDir = new DirectoryInfo(Path.Combine(dir.FullName, name));
-            return subDir.Exists ? subDir : null;
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            return new DirectoryInfo(Path.Combine(dir.FullName, name));
+        }
+
+        /// <summary>
+        /// Try to get the matching sub directory and return true if it exists
+        /// </summary>
+        public static bool TryGetDirectory(this DirectoryInfo dir, string name, out DirectoryInfo subdirectory)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var subDir = new DirectoryInfo(Path.Combine(dir.FullName, name));
+                if (subDir.Exists)
+                {
+                    subdirectory = subDir;
+                    return true;
+                }
+            }
+
+            subdirectory = null;
+            return false;
         }
 
         /// <summary>
@@ -560,6 +647,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
                         {
                             return false;
                         }
+
                         Thread.Sleep(100);
                     }
                 }
@@ -568,15 +656,8 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
             {
                 sw.Stop();
             }
-            return false;
-        }
 
-        /// <summary>
-        /// Retourne le chemin complet du fichier encadré de double quotes.
-        /// </summary>
-        public static string GetQuotedPath(this FileInfo file)
-        {
-            return $"\"{file.FullName}\"";
+            return false;
         }
 
         /// <summary>

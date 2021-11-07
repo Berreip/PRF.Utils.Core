@@ -20,12 +20,8 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Renvoie la string contenue entre la première partie et la seconde partie
+        /// Returns the strintg between the first part and the second part AND NULL if a part is not found at all
         /// </summary>
-        /// <param name="s">la string à examiner</param>
-        /// <param name="firstPart">la première partie</param>
-        /// <param name="secondPart">la seconde partie</param>
-        /// <returns>la string contenue entre la première partie et la seconde partie</returns>
         public static string GetBetween(this string s, string firstPart, string secondPart)
         {
             var from = s.LastIndexOf(firstPart, StringComparison.Ordinal) + firstPart.Length;
@@ -82,14 +78,6 @@ namespace PRF.Utils.CoreComponents.Extensions
                 str = str.Replace(c.ToString(), string.Empty);
             }
             return str;
-        }
-
-        /// <summary>
-        /// Retourne la string entre double quote
-        /// </summary>
-        public static string ToQuotedPath(this string path)
-        {
-            return $"\"{path}\"";
         }
     }
 }

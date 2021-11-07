@@ -9,7 +9,6 @@ namespace PRF.Utils.CoreComponents.Extensions
     /// </summary>
     public static class MathExt
     {
-
         /// <summary>
         /// Donne le plus grand item entre deux valeurs implémentant IComparable
         /// </summary>
@@ -70,7 +69,7 @@ namespace PRF.Utils.CoreComponents.Extensions
         /// <param name="val">la valeur</param>
         /// <param name="min">la valeur minimal admise (incluse) </param>
         /// <param name="max">la valeur maximal admise (incluse)</param>
-        public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
+        public static T Clamp<T>(this T val, T min, T max) where T : IComparable
         {
             if (val.CompareTo(min) < 0) return min;
 

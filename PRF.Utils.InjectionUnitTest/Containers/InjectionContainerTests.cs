@@ -1,11 +1,6 @@
 ﻿using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
-using SimpleInjector;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 
 namespace PRF.Utils.InjectionUnitTest.Containers
 {

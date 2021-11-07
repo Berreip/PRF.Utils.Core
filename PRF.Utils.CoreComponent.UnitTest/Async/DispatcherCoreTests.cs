@@ -111,6 +111,46 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             Assert.AreEqual(1, finallyCalls);
             Assert.AreEqual(0, exception);
         }
+        
+        [Test]
+        public async Task DispatchAndWrapAsyncBase_calls_error_callback_on_exception()
+        {
+            // Arrange
+            var exception = 0;
+
+            // Act 
+            var res = await AsyncWrapperBase.DispatchAndWrapAsyncBase(
+                () =>
+                {
+                    if (exception == 0)
+                    {
+                        // only to be sure to get the correct signature
+                        throw new Exception();
+                    }
+                    return 1;
+                },
+                e => Interlocked.Increment(ref exception));
+
+            // Assert
+            Assert.AreEqual(1, exception);
+        }
+
+        [Test]
+        public async Task DispatchAndWrapAsyncBase_calls_error_callback_on_exception_base_signature()
+        {
+            // Arrange
+            var exception = 0;
+
+            // Act 
+            void Callback() => throw new Exception();
+
+            await AsyncWrapperBase.DispatchAndWrapAsyncBase(
+                Callback,
+                e => Interlocked.Increment(ref exception));
+
+            // Assert
+            Assert.AreEqual(1, exception);
+        }
 
         [Test]
         public async Task DispatchAndWrapAsyncBase_Exception_Finally()
@@ -236,6 +276,29 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             // Assert
             Assert.AreEqual(78, res);
             Assert.AreEqual(0, exception);
+        }
+        
+        [Test]
+        public async Task WrapAsync_call_exception_callback_on_error()
+        {
+            // Arrange
+            var exception = 0;
+
+            // Act 
+            await AsyncWrapperBase.WrapAsync(
+                async () =>
+                {
+                    await Task.Delay(50);
+                    if (exception == 0)
+                    {
+                        throw new Exception();
+                    }
+                    return 78;
+                },
+                e => Interlocked.Increment(ref exception));
+
+            // Assert
+            Assert.AreEqual(1, exception);
         }
     }
 }

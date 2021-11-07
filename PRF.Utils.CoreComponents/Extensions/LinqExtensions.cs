@@ -15,7 +15,7 @@ namespace PRF.Utils.CoreComponents.Extensions
         /// <param name="items">la liste à séparer</param>
         /// <param name="partitionSize">la taille 'N' des sous ensembles</param>
         /// <returns>la liste de sous ensemble de N éléments (sauf le dernier)</returns>
-        public static IEnumerable<IEnumerable<T>> SplitInChunckOf<T>(this IEnumerable<T> items, int partitionSize)
+        public static IEnumerable<IEnumerable<T>> SplitInChunckOf2<T>(this IEnumerable<T> items, int partitionSize)
         {
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
@@ -34,7 +34,7 @@ namespace PRF.Utils.CoreComponents.Extensions
                 res = new T[partitionSize];
                 i = 0;
             }
-            // les reste
+            // remaining
             if (i <= 0) yield break;
             if (i == partitionSize)
                 yield return res;

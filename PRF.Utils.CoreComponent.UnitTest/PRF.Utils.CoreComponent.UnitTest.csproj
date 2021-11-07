@@ -23,4 +23,15 @@
     <ProjectReference Include="..\PRF.Utils.CoreComponents\PRF.Utils.CoreComponents.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="XML\testXml.xml" />
+    <Content Include="XML\testXml.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Extensions\testFile.txt" />
+    <Content Include="Extensions\testFile.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
