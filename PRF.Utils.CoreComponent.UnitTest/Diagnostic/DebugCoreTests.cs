@@ -80,7 +80,11 @@ namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic
             DebugCore.Fail("message");
 
             //Assert
+#if DEBUG
             Assert.AreEqual(1, count);
+#else
+            Assert.AreEqual(0, count);
+#endif
         }
         
         [Test]
@@ -100,7 +104,11 @@ namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic
             DebugCore.Fail("message");
 
             //Assert
+#if DEBUG
             Assert.AreEqual(1, count);
+#else
+            Assert.AreEqual(0, count);
+#endif
         }
         
         [Test]
@@ -120,7 +128,11 @@ namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic
             DebugCore.Fail("message");
 
             //Assert
+#if DEBUG
             Assert.AreEqual(1, count);
+#else
+            Assert.AreEqual(0, count);
+#endif
         }
     }
 }

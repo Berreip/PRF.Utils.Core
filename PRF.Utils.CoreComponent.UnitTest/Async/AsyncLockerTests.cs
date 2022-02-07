@@ -46,7 +46,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
         }
 
         [Test]
-        [Timeout(500)]
+        [Timeout(1000)]
         public void AsyncLocker_WaitLock_nominal_usage()
         {
             //Arrange
@@ -54,7 +54,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var i = 0;
 
             //Act
-            Parallel.For(0, 1_000, _ =>
+            Parallel.For(0, 100, _ =>
             {
                 using (var key = locker.WaitLock())
                 {
@@ -63,17 +63,17 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             });
 
             //Assert
-            Assert.AreEqual(1_000, i);
+            Assert.AreEqual(100, i);
         }
         
         [Test]
-        [Timeout(500)]
+        [Timeout(1000)]
         public async Task AsyncLocker_WaitLockAsync_nominal_usage()
         {
             //Arrange
             var locker = new AsyncLocker();
             var i = 0;
-            var tasks = Enumerable.Range(0, 1_000).Select(o => Task.Run(async () =>
+            var tasks = Enumerable.Range(0, 100).Select(o => Task.Run(async () =>
             {
                 using (var key = await locker.WaitLockAsync().ConfigureAwait(false))
                 {
@@ -85,7 +85,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             await Task.WhenAll(tasks);
 
             //Assert
-            Assert.AreEqual(1_000, i);
+            Assert.AreEqual(100, i);
         }
         
         [Test]
