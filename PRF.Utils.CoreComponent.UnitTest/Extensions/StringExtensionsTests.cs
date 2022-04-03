@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
 
@@ -168,6 +169,79 @@ bb", res);
 
             //Assert
             Assert.AreEqual("azerty78", res);
+        }
+
+        [Test]
+        //Lower case
+        [TestCase("", "", true)]
+        [TestCase("", "toto", false)]
+        [TestCase("toto", "different", false)]
+        [TestCase("toto", "oto", false)]
+        [TestCase("toto", "ot", false)]
+        [TestCase("toto", "toto", true)]
+        //With Upper case
+        [TestCase("Toto", "toto", true)]
+        [TestCase("TOto", "TO", true)]
+        [TestCase("TOto", "OT", false)]
+        [TestCase("TOto", "OTO", false)]
+        [TestCase("TOTO", "ToT", true)]
+        [TestCase("TOTO", "OTO", false)]
+        public void StartsWithInsensitive_returns_expected_result(string input, string search, bool result)
+        {
+            //Arrange
+
+            //Act
+            var res = input.StartsWithInsensitive(search);
+
+            //Assert
+            Assert.AreEqual(result, res);
+        }
+
+        [Test]
+        public void StartsWithInsensitive_throws_when_null_search()
+        {
+            //Arrange
+            var str = "foo";
+
+            //Act
+            //Assert
+            Assert.Throws<ArgumentNullException>(() => str.StartsWithInsensitive(null));
+        }
+        
+        [Test]
+        //Lower case
+        [TestCase("", "", true)]
+        [TestCase("", "toto", false)]
+        [TestCase("toto", "different", false)]
+        [TestCase("toto", "oto", true)]
+        [TestCase("toto", "tot", false)]
+        [TestCase("toto", "ot", false)]
+        [TestCase("toto", "toto", true)]
+        //With Upper case
+        [TestCase("Toto", "otO", true)]
+        [TestCase("tOTO", "tOt", false)]
+        [TestCase("TOTO", "ot", false)]
+        [TestCase("Toto", "TOTo", true)]
+        public void EndsWithInsensitive_returns_expected_result(string input, string search, bool result)
+        {
+            //Arrange
+
+            //Act
+            var res = input.EndsWithInsensitive(search);
+
+            //Assert
+            Assert.AreEqual(result, res);
+        }
+
+        [Test]
+        public void EndsWithInsensitive_throws_when_null_search()
+        {
+            //Arrange
+            var str = "foo";
+
+            //Act
+            //Assert
+            Assert.Throws<ArgumentNullException>(() => str.EndsWithInsensitive(null));
         }
     }
 }

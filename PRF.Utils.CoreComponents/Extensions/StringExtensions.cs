@@ -56,9 +56,9 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Do a string contains in a insensitive way
+        /// Do a string Contains in a case insensitive way
         /// </summary>
-        /// <param name="str">the string where we are loking for the searched string</param>
+        /// <param name="str">the string where we are looking for the searched input</param>
         /// <param name="searchedString">the searched string</param>
         public static bool ContainsInsensitive(this string str, string searchedString)
         {
@@ -66,6 +66,26 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         private static readonly string _illegal = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+
+        /// <summary>
+        /// Do a string StartsWith in a case insensitive way
+        /// </summary>
+        /// <param name="str">the string where we are looking for the searched input</param>
+        /// <param name="searchedString">the searched string</param>
+        public static bool StartsWithInsensitive(this string str, string searchedString)
+        {
+            return str.StartsWith(searchedString, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Do a string EndsWith in a case insensitive way
+        /// </summary>
+        /// <param name="str">the string where we are looking for the searched input</param>
+        /// <param name="searchedString">the searched string</param>
+        public static bool EndsWithInsensitive(this string str, string searchedString)
+        {
+            return str.EndsWith(searchedString, StringComparison.OrdinalIgnoreCase);
+        }
 
         /// <summary>
         /// Supprime les symboles incompatibles avec un nom de fichier
