@@ -20,7 +20,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         [TestCase(0)]
         [TestCase(-1)]
         [TestCase(-10)]
-        [Timeout(100)]
+        [Timeout(5000)]
         public void Create_TaskPoolSizeCapped_with_invalid_size_throws(int poolSize)
         {
             //Arrange
@@ -32,7 +32,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
 
         [Test]
         [Repeat(1_000)]
-        [Timeout(100)]
+        [Timeout(5000)]
         public async Task AddWork_executes_the_task()
         {
             //Arrange
@@ -49,7 +49,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
 
         [Test]
         [Repeat(10)]
-        [Timeout(1300)]
+        [Timeout(5000)]
         public async Task AddWork_executes_the_async_task()
         {
             //Arrange
@@ -75,7 +75,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         [TestCase(200)]
         [TestCase(2000)]
         [TestCase(20000)]
-        [Timeout(1000)]
+        [Timeout(5000)]
         public async Task AddWork_multiple_times_executes_the_tasks(int number)
         {
             //Arrange
@@ -98,7 +98,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Timeout(1000)]
+        [Timeout(5000)]
         public async Task AddWork_Then_wait_runner_to_ends_and_continue()
         {
             //Arrange
@@ -123,7 +123,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
 
         [Test]
         [Repeat(10)]
-        [Timeout(3000)]
+        [Timeout(5000)]
         public async Task AddWork_mix_sync_and_async_tasks()
         {
             //Arrange
@@ -152,7 +152,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         [TestCase(16)]
         [TestCase(100)]
         [Repeat(100)]
-        [Timeout(1000)]
+        [Timeout(5000)]
         public async Task TaskPoolSizeCapped_does_not_exceed_the_max_number_of_simultaneous_executions(int poolSize)
         {
             //Arrange
@@ -179,8 +179,8 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Repeat(1_000)]
-        [Timeout(100)]
+        [Repeat(50)]
+        [Timeout(5000)]
         public async Task Added_work_can_be_cancelled_when_already_started()
         {
             //Arrange
@@ -210,8 +210,8 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Repeat(1_000)]
-        [Timeout(1000)]
+        [Repeat(50)]
+        [Timeout(5000)]
         public async Task Added_work_can_be_executed_after_the_previous_work_throws()
         {
             //Arrange
@@ -242,8 +242,8 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Repeat(1_000)]
-        [Timeout(100)]
+        [Repeat(50)]
+        [Timeout(5000)]
         public async Task Added_work_can_be_cancelled_when_not_started_yet()
         {
             //Arrange
@@ -278,7 +278,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
 
 
         [Test]
-        [Timeout(200)]
+        [Timeout(5000)]
         public void CancelledTaskRaise_an_operation_cancelled_exception()
         {
             //Arrange
@@ -299,6 +299,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
+        [Timeout(5000)]
         public async Task AddWork_should_favor_parralelism_over_efficiency()
         {
             // when requesting 3 tasks on a taskPool of size 3, every one should be started in parralel,
@@ -338,7 +339,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Timeout(200)]
+        [Timeout(5000)]
         public void CancelledTaskRaise_an_operation_cancelled_exception_for_async_work()
         {
             //Arrange
@@ -360,7 +361,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Timeout(200)]
+        [Timeout(5000)]
         public void WaitAsync_get_the_exception_raised_during_work_execution()
         {
             //Arrange
@@ -381,7 +382,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Timeout(200)]
+        [Timeout(5000)]
         public void WaitAsync_get_the_exception_raised_during_work_async_execution()
         {
             //Arrange
@@ -403,6 +404,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
+        [Timeout(5000)]
         public async Task WaitAsync_with_timeout_returns_false_when_timeout_reached()
         {
             //Arrange
@@ -420,7 +422,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Timeout(4000)]
+        [Timeout(5000)]
         public async Task WaitAsync_with_timeout_returns_true_when_timeout_not_reached()
         {
             //Arrange
@@ -442,7 +444,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Timeout(1000)]
+        [Timeout(5000)]
         public void Wait_sync_wait_blocking_until_end_of_work()
         {
             //Arrange
@@ -458,7 +460,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         }
 
         [Test]
-        [Timeout(1000)]
+        [Timeout(5000)]
         public void Wait_sync_waot_blocking_until_end_of_work_with_timeout()
         {
             //Arrange
@@ -475,7 +477,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
 
 
         [Test]
-        [Repeat(2_000)]
+        [Timeout(5000)]
         public async Task Random_test_leads_to_expected_results()
         {
             //Arrange
