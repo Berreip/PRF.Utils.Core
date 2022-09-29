@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace PRF.Utils.CoreComponents.Async.TaskPool
 {
+    /// <summary>
+    /// Extensions methods on TaskPoolSized capped class
+    /// </summary>
     public static class TaskPoolSizedCappedExtensions
     {
         /// <summary>
@@ -45,7 +48,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
                     }
                     catch (OperationCanceledException)
                     {
-                        // normal cancellation f task ends before
+                        // normal cancellation if task ends before
                     }
                 }, cts.Token)).ConfigureAwait(false);
 

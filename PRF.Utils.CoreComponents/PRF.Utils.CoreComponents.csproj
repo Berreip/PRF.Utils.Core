@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>2.2.1</Version>
+    <Version>2.2.2</Version>
     <Authors>Berreip</Authors>
     <Company>PRF</Company>
     <Description>Basics extensions for manipulating FileInfo, DirectoryInfo, String, Type, Random, TaskPool with limited size ...</Description>
@@ -17,9 +17,9 @@
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <AssemblyVersion>2.2.1.0</AssemblyVersion>
-    <FileVersion>2.2.1.0</FileVersion>
-    <PackageVersion>2.2.1.0</PackageVersion>
+    <AssemblyVersion>2.2.2.0</AssemblyVersion>
+    <FileVersion>2.2.2.0</FileVersion>
+    <PackageVersion>2.2.2.0</PackageVersion>
     <!-- Include symbol files (*.pdb) in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
