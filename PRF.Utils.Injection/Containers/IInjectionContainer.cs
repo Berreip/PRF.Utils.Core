@@ -100,20 +100,25 @@ namespace PRF.Utils.Injection.Containers
             where TInterface : class;
 
         /// <summary>
-        /// Enregistre le décorateur de simulation
+        /// Register a decorator (a class that will wrap the type from injection point of view)
         /// </summary>
-        /// <typeparam name="TDecorator"> le type du décorateur</typeparam>
-        /// <typeparam name="TInterface"> le type simulé par le décorateur</typeparam>
-        /// <param name="lifetime">la durée de vie souhaité pour ce décorateur </param>
-        void RegisterSimulation<TDecorator, TInterface>(LifeTime lifetime)
+        /// <typeparam name="TDecorator"> decorator type</typeparam>
+        /// <typeparam name="TInterface"> decorated type</typeparam>
+        /// <param name="lifetime">the decorator lifetime </param>
+        void RegisterDecorator<TDecorator, TInterface>(LifeTime lifetime)
             where TDecorator : class, TInterface
             where TInterface : class;
 
         /// <summary>
-        /// Allow to register or complete a collection of type that will be injected as Ienumerable.
+        /// Allow to register or complete a collection of type that will be injected as collection (Ienumerable, IReadOnlyCollection...).
         /// </summary>
         void RegisterOrAppendCollection<T>(LifeTime lifetime, params Type[] typesList) where T : class;
 
+        /// <summary>
+        /// Allow to register or complete a collection of type that will be injected as Ienumerable with given instances (no lifetime definition here, it has to be singleton as its the given instances).
+        /// </summary>
+        void RegisterOrAppendCollectionInstances<T>(params T[] elements) where T : class;
+        
         /// <summary>
         /// Renvoie le container d'enregistrement. RECUPERER LE CONTENEUR D'ENREGISTREMENT LORS DES REGISTER NE DOIT ETRE FAIT QUE
         /// DANS DES CAS BIEN SPECIFIQUE (enregistrement d'une factory par exemple)

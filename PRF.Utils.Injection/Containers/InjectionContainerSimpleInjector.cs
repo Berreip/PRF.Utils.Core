@@ -19,9 +19,9 @@ namespace PRF.Utils.Injection.Containers
         /// </summary>
         private static readonly Dictionary<LifeTime, Lifestyle> _convertLifestyles = new Dictionary<LifeTime, Lifestyle>
         {
-            {LifeTime.Singleton, Lifestyle.Singleton},
-            {LifeTime.Scoped, Lifestyle.Scoped},
-            {LifeTime.Transient, Lifestyle.Transient},
+            { LifeTime.Singleton, Lifestyle.Singleton },
+            { LifeTime.Scoped, Lifestyle.Scoped },
+            { LifeTime.Transient, Lifestyle.Transient },
         };
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace PRF.Utils.Injection.Containers
         public InjectionContainerSimpleInjector()
         {
             _internalContainer = new Container();
-            
+
             // WARNING: Since V5, simple injector do auto-verifying of registered elements
             // while this beaviour could make sense in some environment, it is highly unwanted when talking
             // about windows registered as transient as ALL of them will be resolved at first resolution of any type 
@@ -138,7 +138,7 @@ namespace PRF.Utils.Injection.Containers
         {
             _internalContainer.Register<TClass>(_convertLifestyles[lifetime]);
         }
-        
+
         /// <inheritdoc/>
         public void RegisterSingleton<TClass>(Func<TClass> instancecreator) where TClass : class
         {
@@ -152,7 +152,7 @@ namespace PRF.Utils.Injection.Containers
         }
 
         /// <inheritdoc/>
-        public void RegisterSimulation<TDecorator, TInterface>(LifeTime lifetime) where TDecorator : class, TInterface where TInterface : class
+        public void RegisterDecorator<TDecorator, TInterface>(LifeTime lifetime) where TDecorator : class, TInterface where TInterface : class
         {
             _internalContainer.RegisterDecorator<TInterface, TDecorator>(_convertLifestyles[lifetime]);
         }
@@ -178,6 +178,32 @@ namespace PRF.Utils.Injection.Containers
         }
 
         /// <inheritdoc/>
+        public void RegisterOrAppendCollectionInstances<T>(params T[] elements) where T : class
+        {
+            lock (_keyCollections)
+            {
+                if (elements == null || elements.Length == 0)
+                {
+                    return;
+                }
+                
+                if (_collectionRegisteredByTypes.Contains(typeof(T)))
+                {
+                    foreach (var instance in elements)
+                    {
+                        _internalContainer.Collection.AppendInstance(typeof(T), instance);
+                    }
+                }
+                else
+                {
+                    // ReSharper disable once RedundantTypeArgumentsOfMethod
+                    _internalContainer.Collection.Register<T>(elements);
+                    _collectionRegisteredByTypes.Add(typeof(T));
+                }
+            }
+        }
+
+        /// <inheritdoc/>
         public IInjectionContainer GetRegistrableContainer()
         {
             return this;
@@ -192,7 +218,7 @@ namespace PRF.Utils.Injection.Containers
         /// <inheritdoc/>
         public T Resolve<T>(Type type) where T : class
         {
-            return (T) _internalContainer.GetInstance(type);
+            return (T)_internalContainer.GetInstance(type);
         }
 
         /// <inheritdoc/>

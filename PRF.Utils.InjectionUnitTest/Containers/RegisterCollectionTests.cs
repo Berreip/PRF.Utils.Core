@@ -108,7 +108,6 @@ namespace PRF.Utils.InjectionUnitTest.Containers
         public void CompletedCollection_Transient_CheckInstance()
         {
             //Configuration
-            _sut.Register<IHandlerClass, HandlerClass>(LifeTime.Transient);
             _sut.RegisterOrAppendCollection<IPluginClass>(LifeTime.Transient, typeof(PluginClass1), typeof(PluginClass2));
             _sut.RegisterOrAppendCollection<IPluginClass>(LifeTime.Transient, typeof(PluginClass3));
 
@@ -121,8 +120,85 @@ namespace PRF.Utils.InjectionUnitTest.Containers
             {
                 Assert.AreNotSame(res2[i], res[i]);
             }
-        }
+        }  
+        
+        [Test]
+        public void RegisterOrAppendCollection_CheckInstance_when_mixed_singleton_transient()
+        {
+            //Configuration
+            _sut.RegisterOrAppendCollection<IPluginClass>(LifeTime.Singleton, typeof(PluginClass1));
+            _sut.RegisterOrAppendCollection<IPluginClass>(LifeTime.Transient, typeof(PluginClass2));
 
+            //Test
+            var res = _sut.Resolve<IReadOnlyList<IPluginClass>>();
+            var res2 = _sut.Resolve<IReadOnlyList<IPluginClass>>();
+
+            //Verify
+            for (var i = 0; i < res.Count; i++)
+            {
+                var expected = res2[i];
+                if (expected is PluginClass1)
+                {
+                    Assert.AreSame(expected, res[i]);
+                }
+                else
+                {
+                    Assert.AreNotSame(expected, res[i]);
+                }
+            }
+        }
+    
+        [Test]
+        public void RegisterOrAppendCollection_works_when_registering_instances()
+        {
+            //Configuration
+            var pluginClass1 = new PluginClass1();
+            var pluginClass2 = new PluginClass2();
+            var pluginClass3 = new PluginClass3();
+            
+            _sut.RegisterOrAppendCollectionInstances<IPluginClass>(pluginClass1, pluginClass2, pluginClass3);
+
+            //Test
+            var res = _sut.Resolve<IReadOnlyList<IPluginClass>>();
+
+            //Verify
+            Assert.AreEqual(3, res.Count);
+            Assert.AreSame(pluginClass1, res[0]);
+            Assert.AreSame(pluginClass2, res[1]);
+            Assert.AreSame(pluginClass3, res[2]);
+        } 
+        
+        [Test]
+        public void RegisterOrAppendCollection_does_not_throw_for_empty_list()
+        {
+            //Configuration
+
+            //Test
+            _sut.RegisterOrAppendCollectionInstances<IPluginClass>();
+
+            //Verify
+        }
+        
+        
+        [Test]
+        public void RegisterOrAppendCollection_works_when_mixing_instance_registrations_and_type()
+        {
+            //Configuration
+            var pluginClass1 = new PluginClass1();
+            var pluginClass2 = new PluginClass2();
+            
+            _sut.RegisterOrAppendCollectionInstances<IPluginClass>(pluginClass1, pluginClass2);
+            _sut.RegisterOrAppendCollection<IPluginClass>(LifeTime.Singleton, typeof(PluginClass3));
+
+            //Test
+            var res = _sut.Resolve<IReadOnlyList<IPluginClass>>();
+
+            //Verify
+            Assert.AreEqual(3, res.Count);
+            Assert.AreSame(pluginClass1, res[0]);
+            Assert.AreSame(pluginClass2, res[1]);
+            Assert.IsTrue(res[2] is PluginClass3);
+        } 
     }
 
     internal interface IHandlerClass
