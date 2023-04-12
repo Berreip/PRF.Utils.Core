@@ -10,11 +10,11 @@
     <Description>Provide custom traceSource and TraceListener to collect and aggregate static call to Trace.TraceInformation(), TraceWarning() ...</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
-    <FileVersion>2.0.1.0</FileVersion><!-- Include symbol files (*.pdb) in the built .nupkg -->
+    <AssemblyVersion>2.0.2.0</AssemblyVersion>
+    <FileVersion>2.0.2.0</FileVersion><!-- Include symbol files (*.pdb) in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
