@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-
+    <TargetFramework>net7.0</TargetFramework>
     <IsPackable>false</IsPackable>
-
-    <OutputType>Library</OutputType>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
