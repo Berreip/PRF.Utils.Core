@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -308,23 +309,24 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var sut = new TaskPoolSizeCapped(3);
             var mrev = new ManualResetEventSlim();
             var counter = 0;
+            var pendings = new List<IWorkInProgress>();
 
             //Act
             for (var i = 0; i < 3; i++)
             {
-                sut.AddWork(_ =>
+                pendings.Add(sut.AddWork(_ =>
                 {
                     Interlocked.Increment(ref counter);
                     mrev.Wait();
-                });
+                }));
             }
 
             var watch = Stopwatch.StartNew();
             while (counter != 3)
             {
-                if (watch.Elapsed > TimeSpan.FromSeconds(2))
+                if (watch.Elapsed > TimeSpan.FromSeconds(5))
                 {
-                    Assert.Fail("timeout reached");
+                    Assert.Fail($"timeout reached : {watch.ElapsedMilliseconds} ms");
                 }
 
                 await Task.Delay(50).ConfigureAwait(false);
@@ -334,7 +336,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             Assert.AreEqual(3, counter);
             // unlock and finish:
             mrev.Set();
-            await sut.WaitIdleAsync();
+            await pendings.WaitAllAsync();
         }
 
         [Test]

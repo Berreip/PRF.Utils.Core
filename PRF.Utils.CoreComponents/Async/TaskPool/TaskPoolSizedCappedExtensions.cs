@@ -60,6 +60,16 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         }
 
         /// <summary>
+        /// Wait that all IWorkInProgress complete
+        /// </summary>
+        public static async Task WaitAllAsync(this IEnumerable<IWorkInProgress> allWorksInProgress)
+        {
+            await Task
+                .WhenAll(allWorksInProgress.Select(async o => await o.WaitAsync().ConfigureAwait(false)).ToArray())
+                .ConfigureAwait(false);
+        }
+        
+        /// <summary>
         /// Do an async parallel execution of ASYNC callbacks capped by the maximum number of thread allowed by the provided ITaskPoolSizeCapped
         /// </summary>
         public static async Task ParallelForEachSizedCappedAsync<T>(this ITaskPoolSizeCapped tpsc, IEnumerable<T> items, Func<T, Task> callbackAsync)
@@ -70,7 +80,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
             {
                 allWorksInProgress.Add(tpsc.AddWork(async ct => await callbackAsync(item).ConfigureAwait(false)));
             }
-            await Task.WhenAll(allWorksInProgress.Select(async o => await o.WaitAsync().ConfigureAwait(false)).ToArray());
+            await allWorksInProgress.WaitAllAsync().ConfigureAwait(false);
         }
         
         /// <summary>
@@ -84,7 +94,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
             {
                 allWorksInProgress.Add(tpsc.AddWork(ct => callbackSync(item)));
             }
-            await Task.WhenAll(allWorksInProgress.Select(async o => await o.WaitAsync().ConfigureAwait(false)).ToArray());
+            await allWorksInProgress.WaitAllAsync().ConfigureAwait(false);
         }
         
         /// <summary>
