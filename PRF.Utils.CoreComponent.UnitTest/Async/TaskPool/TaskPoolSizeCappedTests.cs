@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ArbitraryLib;
 using NUnit.Framework;
 using PRF.Utils.CoreComponents.Async.TaskPool;
 using PRF.Utils.CoreComponents.Extensions;
 
 // ReSharper disable MethodSupportsCancellation
-
 // ReSharper disable ObjectCreationAsStatement
 
 namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
@@ -40,7 +39,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var counter = 0;
 
             //Act
-            var res = sut.AddWork(ct => { Interlocked.Increment(ref counter); });
+            var res = sut.AddWork(_ => { Interlocked.Increment(ref counter); });
             await res.WaitAsync();
 
             //Assert
@@ -57,10 +56,10 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var counter = 0;
 
             //Act
-            var res = sut.AddWork(async ct =>
+            var res = sut.AddWork(async _ =>
             {
                 // ReSharper disable once MethodSupportsCancellation
-                await Task.Run(() => {});
+                await Task.Run(() => { });
                 Interlocked.Increment(ref counter);
             });
             await res.WaitAsync();
@@ -86,12 +85,12 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //Act
             for (var i = 0; i < number; i++)
             {
-                sut.AddWork(ct => { Interlocked.Increment(ref counter); });
+                sut.AddWork(_ => { Interlocked.Increment(ref counter); });
             }
 
-            sut.AddWork(ct => { tcs.SetResult(true); });
+            sut.AddWork(_ => { tcs.SetResult(true); });
             await tcs.Task.ConfigureAwait(false);
-            await sut.WaitAllAsync();
+            await sut.WaitIdleAsync();
 
             //Assert
             Assert.AreEqual(number, counter);
@@ -108,12 +107,12 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //Act
             for (var i = 0; i < 10; i++)
             {
-                sut.AddWork(ct => Interlocked.Increment(ref counter));
+                sut.AddWork(_ => Interlocked.Increment(ref counter));
             }
 
             await Task.Delay(50);
 
-            var res = sut.AddWork(ct => Interlocked.Increment(ref counter));
+            var res = sut.AddWork(_ => Interlocked.Increment(ref counter));
 
             await res.WaitAsync();
 
@@ -133,10 +132,10 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //Act
             var resAsync = sut.AddWork(async ct =>
             {
-                await Task.Run(() => {}, ct).ConfigureAwait(false);
+                await Task.Run(() => { }, ct).ConfigureAwait(false);
                 Interlocked.Increment(ref counter);
             });
-            var res = sut.AddWork(ct => { Interlocked.Increment(ref counter); });
+            var res = sut.AddWork(_ => { Interlocked.Increment(ref counter); });
             await resAsync.WaitAsync();
             await res.WaitAsync();
 
@@ -160,9 +159,9 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var counter = 0;
 
             //Act
-            Parallel.For(0, 1000, i =>
+            Parallel.For(0, 1000, _ =>
             {
-                sut.AddWork(ct =>
+                sut.AddWork(_ =>
                 {
                     var newCount = Interlocked.Increment(ref counter);
                     if (newCount > poolSize)
@@ -173,7 +172,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
                     Interlocked.Decrement(ref counter);
                 });
             });
-            await sut.WaitAllAsync();
+            await sut.WaitIdleAsync();
 
             //Assert
         }
@@ -203,7 +202,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //unlock the waiting task
             mrev.Set();
 
-            await sut.WaitAllAsync();
+            await sut.WaitIdleAsync();
 
             //Assert
             Assert.IsTrue(ctStatus);
@@ -220,7 +219,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var counter = 0;
 
             //Act
-            var previous = sut.AddWork(ct =>
+            var previous = sut.AddWork(_ =>
             {
                 mrevFromTask.Set(); // unlock for cancellation
                 // ReSharper disable once MethodSupportsCancellation
@@ -233,7 +232,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             Assert.ThrowsAsync<InvalidOperationException>(() => previous.WaitAsync());
 
             await sut
-                .AddWork(ct => Interlocked.Increment(ref counter))
+                .AddWork(_ => Interlocked.Increment(ref counter))
                 .WaitAsync()
                 .ConfigureAwait(false);
 
@@ -255,7 +254,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //Act
 
             //add work to block the pool
-            sut.AddWork(ct =>
+            sut.AddWork(_ =>
             {
                 mrevAddNotStartedTask.Set(); // unlock adding new work when waiting task blocks the pool
                 // ReSharper disable once MethodSupportsCancellation
@@ -270,7 +269,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //unlock the waiting task
             mrevBlockingTask.Set();
 
-            await sut.WaitAllAsync();
+            await sut.WaitIdleAsync();
 
             //Assert
             Assert.AreEqual(0, counter);
@@ -286,7 +285,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var mrev = new ManualResetEventSlim();
 
             //Act
-            var res = sut.AddWork((Action<CancellationToken>)(ct =>
+            var res = sut.AddWork((Action<CancellationToken>)(_ =>
             {
                 mrev.Set();
                 throw new OperationCanceledException("manual cancel");
@@ -313,7 +312,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //Act
             for (var i = 0; i < 3; i++)
             {
-                sut.AddWork(ct =>
+                sut.AddWork(_ =>
                 {
                     Interlocked.Increment(ref counter);
                     mrev.Wait();
@@ -335,7 +334,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             Assert.AreEqual(3, counter);
             // unlock and finish:
             mrev.Set();
-            await sut.WaitAllAsync();
+            await sut.WaitIdleAsync();
         }
 
         [Test]
@@ -347,7 +346,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var mrev = new ManualResetEventSlim();
 
             //Act
-            var res = sut.AddWork(async ct =>
+            var res = sut.AddWork(async _ =>
             {
                 mrev.Set();
                 await Task.CompletedTask.ConfigureAwait(false);
@@ -369,7 +368,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var mrev = new ManualResetEventSlim();
 
             //Act
-            var res = sut.AddWork((Action<CancellationToken>)(ct =>
+            var res = sut.AddWork((Action<CancellationToken>)(_ =>
             {
                 mrev.Set();
                 throw new ArithmeticException("foo");
@@ -390,7 +389,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var mrev = new ManualResetEventSlim();
 
             //Act
-            var res = sut.AddWork(async ct =>
+            var res = sut.AddWork(async _ =>
             {
                 mrev.Set();
                 await Task.CompletedTask.ConfigureAwait(false);
@@ -412,7 +411,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var mrev = new ManualResetEventSlim();
 
             //Act
-            var res = sut.AddWork(ct => mrev.Wait());
+            var res = sut.AddWork(_ => mrev.Wait());
 
             var workEnded = await res.WaitAsync(TimeSpan.FromMilliseconds(100));
             mrev.Set();
@@ -433,7 +432,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var res = sut.AddWork(async ct =>
             {
                 mrev.Set();
-                await Task.Run(() => {}, ct);
+                await Task.Run(() => { }, ct);
             });
             mrev.Wait();
 
@@ -452,7 +451,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var counter = 0;
 
             //Act
-            var res = sut.AddWork(ct => { Interlocked.Increment(ref counter); });
+            var res = sut.AddWork(_ => { Interlocked.Increment(ref counter); });
             res.Wait();
 
             //Assert
@@ -468,7 +467,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var counter = 0;
 
             //Act
-            var res = sut.AddWork(ct => { Interlocked.Increment(ref counter); });
+            var res = sut.AddWork(_ => { Interlocked.Increment(ref counter); });
             res.Wait(TimeSpan.MaxValue);
 
             //Assert
@@ -496,13 +495,13 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
                 {
                     if (rd.NextBoolean())
                     {
-                        sut.AddWork(async ct =>
+                        sut.AddWork(async _ =>
                         {
                             await Task.Run(() =>
                             {
-                                for (var j = 0; j < 10; j++)
+                                for (var k = 0; k < 10; k++)
                                 {
-                                    var g = i / (j + 1) + 20;
+                                    var __ = i / (k + 1) + 20;
                                 }
                             }).ConfigureAwait(false);
 
@@ -511,11 +510,11 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
                     }
                     else
                     {
-                        sut.AddWork(ct =>
+                        sut.AddWork(_ =>
                         {
-                            for (var k  = 0; k < 10; k++)
+                            for (var k = 0; k < 10; k++)
                             {
-                                var g = i / (k + 1) + 20;
+                                var __ = i / (k + 1) + 20;
                             }
 
                             Interlocked.Increment(ref counter);
@@ -524,20 +523,164 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
                 }
             });
 
-            await sut.WaitAllAsync().ConfigureAwait(false);
+            await sut.WaitIdleAsync().ConfigureAwait(false);
 
             //Assert
-            var expectedTotal = parallelTasks*syncTask;
+            var expectedTotal = parallelTasks * syncTask;
             // in case it output the wrong number, let it another chance
             var retry = 0;
-            while(counter != expectedTotal && retry < 3)
+            while (counter != expectedTotal && retry < 3)
             {
                 TestContext.WriteLine($"retry = {retry}");
                 await Task.Delay(10);
-                await sut.WaitAllAsync().ConfigureAwait(false);
+                await sut.WaitIdleAsync().ConfigureAwait(false);
                 retry++;
             }
+
             Assert.AreEqual(expectedTotal, counter, $"poolSize: {poolSize}, parallelTasks: {parallelTasks}, syncTask: {syncTask}");
+        }
+
+        [Test]
+        [Timeout(5000)]
+        public async Task ParallelForEachSizedCappedAsync_async_callback_yield()
+        {
+            var sut = new TaskPoolSizeCapped(Environment.ProcessorCount);
+            var counter = 0;
+            var items = Enumerable.Range(0, 1000).Select(_ => new Item()).ToArray();
+
+            //Act
+            await sut.ParallelForEachSizedCappedAsync(items: items, callbackAsync: async _ =>
+            {
+                await Task.Yield();
+                Interlocked.Increment(ref counter);
+            }).ConfigureAwait(false);
+
+            //Assert
+            Assert.AreEqual(1000, counter);
+        }
+
+        [Test]
+        [Timeout(5000)]
+        public async Task ParallelForEachSizedCappedAsync_async_callback_with_real_wait()
+        {
+            var sut = new TaskPoolSizeCapped(200);
+            var counter = 0;
+            var items = Enumerable.Range(0, 1000).Select(_ => new Item()).ToArray();
+
+            //Act
+            await sut.ParallelForEachSizedCappedAsync(items: items, callbackAsync: async _ =>
+            {
+                await Task.Delay(10).ConfigureAwait(false);
+                Interlocked.Increment(ref counter);
+            }).ConfigureAwait(false);
+
+            //Assert
+            Assert.AreEqual(1000, counter);
+        }
+
+        [Test]
+        [Timeout(5000)]
+        public async Task ParallelForEachSizedCappedAsync_sync_callback_yield()
+        {
+            var sut = new TaskPoolSizeCapped(Environment.ProcessorCount);
+            var counter = 0;
+            var items = Enumerable.Range(0, 1000).Select(_ => new Item()).ToArray();
+
+            //Act
+            await sut.ParallelForEachSizedCappedAsync(items: items, callbackSync: _ => { Interlocked.Increment(ref counter); }).ConfigureAwait(false);
+
+            //Assert
+            Assert.AreEqual(1000, counter);
+        }
+
+        [Test]
+        [Timeout(5000)]
+        public async Task ParallelForEachSizedCappedAsync_sync_callback_with_real_wait()
+        {
+            var sut = new TaskPoolSizeCapped(100);
+            var counter = 0;
+            var items = Enumerable.Range(0, 100).Select(_ => new Item()).ToArray();
+
+            //Act
+            await sut.ParallelForEachSizedCappedAsync(items: items, callbackSync: _ =>
+            {
+                Thread.Sleep(1);
+                Interlocked.Increment(ref counter);
+            }).ConfigureAwait(false);
+
+            //Assert
+            Assert.AreEqual(100, counter);
+        }
+
+        [Test]
+        [Timeout(5000)]
+        public async Task ParallelForEachSizedCappedAsync_Ienumerable_Extensions_async_callback()
+        {
+            var counter = 0;
+            var items = Enumerable.Range(0, 1000).Select(_ => new Item());
+
+            //Act
+            await items.ParallelForEachSizedCappedAsync(poolMaximumSize: 10, callbackAsync: async _ =>
+            {
+                await Task.Yield();
+                Interlocked.Increment(ref counter);
+            }).ConfigureAwait(false);
+
+            //Assert
+            Assert.AreEqual(1000, counter);
+        }
+
+        [Test]
+        [Timeout(5000)]
+        public async Task ParallelForEachSizedCappedAsync_Ienumerable_Extensions_sync_callback()
+        {
+            var counter = 0;
+            var items = Enumerable.Range(0, 1000).Select(_ => new Item());
+
+            //Act
+            await items.ParallelForEachSizedCappedAsync(poolMaximumSize: 10, callbackSync: _ => { Interlocked.Increment(ref counter); }).ConfigureAwait(false);
+
+            //Assert
+            Assert.AreEqual(1000, counter);
+        }
+
+        [Test]
+        [Timeout(5000)]
+        public void ParallelForEachSizedCapped_Ienumerable_Extension()
+        {
+            var counter = 0;
+            var items = Enumerable.Range(0, 1000).Select(_ => new Item());
+
+            //Act
+            items.ParallelForEachSizedCapped(poolMaximumSize: 10, _ =>
+            {
+                Interlocked.Increment(ref counter);
+            });
+
+            //Assert
+            Assert.AreEqual(1000, counter);
+        }
+
+        [Test]
+        [Timeout(5000)]
+        public void ParallelForEachSizedCapped_TaskPoolSizeCapped_Extension()
+        {
+            var counter = 0;
+            var items = Enumerable.Range(0, 1000).Select(_ => new Item());
+            var sut = new TaskPoolSizeCapped(10);
+
+            //Act
+            sut.ParallelForEachSizedCapped(items: items, _ =>
+            {
+                Interlocked.Increment(ref counter);
+            });
+
+            //Assert
+            Assert.AreEqual(1000, counter);
+        }
+
+        private sealed class Item
+        {
         }
     }
 }

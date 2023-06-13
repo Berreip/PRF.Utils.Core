@@ -515,16 +515,6 @@ public void TestCleanup()&#xD;
 	$END$&#xD;
 }&#xD;
 </s:String>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E7526730048C654E99798A4F51D44A77/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E7526730048C654E99798A4F51D44A77/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=E7526730048C654E99798A4F51D44A77/Categories/=Imported_002022_002F06_002F2017/@EntryIndexedValue">Imported 22/06/2017</s:String>

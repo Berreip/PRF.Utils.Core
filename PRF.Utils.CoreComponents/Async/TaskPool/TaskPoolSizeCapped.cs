@@ -22,9 +22,11 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         IWorkInProgress AddWork(Func<CancellationToken, Task> workToDoAsync);
 
         /// <summary>
-        /// Wait for all work to be completed (WARNING : new work can still be added while waiting) 
+        /// Wait for the TaskPoolSizeCapped to be iddle (all work currently given to it are completed)
+        /// (WARNING : new work can still be added while waiting and no exception from a specific task will be retrieved)
+        /// If you want a waitAll for a batch of tasks, use provided .ParallelForEachSizedCappedAsync extension methods. 
         /// </summary>
-        Task WaitAllAsync();
+        Task WaitIdleAsync();
     }
 
     /// <inheritdoc />
@@ -55,7 +57,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         public IWorkInProgress AddWork(Func<CancellationToken, Task> workToDoAsync) => TryAddInRunner(new WorkAsync(workToDoAsync));
 
         /// <inheritdoc />
-        public async Task WaitAllAsync()
+        public async Task WaitIdleAsync()
         {
             await Task.WhenAll(_runners.Select(o => o.RunnerTask).ToArray()).ConfigureAwait(false);
         }

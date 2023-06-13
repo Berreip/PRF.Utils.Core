@@ -51,7 +51,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
 
             sut.AddWork(ct => tcs.SetResult(true));
             await tcs.Task.ConfigureAwait(false);
-            await sut.WaitAllAsync();
+            await sut.WaitIdleAsync();
             watch.Stop();
 
             //Assert
