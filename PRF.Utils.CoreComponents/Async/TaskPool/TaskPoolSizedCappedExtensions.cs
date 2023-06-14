@@ -116,7 +116,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         /// </example>
         public static async Task ParallelForEachSizedCappedAsync<T>(this IEnumerable<T> items, int poolMaximumSize, Func<T, Task> callbackAsync)
         {
-            await new TaskPoolSizeCapped(poolMaximumSize).ParallelForEachSizedCappedAsync(items: items, callbackAsync: callbackAsync);
+            await new TaskPoolSizeCapped(poolMaximumSize).ParallelForEachSizedCappedAsync(items: items, callbackAsync: callbackAsync).ConfigureAwait(false);
         }
         
         /// <summary>
@@ -130,7 +130,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         /// </example>
         public static async Task ParallelForEachSizedCappedAsync<T>(this IEnumerable<T> items, int poolMaximumSize, Action<T> callbackSync)
         {
-            await new TaskPoolSizeCapped(poolMaximumSize).ParallelForEachSizedCappedAsync(items: items, callbackSync: callbackSync);
+            await new TaskPoolSizeCapped(poolMaximumSize).ParallelForEachSizedCappedAsync(items: items, callbackSync: callbackSync).ConfigureAwait(false);
         }
         
         /// <summary>

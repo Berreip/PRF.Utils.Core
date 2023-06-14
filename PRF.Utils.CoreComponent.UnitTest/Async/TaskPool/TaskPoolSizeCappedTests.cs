@@ -41,7 +41,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
 
             //Act
             var res = sut.AddWork(_ => { Interlocked.Increment(ref counter); });
-            await res.WaitAsync();
+            await res.WaitAsync().ConfigureAwait(false);
 
             //Assert
             Assert.AreEqual(1, counter);
@@ -60,10 +60,10 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var res = sut.AddWork(async _ =>
             {
                 // ReSharper disable once MethodSupportsCancellation
-                await Task.Run(() => { });
+                await Task.Run(() => { }).ConfigureAwait(false);
                 Interlocked.Increment(ref counter);
             });
-            await res.WaitAsync();
+            await res.WaitAsync().ConfigureAwait(false);
 
             //Assert
             Assert.AreEqual(1, counter);
@@ -91,7 +91,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
 
             sut.AddWork(_ => { tcs.SetResult(true); });
             await tcs.Task.ConfigureAwait(false);
-            await sut.WaitIdleAsync();
+            await sut.WaitIdleAsync().ConfigureAwait(false);
 
             //Assert
             Assert.AreEqual(number, counter);
@@ -111,11 +111,11 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
                 sut.AddWork(_ => Interlocked.Increment(ref counter));
             }
 
-            await Task.Delay(50);
+            await Task.Delay(50).ConfigureAwait(false);
 
             var res = sut.AddWork(_ => Interlocked.Increment(ref counter));
 
-            await res.WaitAsync();
+            await res.WaitAsync().ConfigureAwait(false);
 
             //Assert
             Assert.AreEqual(11, counter);
@@ -137,8 +137,8 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
                 Interlocked.Increment(ref counter);
             });
             var res = sut.AddWork(_ => { Interlocked.Increment(ref counter); });
-            await resAsync.WaitAsync();
-            await res.WaitAsync();
+            await resAsync.WaitAsync().ConfigureAwait(false);
+            await res.WaitAsync().ConfigureAwait(false);
 
             //Assert
             Assert.AreEqual(2, counter);
@@ -173,7 +173,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
                     Interlocked.Decrement(ref counter);
                 });
             });
-            await sut.WaitIdleAsync();
+            await sut.WaitIdleAsync().ConfigureAwait(false);
 
             //Assert
         }
@@ -203,7 +203,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //unlock the waiting task
             mrev.Set();
 
-            await sut.WaitIdleAsync();
+            await sut.WaitIdleAsync().ConfigureAwait(false);
 
             //Assert
             Assert.IsTrue(ctStatus);
@@ -270,7 +270,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //unlock the waiting task
             mrevBlockingTask.Set();
 
-            await sut.WaitIdleAsync();
+            await sut.WaitIdleAsync().ConfigureAwait(false);
 
             //Assert
             Assert.AreEqual(0, counter);
@@ -336,7 +336,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             Assert.AreEqual(3, counter);
             // unlock and finish:
             mrev.Set();
-            await pendings.WaitAllAsync();
+            await pendings.WaitAllAsync().ConfigureAwait(false);
         }
 
         [Test]
@@ -415,7 +415,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             //Act
             var res = sut.AddWork(_ => mrev.Wait());
 
-            var workEnded = await res.WaitAsync(TimeSpan.FromMilliseconds(100));
+            var workEnded = await res.WaitAsync(TimeSpan.FromMilliseconds(100)).ConfigureAwait(false);
             mrev.Set();
 
             //Assert
@@ -434,11 +434,11 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             var res = sut.AddWork(async ct =>
             {
                 mrev.Set();
-                await Task.Run(() => { }, ct);
+                await Task.Run(() => { }, ct).ConfigureAwait(false);
             });
             mrev.Wait();
 
-            var workEnded = await res.WaitAsync(TimeSpan.FromSeconds(3));
+            var workEnded = await res.WaitAsync(TimeSpan.FromSeconds(3)).ConfigureAwait(false);
 
             //Assert
             Assert.IsTrue(workEnded);
@@ -534,7 +534,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
             while (counter != expectedTotal && retry < 3)
             {
                 TestContext.WriteLine($"retry = {retry}");
-                await Task.Delay(10);
+                await Task.Delay(10).ConfigureAwait(false);
                 await sut.WaitIdleAsync().ConfigureAwait(false);
                 retry++;
             }
