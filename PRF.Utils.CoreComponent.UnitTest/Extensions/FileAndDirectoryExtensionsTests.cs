@@ -15,8 +15,15 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
         {
             // mock:
             _testDirectory = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, @"Extensions"));
+            _testDirectory.CreateIfNotExist();
         }
 
+        [TearDown]
+        public void TestCleanup()
+        {
+            _testDirectory.DeleteIfExistAndWaitDeletion(TimeSpan.FromSeconds(5));
+        }
+        
         [Test]
         public void GetFile_returns_null_for_null_input()
         {
@@ -33,6 +40,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
         public void GetFile_returns_file_for_existing_file()
         {
             //Arrange
+            _testDirectory.CreateFileIfNotExist("testFile.txt");
 
             //Act
             var res = _testDirectory.GetFile("testFile.txt");
@@ -94,6 +102,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
         public void IsEmpty_returns_false_when_directory_not_empty()
         {
             //Arrange
+            _testDirectory.CreateFileIfNotExist("foo.txt");
 
             //Act
             var res = _testDirectory.IsEmpty();
@@ -122,7 +131,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
         }
 
         [Test]
-        public void EstimateSize_return_correct_extimation()
+        public void EstimateSize_return_correct_estimation()
         {
             //Arrange
 
@@ -130,7 +139,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
             var size = _testDirectory.EstimateSize(SearchOption.AllDirectories);
 
             //Assert
-            Assert.AreEqual(11, size);
+            Assert.AreEqual(0, size);
         }
 
         [Test]
@@ -622,6 +631,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
         {
             //Arrange
             var file = _testDirectory.GetFile("testFile.txt");
+            File.WriteAllText(file.FullName, "Lorem ipsum");
 
             //Act
             var res = file.ReadAllText();
@@ -660,6 +670,9 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
         public void AppendTextLine_on_existing_file()
         {
             //Arrange
+            _testDirectory.CleanDirectory();
+            _testDirectory.CreateFileIfNotExist("testFile.txt");
+            
             var fileCopy = _testDirectory.GetFile("testFile.txt").CopyTo(_testDirectory.GetFile("copy.txt").FullName);
 
             try
@@ -669,8 +682,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
                 fileCopy.AppendTextLine("toto");
 
                 //Assert
-                Assert.AreEqual(@"Lorem ipsumtoto
-", fileCopy.ReadAllText());
+                Assert.AreEqual($"toto{Environment.NewLine}", fileCopy.ReadAllText());
             }
             finally
             {

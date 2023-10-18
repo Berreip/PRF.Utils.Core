@@ -5,20 +5,20 @@ using PRF.Utils.Injection.Utils;
 namespace PRF.Utils.Injection.Interception.Helpers
 {
     /// <summary>
-    /// Propose une façon d'intercepter des types de façon plus claire
+    /// Handle interception in a more simple way
     /// </summary>
     internal static class InterceptionExtensions
     {
-        public static Type GetMatchingInterceptor(this PredefinedInterceptors interceptortype)
+        public static Type GetMatchingInterceptor(this PredefinedInterceptors interceptorType)
         {
-            switch (interceptortype)
+            switch (interceptorType)
             {
                 case PredefinedInterceptors.MethodTraceInterceptor:
                     return typeof(MethodTraceInterceptor);
                 case PredefinedInterceptors.TimeWatchInterceptor:
                     return typeof(TimeWatchInterceptor);
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(interceptortype), interceptortype, null);
+                    throw new ArgumentOutOfRangeException(nameof(interceptorType), interceptorType, null);
             }
         }
     }

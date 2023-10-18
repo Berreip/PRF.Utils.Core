@@ -234,7 +234,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
             return new DirectoryInfo(path);
         }
 
-        private static string GetDirectoryNameAndAvoidDuplicate(string path)
+        public static string GetDirectoryNameAndAvoidDuplicate(string path)
         {
             path = path.TrimEnd(Path.DirectorySeparatorChar);
 
@@ -283,7 +283,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// renvoie true si le le string est valide pour un DirectoryInfoe et si le dossier existe vraiment
+        /// renvoie true si le le string est valide pour un DirectoryInfo et si le dossier existe vraiment
         /// </summary>
         /// <returns></returns>
         public static bool IsValidDirectory(string path)
