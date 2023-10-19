@@ -224,13 +224,44 @@ namespace PRF.Utils.CoreComponents.IO
         /// <returns>true if the file has been created, false otherwise</returns>
         bool CreateIfNotExistAndClose();
 
+        /// <summary>
+        /// Write the text into the file and close it
+        /// </summary>
         void WriteAllText(string stringContent);
+
+        /// <summary>
+        /// Write the text into the file and close it
+        /// </summary>
         void WriteAllText(string stringContent, Encoding encoding);
+
+        /// <summary>
+        /// Read all file content bytes
+        /// </summary>
         byte[] ReadAllBytes();
+
+        /// <summary>
+        /// Write the bytes into the file and close it
+        /// </summary>
         void WriteAllBytes(byte[] bytes);
+
+        /// <summary>
+        /// Read all file content as string lines
+        /// </summary>
         string[] ReadAllLines();
+        
+        /// <summary>
+        /// Read all file content as string lines
+        /// </summary>
         string[] ReadAllLines(Encoding encoding);
+        
+        /// <summary>
+        /// Append the text (after existing data) into the file and close it
+        /// </summary>
         void AppendAllText(string contents);
+        
+        /// <summary>
+        /// Append the text (after existing data) into the file and close it
+        /// </summary>
         void AppendAllText(string contents, Encoding encoding);
 
         /// <summary>
@@ -315,7 +346,7 @@ namespace PRF.Utils.CoreComponents.IO
 
         /// <inheritdoc />
         public void AppendAllText(string contents) => File.AppendAllText(_source.FullName, contents);
-        
+
         /// <inheritdoc />
         public void AppendAllText(string contents, Encoding encoding) => File.AppendAllText(_source.FullName, contents, encoding);
 
@@ -355,7 +386,8 @@ namespace PRF.Utils.CoreComponents.IO
         public StreamWriter AppendText()
         {
             return _source.AppendText();
-        }  
+        }
+
         /// <summary>
         /// Get a relative path by removing the 'pathToRemove' part but keeping the subfolders that follow
         /// Works with or without the '\' at the end of beforeRelativePath
@@ -380,7 +412,7 @@ namespace PRF.Utils.CoreComponents.IO
                 _source.Attributes &= ~FileAttributes.ReadOnly;
             }
         }
-        
+
         /// <inheritdoc />
         public IFileInfo CopyTo(string destFileName) => new FileInfoWrapper(_source.CopyTo(destFileName));
 

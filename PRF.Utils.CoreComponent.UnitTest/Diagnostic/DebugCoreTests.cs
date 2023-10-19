@@ -11,7 +11,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic
         public void Debug_Fail_does_not_throw_when_ignore_callback_has_been_registered()
         {
             //Arrange
-            DebugCore.SetAssertionFailedCallback((res) => AssertionResponse.Ignore);
+            DebugCore.SetAssertionFailedCallback(_ => AssertionResponse.Ignore);
 
             //Act
             DebugCore.Fail("message");
@@ -36,7 +36,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic
         public void Debug_Assert_false_does_not_throw_when_ignore_callback_has_been_registered()
         {
             //Arrange
-            DebugCore.SetAssertionFailedCallback((res) => AssertionResponse.Ignore);
+            DebugCore.SetAssertionFailedCallback(_ => AssertionResponse.Ignore);
 
             //Act
             DebugCore.Assert(false, "message");
@@ -50,7 +50,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic
         {
             //Arrange
             var count = 0;
-            DebugCore.SetAssertionFailedCallback((res) =>
+            DebugCore.SetAssertionFailedCallback(_ =>
             {
                 Interlocked.Increment(ref count);
                 return AssertionResponse.Ignore;
@@ -68,7 +68,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic
         {
             //Arrange
             var count = 0;
-            DebugCore.SetAssertionFailedCallback((res) =>
+            DebugCore.SetAssertionFailedCallback(res =>
             {
                 
                 Interlocked.Increment(ref count);
@@ -92,7 +92,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic
         {
             //Arrange
             var count = 0;
-            DebugCore.SetAssertionFailedCallback((res) =>
+            DebugCore.SetAssertionFailedCallback(res =>
             {
                 
                 Interlocked.Increment(ref count);
@@ -116,7 +116,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic
         {
             //Arrange
             var count = 0;
-            DebugCore.SetAssertionFailedCallback((res) =>
+            DebugCore.SetAssertionFailedCallback(res =>
             {
                 
                 Interlocked.Increment(ref count);

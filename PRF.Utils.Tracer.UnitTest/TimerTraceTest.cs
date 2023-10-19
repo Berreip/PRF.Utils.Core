@@ -15,20 +15,20 @@ namespace PRF.Utils.Tracer.UnitTest
         {
             foreach (TraceListener listener in Trace.Listeners)
             {
-                // vérification pollution listener statique
-                Assert.AreNotEqual(listener.Name, @"MainTracerSync", "il reste un traceur dans la liste des traceurs statiques = pollution");
+                // static listener pollution check
+                Assert.AreNotEqual(listener.Name, @"MainTracerSync", "one tracer remains in the list of static tracers = pollution");
             }
         }
 
         [Test]
-        public async Task TimerTraceTesttV1()
+        public async Task TimerTraceTestV1()
         {
             // setup
-            int pagesReceived =0;
-            // la date cible est maintenant + 0.5 seconde
+            var pagesReceived =0;
+            // target date is now +0.5 seconds
             var timeTarget = DateTime.UtcNow.AddMilliseconds(500);
 
-            // on décide d'envoyer une page toute les 100 ms, sur une demie seconde, on devrait avoir 5 pages environ
+            // we decide to send a page every 100 ms, over half a second, we should have around 5 pages
             var config = new TraceConfig
             {
                 PageSize = 1000,
@@ -37,10 +37,10 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var traceListener = new TraceSourceSync(config))
             {
-                // quand on reçoit une page, on incrémente le compteur
-                traceListener.OnTracesSent += o => Interlocked.Increment(ref pagesReceived);
+                // when we receive a page, we increment the counter
+                traceListener.OnTracesSent += _ => Interlocked.Increment(ref pagesReceived);
 
-                // tant que la seconde n'est pas atteinte, on trace des messages (avec une attente)
+                // as long as the second is not reached, we trace messages (with a wait)
                 while (DateTime.UtcNow < timeTarget)
                 {
                     Trace.TraceInformation("Method1");
@@ -51,9 +51,9 @@ namespace PRF.Utils.Tracer.UnitTest
                 await traceListener.FlushAndCompleteAddingAsync().ConfigureAwait(false);
             }
 
-            //Verify que l'on a 6 pages ou moins (les 5 de flush + l'éventuelle dernière) 
-            // PK moins? => car selon le Task.Delay, il se peut que l'on n'écrive aucune trace dans un cycle de 200ms et donc, que l'on envoie rien
-            Assert.IsTrue(pagesReceived > 0 && pagesReceived <= 6, $"INVALID number of pages received = {pagesReceived}");
+            //Verify that we have 6 pages or less (the 5 flush + the possible last one)
+            // Why less? => because depending on the Task.Delay, it is possible that no trace is written in a 200ms cycle and therefore nothing is sent
+            Assert.IsTrue(pagesReceived is > 0 and <= 6, $"INVALID number of pages received = {pagesReceived}");
         }
     }
 

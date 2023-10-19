@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
+// ReSharper disable UnusedMember.Local
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions
 {
@@ -52,6 +52,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
         {
         }
         
+        // ReSharper disable once UnusedTypeParameter
         private class GenericTmp<T>
         {
         }

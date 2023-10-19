@@ -6,17 +6,16 @@ using System.Collections.Concurrent;
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions
 {
     [TestFixture]
-    internal sealed class ConcurentDictionnaryExtensionsTests
+    internal sealed class ConcurrentDictionaryExtensionsTests
     {
         [Test]
         public void AddRangeDifferential_Dictionary_Empty_Test()
         {
             // Arrange
             var sut = new ConcurrentDictionary<int, object>();
-            var addingDictionary = new Dictionary<int, object>();
 
             // Act 
-            sut.AddRangeDifferential(addingDictionary);
+            sut.AddRangeDifferential(new Dictionary<int, object>());
 
             // Assert
             Assert.AreEqual(0, sut.Count);
@@ -28,11 +27,10 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
             // Arrange
             var sut = new ConcurrentDictionary<int, object>();
             sut.TryAdd(23, new object());
-            var addingDictionary = new Dictionary<int, object>();
 
             // Act 
             // ask to add an empty differential => we have to get an empty differential as a result
-            sut.AddRangeDifferential(addingDictionary);
+            sut.AddRangeDifferential(new Dictionary<int, object>());
 
             // Assert
             Assert.AreEqual(0, sut.Count);

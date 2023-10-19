@@ -12,18 +12,18 @@ using System.Threading.Tasks;
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Par défaut, pour les DirectoryInfo et FileInfo, la propriété Exist renvoie si le fichier ou directory existait au moment de la CREATION de l'instance. 
-    /// Ainsi, le Test suivant échoue:
-    ///         var file = new FileInfo(@"C:\ProgramData\...");
-    ///         Assert.IsFalse(file.Exists); // = FALSE
-    ///         file.Create();
-    ///         Assert.IsTrue(file.Exists); // FAIL! => FALSE
-    /// => Il faut faire un Refresh préalable
+    /// By default, for DirectoryInfo and FileInfo, the Exist property returns whether the file or directory existed at the time the instance was CREATED.
+    /// So the following Test fails:
+    ///     var file = new FileInfo(@"C:\ProgramData\...");
+    ///     Assert.IsFalse(file.Exists); // = FALSE
+    ///     file.Create();
+    ///     Assert.IsTrue(file.Exists); // FAIL! => FALSE
+    /// => You must do a prior Refresh
     /// </summary>
     public static class FilesAndDirectoryInfoExtension
     {
         /// <summary>
-        /// Renvoie true si le dossier ou fichier existe vraiment à l'instant de l'appel
+        /// Returns true if the folder or file really exists at the time of the call
         /// </summary>
         public static bool ExistsExplicit<T>(this T fileSystemInfo) where T : FileSystemInfo
         {
@@ -32,9 +32,9 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Fait un delete si le dossier existe (comportement par défaut SAUF si le chemin n'existe pas lui même)
+        /// Delete if the folder exists (default behavior UNLESS the path itself does not exist)
         /// </summary>
-        /// <returns>true si on a effacé qqch, false sinon</returns>
+        /// <returns>true if something has been deleted, false otherwise</returns>
         public static bool DeleteIfExist(this DirectoryInfo fileSystemInfo, bool recursive = true)
         {
             if (!fileSystemInfo.ExistsExplicit()) return false;
@@ -43,8 +43,8 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Try to delete the folder and cycle up to the confirmation taht the file is deleted or the timeout is reached (use this methods only in unit tests)
-        /// Note: the deletion is NOT sync even if Ms pretends it. so using this in unit test context may be usefull
+        /// Try to delete the folder and cycle up to the confirmation that the file is deleted or the timeout is reached (use this methods only in unit tests)
+        /// Note: the deletion is NOT sync even if Ms pretends it. so using this in unit test context may be useful
         /// Default timeout is 5 seconds
         /// </summary>
         public static bool DeleteIfExistAndWaitDeletion(this DirectoryInfo fileSystemInfo, TimeSpan? timeout = null, bool recursive = true)
@@ -90,8 +90,8 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Try to delete the file and cycle up to the confirmation taht the file is deleted or the timeout is reached (use this methods only in unit tests)
-        /// Note: the deletion is NOT sync even if Ms pretends it. so using this in unit test context may be usefull
+        /// Try to delete the file and cycle up to the confirmation that the file is deleted or the timeout is reached (use this methods only in unit tests)
+        /// Note: the deletion is NOT sync even if Ms pretends it. so using this in unit test context may be useful
         /// Default timeout is 5 seconds
         /// </summary>
         public static bool DeleteIfExistAndWaitDeletion(this FileInfo fileSystemInfo, TimeSpan? timeout = null)
@@ -146,30 +146,30 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Fait une copie d'un directoryInfo en copiant tous les sous fichiers et sous dossiers
+        /// Makes a copy of a directoryInfo by copying all sub-files and subfolders
         /// </summary>
-        /// <returns>le nouveau dossier cible</returns>
-        /// <param name="fileSystemInfo">le dossier source</param>
-        /// <param name="path">le chemin du dossier cible</param>
-        /// <param name="autoRename">si autoRename = true et si le dossier cible existe, on l'utilise. Sinon, on créer un nouveau dossier avec un ...(2)</param>
+        /// <returns>the new target folder</returns>
+        /// <param name="fileSystemInfo">the source folder</param>
+        /// <param name="path">the path of the target folder</param>
+        /// <param name="autoRename">if autoRename = true and if the target folder exists, we use it. Otherwise, we create a new folder with a ...(2)</param>
         /// <returns></returns>
         public static DirectoryInfo CopyTo(this DirectoryInfo fileSystemInfo, string path, bool autoRename = true)
         {
             if (!fileSystemInfo.ExistsExplicit()) return null;
 
-            // génère un nouveau nom si un fichier du mm nom existe déjà (sinon, check juste le séparateur de dossier)
+            // generates a new name if a file with the same name already exists (otherwise, just check the folder separator)
             path = autoRename
                 ? GetDirectoryNameAndAvoidDuplicate(path)
                 : path.TrimEnd(Path.DirectorySeparatorChar);
 
-            // Créer le dossier cible s'il n'existe pas
+            //Create the target folder if it does not exist
             Directory.CreateDirectory(path);
 
-            //Créer tous les dossiers
+            //Create all folders
             foreach (var dirPath in fileSystemInfo.GetDirectories("*", SearchOption.AllDirectories))
                 Directory.CreateDirectory(dirPath.FullName.Replace(fileSystemInfo.FullName.TrimEnd(Path.DirectorySeparatorChar), path));
 
-            //Puis tous les fichiers
+            // Then all the files
             foreach (var newPath in fileSystemInfo.GetFiles("*", SearchOption.AllDirectories))
                 newPath.CopyTo(newPath.FullName.Replace(fileSystemInfo.FullName.TrimEnd(Path.DirectorySeparatorChar), path), false);
 
@@ -177,33 +177,33 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Fait une copie d'un directoryInfo en copiant tous les sous fichiers et sous dossiers en vérifiant la longueur du chemin cible
-        ///  avant la copie (dans ce cas, un fichier d'erreur est écrit à la racine)
+        /// Makes a copy of a directoryInfo by copying all sub-files and subfolders checking the length of the target path
+        /// before copying (in this case an error file is written to the root)
         /// </summary>
-        /// <returns>le nouveau dossier cible</returns>
-        /// <param name="fileSystemInfo">le dossier source</param>
-        /// <param name="path">le chemin du dossier cible</param>
+        /// <returns>the new target folder</returns>
+        /// <param name="fileSystemInfo">the source folder</param>
+        /// <param name="path">the path of the target folder</param>
         public static DirectoryInfo CopyToWithCheckLenght(this DirectoryInfo fileSystemInfo, string path)
         {
             if (!fileSystemInfo.ExistsExplicit()) return null;
 
-            const string errorcopyTxt = "errorCopy.txt";
+            const string errorCopyTxt = "errorCopy.txt";
 
-            // génère un nouveau nom si un fichier du mm nom existe déjà
+            // generates a new name if a file with the same name already exists
             path = GetDirectoryNameAndAvoidDuplicate(path);
 
-            //première vérification de la taille des chemins on s'assure que l'on peut créer le fichier qui trace les erreurs
-            var wantedPath = Path.Combine(path, errorcopyTxt);
+            //first check of the size of the paths we ensure that we can create the file which traces the errors
+            var wantedPath = Path.Combine(path, errorCopyTxt);
             if (wantedPath.Length >= PathExtension.MaxPathLenght)
             {
                 throw new PathTooLongException($@"the path provided in CopyToWithCheckLenght was too long: 
 limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path = {wantedPath}");
             }
 
-            // Créer le dossier cible s'il n'existe pas
+            // Create the target folder if it does not exist
             Directory.CreateDirectory(path);
 
-            //Créer tous les dossiers
+            //Create all folders
             foreach (var dirPath in fileSystemInfo.GetDirectories("*", SearchOption.AllDirectories))
             {
                 var newDirectoryName = dirPath.FullName.Replace(fileSystemInfo.FullName.TrimEnd(Path.DirectorySeparatorChar), path);
@@ -217,7 +217,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
                 }
             }
 
-            //Puis tous les fichiers
+            //Then all files
             foreach (var newPath in fileSystemInfo.GetFiles("*", SearchOption.AllDirectories))
             {
                 var destFileName = newPath.FullName.TrimEnd(Path.DirectorySeparatorChar).Replace(fileSystemInfo.FullName.TrimEnd(Path.DirectorySeparatorChar), path);
@@ -234,58 +234,60 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
             return new DirectoryInfo(path);
         }
 
+        /// <summary>
+        /// Returns a directory full path that avoid duplicate from the given original full path. If it exists, add (2), (3) and so on.
+        /// </summary>
         public static string GetDirectoryNameAndAvoidDuplicate(string path)
         {
             path = path.TrimEnd(Path.DirectorySeparatorChar);
 
             if (!Directory.Exists(path)) return path;
 
-            // on commence à (2) car c'est plus logique si le premier fichier n'a pas de parenthèse (1).
+            // we start at (2) because it makes more sense if the first file does not have a parenthesis (1).
             var i = 2;
-            while (Directory.Exists($@"{path}({i})"))
+            while (Directory.Exists($"{path}({i})"))
             {
                 i++;
             }
 
-            return $@"{path}({i})";
+            return $"{path}({i})";
         }
 
 
         /// <summary>
-        /// Renomme un dossier automatiquement si un dossier du même nom existe déjà et renvoie ce nouveau nom
-        /// => PUIS LE CREER
+        /// Renames a folder automatically if a folder with the same name already exists and returns this new name
+        /// => THEN CREATE IT
         /// </summary>
-        public static DirectoryInfo AutoRenameDirectoryToAvoidDuplicateWithCreateDirectory(params string[] pathparts)
+        public static DirectoryInfo AutoRenameDirectoryToAvoidDuplicateWithCreateDirectory(params string[] pathParts)
         {
-            var dir = AutoRenameDirectoryToAvoidDuplicate(pathparts);
+            var dir = AutoRenameDirectoryToAvoidDuplicate(pathParts);
             dir.Create();
             return dir;
         }
 
         /// <summary>
-        /// Renomme un dossier automatiquement si un dossier du même nom existe déjà et renvoie ce nouveau nom
-        /// => ATTENTION, NE LE CREER PAS S'IL N'EXISTE PAS
+        /// Renames a folder automatically if a folder with the same name already exists and returns this new name
+        /// => WARNING, DO NOT CREATE IT IF IT DOES NOT EXIST
         /// </summary>
-        public static DirectoryInfo AutoRenameDirectoryToAvoidDuplicate(params string[] pathparts)
+        public static DirectoryInfo AutoRenameDirectoryToAvoidDuplicate(params string[] pathParts)
         {
-            var path = Path.Combine(pathparts).TrimEnd(Path.DirectorySeparatorChar);
+            var path = Path.Combine(pathParts).TrimEnd(Path.DirectorySeparatorChar);
 
             if (!Directory.Exists(path)) return new DirectoryInfo(path);
 
-            // on commence à (2) car c'est plus logique si le premier fichier n'a pas de parenthèse (1).
+            // we start at (2) because it is more logical if the first file does not have a parenthesis (1).
             var i = 2;
-            while (Directory.Exists($@"{path}({i})"))
+            while (Directory.Exists($"{path}({i})"))
             {
                 i++;
             }
 
-            return new DirectoryInfo($@"{path}({i})");
+            return new DirectoryInfo($"{path}({i})");
         }
 
         /// <summary>
-        /// renvoie true si le le string est valide pour un DirectoryInfo et si le dossier existe vraiment
+        /// Returns true if the string is valid for a DirectoryInfo and if the folder really exists
         /// </summary>
-        /// <returns></returns>
         public static bool IsValidDirectory(string path)
         {
             try
@@ -297,12 +299,12 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
                 return false;
             }
         }
-
+        
         /// <summary>
-        /// Renvoie une nouvelle string expurgée de tous les charactère invalide qu'elle contenait
+        /// Returns a new string stripped of all invalid characters it contained
         /// </summary>
-        /// <param name="name">Le nom du fichier ou du dossier à expurger</param>
-        /// <returns>la chaine expurgée</returns>
+        /// <param name="name">The name of the file or folder to be redacted</param>
+        /// <returns>the string redacted</returns>
         public static string EscapeInvalidPathFromName(string name)
         {
             return Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c.ToString(), ""));
@@ -320,27 +322,27 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         /// get a file name with an automatic rename in a 'windows style' with (2), (3) if it already exists.
         /// => WARNING: THIS METHOD DOES NOT CREATE THE FILE
         /// </summary>
-        public static string AutoRenameFileToAvoidDuplicate(params string[] pathparts)
+        public static string AutoRenameFileToAvoidDuplicate(params string[] pathParts)
         {
-            var path = Path.Combine(pathparts).TrimEnd(Path.DirectorySeparatorChar);
+            var path = Path.Combine(pathParts).TrimEnd(Path.DirectorySeparatorChar);
             var file = new FileInfo(path);
-            if (!file.Exists) return path; // si le fichier n'existe pas, on renvoie directement le nom de ce dernier.
+            if (!file.Exists) return path;// if the file does not exist, we return the name of the file directly.
 
 
-            // on commence à (2) car c'est plus logique si le premier fichier n'a pas de parenthèse (1).
+            // we start at (2) because it is more logical if the first file does not have a parenthesis (1).
             var i = 2;
-            while (File.Exists($@"{file.FullName.Replace(file.Extension, string.Empty)}({i}){file.Extension}"))
+            while (File.Exists($"{file.FullName.Replace(file.Extension, string.Empty)}({i}){file.Extension}"))
             {
                 i++;
             }
 
-            return $@"{file.FullName.Replace(file.Extension, string.Empty)}({i}){file.Extension}";
+            return $"{file.FullName.Replace(file.Extension, string.Empty)}({i}){file.Extension}";
         }
 
         /// <summary>
-        /// Fait un delete si le fichier existe (comportement par défaut SAUF si le chemin n'existe pas lui même)
+        /// Delete if the file exists (default behavior UNLESS the path itself does not exist)
         /// </summary>
-        /// <returns>true si on a effacé qqch, false sinon</returns>
+        /// <returns>true if something has been deleted, false otherwise</returns>
         public static bool DeleteIfExist(this FileInfo fileSystemInfo)
         {
             if (!fileSystemInfo.ExistsExplicit()) return false;
@@ -350,9 +352,9 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Fait un Create si le dossier n'existe pas (comportement par défaut mais avec un renvoie true/false)
+        /// Do a Create if the folder does not exist (default behavior but with a true/false return)
         /// </summary>
-        /// <returns>true si on a crée qqch, false sinon</returns>
+        /// <returns>true if we created something, false otherwise</returns>
         public static bool CreateIfNotExist(this DirectoryInfo dir)
         {
             if (dir.ExistsExplicit()) return false;
@@ -392,7 +394,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
 
                 foreach (var subDir in dir.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
                 {
-                    // n'efface que les sous dossier et pas le dossier d'origine
+                    // only delete subfolders and not the original folder
                     subDir.Delete(true);
                 }
             }
@@ -449,24 +451,24 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Renvoie true si le fichier a une date de création type "comportement affichage Window" (la plus ancienne entre la date de création et celle de modification)
-        /// plus ancienne ou égale au minimum demandé
+        /// Returns true if the file has a creation date such as "Window display behavior" (the oldest between the creation date and the modification date)
+        /// older or equal to the minimum requested
         /// </summary>
-        /// <param name="file">le fichier concerné</param>
-        /// <param name="minimumPeriodBeforeTakingFiles">le minimum de temps demandé</param>
+        /// <param name="file">the file concerned</param>
+        /// <param name="minimumPeriodBeforeTakingFiles">the minimum time requested</param>
         public static bool IsOldEnought(this FileInfo file, TimeSpan minimumPeriodBeforeTakingFiles)
         {
-            // on prends la date la plus ancienne entre la date de création et celle de modification == comportement window
-            // Attention à bien prendre la date avec les heures/minutes/secondes.
+            // we take the oldest date between the creation date and the modification date == window behavior
+            // Be careful to take the date correctly with the hours/minutes/seconds.
             return DateTime.Now - MathExt.Min(file.CreationTime, file.LastWriteTime) >= minimumPeriodBeforeTakingFiles;
         }
 
         /// <summary>
-        /// Renvoie une estimation de la taille de tous les fichiers d'un dossier (renvoie -1 en cas d'exception)
+        /// Returns an estimate of the size of all files in a folder (returns -1 in case of exception)
         /// </summary>
         /// <param name="dir"></param>
-        /// <param name="searchOption">indique si l'on inclus les sous dossier dans ce calcul</param>
-        /// <returns>Une estimation de la taille de tous les fichiers d'un dossier</returns>
+        /// <param name="searchOption">indicates whether subfolders are included in this calculation</param>
+        /// <returns>An estimate of the size of all files in a folder</returns>
         public static long EstimateSize(this DirectoryInfo dir, SearchOption searchOption)
         {
             try
@@ -482,12 +484,12 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Créer le sous dossier dont le nom est fourni et le renvoie. S'il existe déjà, on renvoie simplement le DirectoryInfo correspondant
-        /// (la méthode CreateSubdirectory renvoyant par défaut une IOException si le dossier existe déjà)
+        /// Create the subfolder whose name is provided and return it. If it already exists, we simply return the corresponding DirectoryInfo
+        /// (the CreateSubdirectory method throwing an IOException by default if the folder already exists)
         /// </summary>
-        /// <param name="dir">le directoryInfo parent</param>
-        /// <param name="name">le nom du sous dossier souhaité</param>
-        /// <returns>le sous dossier (existant ou nouvellement crée)</returns>
+        /// <param name="dir">the parent directoryInfo</param>
+        /// <param name="name">the name of the desired subfolder</param>
+        /// <returns>the subfolder (existing or newly created)</returns>
         public static DirectoryInfo CreateSubdirectoryIfNotExist(this DirectoryInfo dir, string name)
         {
             var subDir = new DirectoryInfo(Path.Combine(dir.FullName, name).TrimEnd(Path.DirectorySeparatorChar));
@@ -495,16 +497,16 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Créer le fichier dont le nom est fourni dans le dossier parent puis le renvoie.
-        ///  S'il existe déjà:
-        ///  on renvoie simplement le FileInfo correspondant si autoRename = false
-        ///  on trouve un nom disponible, on créer le fichier et on le renvoie si autoRename = true
+        /// Create the file whose name is provided in the parent folder then return it.
+        /// If it already exists:
+        /// we simply return the corresponding FileInfo if autoRename = false
+        /// we find an available name, we create the file and we return it if autoRename = true
         /// </summary>
-        /// <param name="dir">le directoryInfo parent</param>
-        /// <param name="name">le nom du fichier souhaité</param>
-        /// <param name="autoRename">on renvoie simplement le FileInfo correspondant si autoRename = false
-        ///  on trouve un nom disponible, on créer le fichier et on le renvoie si autoRename = true</param>
-        /// <returns>le fichier (existant ou nouvellement crée)</returns>
+        /// <param name="dir">the parent directoryInfo</param>
+        /// <param name="name">the name of the desired file</param>
+        /// <param name="autoRename">we simply return the corresponding FileInfo if autoRename = false
+        /// we find an available name, we create the file and we return it if autoRename = true</param>
+        /// <returns>the file (existing or newly created)</returns>
         public static FileInfo CreateFileIfNotExist(this DirectoryInfo dir, string name, bool autoRename = true)
         {
             var file = autoRename
@@ -515,25 +517,24 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Récupère un chemin relatif en supprimant la partie 'pathToRemove' mais en conservant les sous-dossiers qui suivent
-        /// Marche avec ou sans le '\' à la fin de beforeRelativePath
+        /// Get a relative path by removing the 'pathToRemove' part but keeping the following subfolders
+        /// Works with or without the '\' at the end of beforeRelativePath
         /// </summary>
-        /// <param name="file">le fichier</param>
-        /// <param name="pathToRemove">le chemin à supprimer</param>
-        /// <returns>le chemin relatif restant</returns>
+        /// <param name="file">the file</param>
+        /// <param name="pathToRemove">the path to remove</param>
+        /// <returns>the remaining relative path</returns>
         public static string GetRelativePath(this FileInfo file, string pathToRemove)
         {
-            // efface le beforeRelativePath avec et sans '\'
-            // ex: C:\Toto\tata\tati\file.txt && beforeRelativePath =  C:\Toto\tata ==> tati\file.txt (SANS '\')
-            // ex: C:\Toto\tata\tati\file.txt && beforeRelativePath =  C:\Toto\tata\ ==> tati\file.txt (AVEC '\')
+            // clear the beforeRelativePath with and without '\'
+            // ex: C:\Toto\tata\tati\file.txt && beforeRelativePath =  C:\Toto\tata ==> tati\file.txt (WITH '\')
+            // ex: C:\Toto\tata\tati\file.txt && beforeRelativePath =  C:\Toto\tata\ ==> tati\file.txt (WITHOUT '\')
             return file.FullName.Replace(pathToRemove + Path.DirectorySeparatorChar, string.Empty).Replace(pathToRemove, string.Empty);
         }
-
         /// <summary>
-        /// Renvoie true si le dossier est vide, c'est à dire ne contient ni fichiers ni sous-dossiers, même vide
+        /// Returns true if the folder is empty, i.e. contains no files or subfolders, even empty
         /// </summary>
-        /// <param name="dir">le dossier à examiner</param>
-        /// <returns>true si le dossier est vide, false sinon</returns>
+        /// <param name="dir">the folder to examine</param>
+        /// <returns>true if the folder is empty, false otherwise</returns>
         public static bool IsEmpty(this DirectoryInfo dir)
         {
             return !Directory.EnumerateFileSystemEntries(dir.FullName).Any();
@@ -562,6 +563,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
                     return true;
                 }
             }
+
             file = null;
             return false;
         }
@@ -595,20 +597,20 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Ajoute la chaine de caractères passée en paramètre à la fin du fichier suivie d'un retour à la ligne (CR+LF).
-        /// Si le fichier n'existe pas il est créé.
+        /// Adds the character string passed as a parameter at the end of the file followed by a newline (CR+LF).
+        /// If the file does not exist it is created.
         /// </summary>
-        /// <param name="file">FileInfo du fichier cible</param>
-        /// <param name="line">Ligne à ajouter</param>
+        /// <param name="file">FileInfo of target file</param>
+        /// <param name="line">Line to add</param>
         public static void AppendTextLine(this FileInfo file, string line)
         {
             File.AppendAllLines(file.FullName, new[] { line });
         }
-
+        
         /// <summary>
-        /// Retire l'attribut ReadOnly du fichier
+        /// Remove the ReadOnly attribute from the file
         /// </summary>
-        /// <param name="file">FileInfo du fichier cible</param>
+        /// <param name="file">FileInfo of target file</param>
         public static void RemoveReadonlyAttribute(this FileInfo file)
         {
             if (file.IsReadOnly)
@@ -618,11 +620,11 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Supprime le fichier s'il n'est pas en cours d'utilisation.
+        /// Delete the file if it is not in use.
         /// </summary>
-        /// <param name="file">Fichier à supprimer</param>
-        /// <param name="timeout">Durée pendant laquelle on doit effectuer des retentatives. Si null: pas de retentative.</param>
-        /// <returns>True si le fichier a été supprimé avant l'expiration du timeout.</returns>
+        /// <param name="file">File to delete</param>
+        /// <param name="timeout">Duration during which retries must be made. If null: no retry.</param>
+        /// <returns>True if the file was deleted before the timeout expired.</returns>
         public static bool TryDelete(this FileInfo file, TimeSpan? timeout = null)
         {
             if (timeout.HasValue && timeout.Value > TimeSpan.FromHours(1))
@@ -661,47 +663,46 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         }
 
         /// <summary>
-        /// Copie de façon asynchrone un fichier. Contrairement à la méthode copy de FileInfo,
-        /// cette méthode ne modifie pas le FileInfo mais renvoie le fichier copié en sortie sous forme de FileInfo.
-        /// ATTENTION, si le fichier de destination existe, cette méthode écrase le fichier
+        /// Asynchronously copies a file. Unlike FileInfo's copy method,
+        /// this method does not modify the FileInfo but returns the copied file as output as FileInfo.
+        /// WARNING, if the destination file exists, this method overwrites the file
         /// </summary>
-        /// <param name="file">le fichier source à copier</param>
-        /// <param name="destinationPath">la destination (full Name)</param>
-        /// <returns> le fichier de sortie</returns>
+        /// <param name="file">the source file to copy</param>
+        /// <param name="destinationPath">the destination (full name)</param>
+        /// <returns> the output file</returns>
         public static async Task<FileInfo> CopyAsync(this FileInfo file, string destinationPath)
         {
             using (var source = File.OpenRead(file.FullName))
             using (var destination = File.Create(destinationPath))
             {
-                await source.CopyToAsync(destination);
+                await source.CopyToAsync(destination).ConfigureAwait(false);
                 return new FileInfo(destinationPath);
             }
         }
 
         /// <summary>
-        /// Copie de façon asynchrone un fichier. Contrairement à la méthode copy de FileInfo,
-        /// cette méthode ne modifie pas le FileInfo mais renvoie le fichier copié en sortie sous forme de FileInfo.
-        /// ATTENTION, si le fichier de destination existe, cette méthode écrase le fichier
+        /// Asynchronously copies a file. Unlike FileInfo's copy method,
+        /// this method does not modify the FileInfo but returns the copied file as output as FileInfo.
+        /// WARNING, if the destination file exists, this method overwrites the file
         /// </summary>
-        /// <param name="file">le fichier source à copier</param>
-        /// <param name="destinationFile">le fichier de destination</param>
-        /// <returns> le fichier de sortie</returns>
+        /// <param name="file">the source file to copy</param>
+        /// <param name="destinationFile">the destination (full name)</param>
+        /// <returns> the output file</returns>
         public static async Task<FileInfo> CopyAsync(this FileInfo file, FileInfo destinationFile)
         {
             using (var source = File.OpenRead(file.FullName))
             using (var destination = File.OpenWrite(destinationFile.FullName))
             {
-                await source.CopyToAsync(destination);
-                // refresh le fichier afin que le .Exist soit à jour
+                await source.CopyToAsync(destination).ConfigureAwait(false);
+                // refresh the file so that the .Exist is up to date
                 destinationFile.Refresh();
                 return destinationFile;
             }
         }
 
         /// <summary>
-        /// Supprime le fichier avec des retentatives pendant 10s s'il est locké
+        /// Delete the file with retries for 10s if it is locked
         /// </summary>
-        /// <param name="file"></param>
         public static void DeleteAndRetryIfLocked(this FileInfo file)
         {
             if (!file.ExistsExplicit()) return;

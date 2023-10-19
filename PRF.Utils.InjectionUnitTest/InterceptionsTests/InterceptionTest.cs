@@ -162,7 +162,7 @@ namespace PRF.Utils.InjectionUnitTest.InterceptionsTests
 
                 _container.Intercept<IClassVoidTest>().With<InterceptorTraceInjectTracer>(InterceptionHookOption.MethodsOnly);
                 
-                tracer.OnTracesSent += trace =>
+                tracer.OnTracesSent += _ =>
                 {
                     Interlocked.Increment(ref count);
                 };

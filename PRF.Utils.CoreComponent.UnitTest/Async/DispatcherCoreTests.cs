@@ -19,7 +19,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             // Act 
             await AsyncWrapperBase.DispatchAndWrapAsyncBase(
                 () => Interlocked.Increment(ref count),
-                e => Interlocked.Increment(ref exception));
+                _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, count);
@@ -39,7 +39,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
                     Interlocked.Increment(ref count);
                     throw new Exception();
                 },
-                null);
+                null).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, count);
@@ -60,7 +60,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
                 {
                     Interlocked.Increment(ref countFinally);
                     throw new Exception();
-                });
+                }).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, count);
@@ -82,7 +82,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
                     Interlocked.Increment(ref count);
                     throw new Exception();
                 },
-                e => Interlocked.Increment(ref exception));
+                _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, count);
@@ -103,8 +103,8 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
                 {
                     Interlocked.Increment(ref mainCalls);
                 },
-                e => Interlocked.Increment(ref exception), // On exception
-                () => Interlocked.Increment(ref finallyCalls)); // On finally
+                _ => Interlocked.Increment(ref exception), // On exception
+                () => Interlocked.Increment(ref finallyCalls)).ConfigureAwait(false); // On finally
 
             // Assert
             Assert.AreEqual(1, mainCalls);
@@ -119,7 +119,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var exception = 0;
 
             // Act 
-            var res = await AsyncWrapperBase.DispatchAndWrapAsyncBase(
+            _ = await AsyncWrapperBase.DispatchAndWrapAsyncBase(
                 () =>
                 {
                     if (exception == 0)
@@ -129,7 +129,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
                     }
                     return 1;
                 },
-                e => Interlocked.Increment(ref exception));
+                _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, exception);
@@ -146,7 +146,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
 
             await AsyncWrapperBase.DispatchAndWrapAsyncBase(
                 Callback,
-                e => Interlocked.Increment(ref exception));
+                _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, exception);
@@ -165,8 +165,8 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
                 {
                     throw new Exception();
                 },
-                e => Interlocked.Increment(ref exception), // On exception
-                () => Interlocked.Increment(ref finallyCalls)); // On finally
+                _ => Interlocked.Increment(ref exception), // On exception
+                () => Interlocked.Increment(ref finallyCalls)).ConfigureAwait(false); // On finally
 
             // Assert
             Assert.AreEqual(1, finallyCalls);
@@ -186,11 +186,11 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
                 {
                     throw new Exception();
                 },
-                e => Interlocked.Increment(ref exception), // On exception
+                _ => Interlocked.Increment(ref exception), // On exception
                 () =>
                 {
                     throw new Exception();
-                }); // On finally
+                }).ConfigureAwait(false); // On finally
 
             // Assert
             Assert.AreEqual(2, exception);
@@ -207,10 +207,10 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             await AsyncWrapperBase.DispatchAndWrapAsyncBase(
                 async () =>
                 {
-                    await Task.Delay(50);
+                    await Task.Delay(50).ConfigureAwait(false);
                     Interlocked.Increment(ref count);
                 },
-                e => Interlocked.Increment(ref exception));
+                _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, count);
@@ -228,11 +228,11 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             await AsyncWrapperBase.DispatchAndWrapAsyncBase(
                 async () =>
                 {
-                    await Task.Delay(50);
+                    await Task.Delay(50).ConfigureAwait(false);
                     Interlocked.Increment(ref count);
                     throw new Exception();
                 },
-                e => Interlocked.Increment(ref exception));
+                _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, count);
@@ -251,7 +251,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
                 {
                     return 78;
                 },
-                e => Interlocked.Increment(ref exception));
+                _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(78, res);
@@ -268,10 +268,10 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var res = await AsyncWrapperBase.DispatchAndWrapAsyncBase(
                 async () =>
                 {
-                    await Task.Delay(50);
+                    await Task.Delay(50).ConfigureAwait(false);
                     return 78;
                 },
-                e => Interlocked.Increment(ref exception));
+                _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(78, res);
@@ -288,14 +288,14 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             await AsyncWrapperBase.WrapAsync(
                 async () =>
                 {
-                    await Task.Delay(50);
+                    await Task.Delay(50).ConfigureAwait(false);
                     if (exception == 0)
                     {
                         throw new Exception();
                     }
                     return 78;
                 },
-                e => Interlocked.Increment(ref exception));
+                _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, exception);

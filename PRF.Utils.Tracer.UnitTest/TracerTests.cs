@@ -17,8 +17,7 @@ namespace PRF.Utils.Tracer.UnitTest
         {
             foreach (TraceListener listener in Trace.Listeners)
             {
-                // vérification pollution listener statique
-                Assert.AreNotEqual(listener.Name, @"MainTracerSync", "il reste un traceur dans la liste des traceurs statiques = pollution");
+                Assert.AreNotEqual(listener.Name, "MainTracerSync", "one tracer remains in the list of static tracers = pollution");
             }
         }
 
@@ -30,7 +29,7 @@ namespace PRF.Utils.Tracer.UnitTest
             using (var traceListenerSync = new TraceListenerSync(TimeSpan.FromSeconds(1), 1000))
             {
                 count = 0;
-                traceListenerSync.OnTracesSent += o =>
+                traceListenerSync.OnTracesSent += _ =>
                 {
                     Interlocked.Increment(ref count);
                 };
@@ -63,7 +62,7 @@ namespace PRF.Utils.Tracer.UnitTest
             using (var traceListenerSync = new TraceListenerSync(TimeSpan.FromSeconds(1), 1000))
             {
                 count = 0;
-                traceListenerSync.OnTracesSent += o =>
+                traceListenerSync.OnTracesSent += _ =>
                 {
                     Interlocked.Increment(ref count);
                 };
@@ -97,7 +96,7 @@ namespace PRF.Utils.Tracer.UnitTest
             var count =0;
             using (var ts = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.DoNothing }))
             {
-                ts.OnTracesSent += o =>
+                ts.OnTracesSent += _ =>
                 {
                     Interlocked.Increment(ref count);
                 };
@@ -490,7 +489,6 @@ namespace PRF.Utils.Tracer.UnitTest
                 PageSize = upper,
                 MaximumTimeForFlush = TimeSpan.FromSeconds(5)
             };
-            Stopwatch watch;
             using (var ts = new TraceSourceSync(config))
             {
                 ts.OnTracesSent += t =>
@@ -502,7 +500,7 @@ namespace PRF.Utils.Tracer.UnitTest
                     }
                 };
 
-                watch = Stopwatch.StartNew();
+                var watch = Stopwatch.StartNew();
                 ////Test
                 for (var i = 0; i < upper; i++)
                 {
@@ -514,14 +512,14 @@ namespace PRF.Utils.Tracer.UnitTest
                 await ts.FlushAndCompleteAddingAsync();
             }
 
-            // nombre de page renvoyé == 1 seule
+            // number of pages returned == 1 only
             Assert.AreEqual(1, count);
 
             Assert.AreEqual(upper, nbTraces);
         }
 
         /// <summary>
-        /// Teste que pour une page vide, on n'envoie rien quand on cloture le buffer
+        /// Test that for an empty page, we send nothing when we close the buffer
         /// </summary>
         [Test]
         public async Task FlushAndCompleteAddingAsync_EmptyPage_Test()
@@ -530,7 +528,7 @@ namespace PRF.Utils.Tracer.UnitTest
             var count = 0;
             using (var ts = new TraceSourceSync(new TraceConfig {TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer }))
             {
-                ts.OnTracesSent += t =>
+                ts.OnTracesSent += _ =>
                 {
                     Interlocked.Increment(ref count);
                 };
@@ -543,7 +541,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
         
         /// <summary>
-        /// Teste que la trace ne pose pas de problème quand on a cloturé le buffer
+        /// Test that the trace does not pose a problem when the buffer has been closed
         /// </summary>
         [Test]
         public async Task TraceAfterCompleteAdding()
@@ -552,7 +550,7 @@ namespace PRF.Utils.Tracer.UnitTest
             var count = 0;
             using (var ts = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer }))
             {
-                ts.OnTracesSent += t =>
+                ts.OnTracesSent += _ =>
                 {
                     Interlocked.Increment(ref count);
                 };
@@ -566,7 +564,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste que la trace ne pose pas de pb quand on a disposé le traceSource
+        /// Tests that the trace does not pose a problem when we have placed the traceSource
         /// </summary>
         [Test]
         public async Task TraceAfterDispose()
@@ -575,7 +573,7 @@ namespace PRF.Utils.Tracer.UnitTest
             var count = 0;
             using (var ts = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer }))
             {
-                ts.OnTracesSent += t =>
+                ts.OnTracesSent += _ =>
                 {
                     Interlocked.Increment(ref count);
                 };
@@ -586,7 +584,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             Trace.TraceError("error test trace TU");
 
-            Assert.AreEqual(0, count); // pas de réception
+            Assert.AreEqual(0, count); // not received
         }
     }
 }

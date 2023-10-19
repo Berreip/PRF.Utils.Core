@@ -4,6 +4,9 @@ using System.Threading;
 
 namespace PRF.Utils.CoreComponents.IO
 {
+    /// <summary>
+    /// Extensions around IFileSystemInfo wrappers
+    /// </summary>
     public static class FileSystemWrapperExtensions
     {
         /// <summary>

@@ -36,7 +36,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             var i = 0;
 
             //Act
-            using (var key = await locker.WaitLockAsync())
+            using (var key = await locker.WaitLockAsync().ConfigureAwait(false))
             {
                 i++;
             }
@@ -73,7 +73,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             //Arrange
             var locker = new AsyncLocker();
             var i = 0;
-            var tasks = Enumerable.Range(0, 100).Select(o => Task.Run(async () =>
+            var tasks = Enumerable.Range(0, 100).Select(_ => Task.Run(async () =>
             {
                 using (var key = await locker.WaitLockAsync().ConfigureAwait(false))
                 {
@@ -82,7 +82,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async
             })).ToArray();
 
             //Act
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
 
             //Assert
             Assert.AreEqual(100, i);

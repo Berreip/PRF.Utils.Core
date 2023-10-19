@@ -23,7 +23,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
             var counter = 0;
 
             //Act
-            for (int i = 0; i < 50_000; i++)
+            for (var i = 0; i < 50_000; i++)
             {
                 if (_rd.NextBoolean())
                 {

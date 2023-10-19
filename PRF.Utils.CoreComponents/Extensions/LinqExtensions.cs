@@ -4,17 +4,18 @@ using System.Collections.Generic;
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Regroupe les extensions LINQ
+    /// Groups LINQ extensions
     /// </summary>
     public static class LinqExtensions
     {
         /// <summary>
-        /// Sépare une liste en N sous-ensembles
+        /// Separate a list into N subsets
         /// </summary>
-        /// <typeparam name="T">le type de la liste</typeparam>
-        /// <param name="items">la liste à séparer</param>
-        /// <param name="partitionSize">la taille 'N' des sous ensembles</param>
-        /// <returns>la liste de sous ensemble de N éléments (sauf le dernier)</returns>
+        /// <typeparam name="T">the type of the list</typeparam>
+        /// <param name="items">the list to separate</param>
+        /// <param name="partitionSize">the size 'N' of the subsets</param>
+        /// <returns>the list of subsets of N elements (except the last)</returns>
+        // ReSharper disable once IdentifierTypo
         public static IEnumerable<IEnumerable<T>> SplitInChunckOf2<T>(this IEnumerable<T> items, int partitionSize)
         {
             if (items == null)
@@ -37,7 +38,9 @@ namespace PRF.Utils.CoreComponents.Extensions
             // remaining
             if (i <= 0) yield break;
             if (i == partitionSize)
+            {
                 yield return res;
+            }
             else
             {
                 var tempItems = new T[i];
@@ -45,15 +48,14 @@ namespace PRF.Utils.CoreComponents.Extensions
                 yield return tempItems;
             }
         }
-
         /// <summary>
-        /// Renvoie le prochain élément d'une liste (en reprenant le premier s'il s'agissait du dernier)
-        /// S'il y a moins de deux éléments, on renvoie l'élément actuel
+        /// Returns the next element of a list (taking the first if it was the last)
+        /// If there are less than two elements, we return the current element
         /// </summary>
-        /// <typeparam name="T">le type de la liste</typeparam>
-        /// <param name="items">La liste </param>
-        /// <param name="current">l'élément actuel</param>
-        /// <returns>le prochain élément de la liste</returns>
+        /// <typeparam name="T">the type of the list</typeparam>
+        /// <param name="items">The list </param>
+        /// <param name="current">the current element</param>
+        /// <returns>the next element in the list</returns>
         public static T Next<T>(this IList<T> items, T current)
         {
             return items.Count < 2

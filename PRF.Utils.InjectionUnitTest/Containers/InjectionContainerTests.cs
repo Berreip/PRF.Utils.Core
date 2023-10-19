@@ -38,7 +38,7 @@ namespace PRF.Utils.InjectionUnitTest.Containers
 
             // Act 
             sut.RegisterType<FooType>(LifeTime.Singleton);
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var foo = sut.Resolve<FooType>();
                 Assert.IsNotNull(foo);
@@ -71,7 +71,7 @@ namespace PRF.Utils.InjectionUnitTest.Containers
 
             // Act 
             sut.RegisterType<FooType>(LifeTime.Transient);
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var foo = sut.Resolve<FooType>();
                 Assert.IsNotNull(foo);
@@ -89,7 +89,7 @@ namespace PRF.Utils.InjectionUnitTest.Containers
 
             // Act 
             sut.RegisterType<FooType>(LifeTime.Transient);
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var foo = sut.Resolve<FooType>();
                 Assert.IsNotNull(foo);

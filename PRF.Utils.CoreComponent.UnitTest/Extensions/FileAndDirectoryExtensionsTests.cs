@@ -416,7 +416,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
 
             try
             {
-                for (int i = 2; i < 10; i++)
+                for (var i = 2; i < 10; i++)
                 {
                     //Act
                     var res = new FileInfo(FilesAndDirectoryInfoExtension.AutoRenameFileToAvoidDuplicate(file.FullName));
@@ -539,7 +539,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
 
             try
             {
-                for (int i = 2; i < 10; i++)
+                for (var i = 2; i < 10; i++)
                 {
                     //Act
                     var res = FilesAndDirectoryInfoExtension.AutoRenameDirectoryToAvoidDuplicate(subDirectory.FullName);
@@ -565,7 +565,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
 
             try
             {
-                for (int i = 2; i < 10; i++)
+                for (var i = 2; i < 10; i++)
                 {
                     //Act
                     var res = FilesAndDirectoryInfoExtension.AutoRenameDirectoryToAvoidDuplicateWithCreateDirectory(subDirectory.FullName);
@@ -709,7 +709,7 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
             //Arrange
 
             //Act
-            var res = _testDirectory.TryGetDirectory("foo", out var retrievedDirectory);
+            var res = _testDirectory.TryGetDirectory("foo", out _);
 
             //Assert
             Assert.IsFalse(res);

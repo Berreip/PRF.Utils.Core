@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using PRF.Utils.CoreComponents.Async.TaskPool;
 
 // ReSharper disable MethodSupportsCancellation
@@ -16,10 +15,10 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
     [TestFixture]
     internal sealed class PeformanceTaskPoolSizeTests
     {
-        private int _poolMaximumSize = 10;
+        private const int POOL_MAXIMUM_SIZE = 10;
         private const int ITERATION = 200_000;
 
-        public static readonly Dictionary<int, (int Iteration, long Total)> _means = new Dictionary<int, (int Iteration, long Total)>();
+        private static readonly Dictionary<int, (int Iteration, long Total)> _means = new Dictionary<int, (int Iteration, long Total)>();
 
         [Test]
         [Repeat(10)]
@@ -27,21 +26,21 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
         public async Task Perfo_TaskPoolSizeCappedAlt()
         {
             //Arrange
-            var sut = new TaskPoolSizeCapped(_poolMaximumSize);
+            var sut = new TaskPoolSizeCapped(POOL_MAXIMUM_SIZE);
             var tcs = new TaskCompletionSource<bool>();
 
             //Act
             var watch = Stopwatch.StartNew();
-            int counter = 0;
+            var counter = 0;
             Parallel.For(0, ITERATION / 1000, i =>
             {
-                for (int j = 0; j < 1000; j++)
+                for (var j = 0; j < 1000; j++)
                 {
-                    sut.AddWork(ct =>
+                    sut.AddWork(_ =>
                     {
-                        for (int j = 0; j < 10; j++)
+                        for (var k = 0; k < 10; k++)
                         {
-                            var g = i / (j + 1) + 20;
+                            var unused = i / (k + 1) + 20;
                         }
 
                         Interlocked.Increment(ref counter);
@@ -49,9 +48,9 @@ namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool
                 }
             });
 
-            sut.AddWork(ct => tcs.SetResult(true));
+            sut.AddWork(_ => tcs.SetResult(true));
             await tcs.Task.ConfigureAwait(false);
-            await sut.WaitIdleAsync();
+            await sut.WaitIdleAsync().ConfigureAwait(false);
             watch.Stop();
 
             //Assert

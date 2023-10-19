@@ -5,17 +5,16 @@ using PRF.Utils.CoreComponents.Extensions;
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions
 {
     [TestFixture]
-    internal sealed class DictionnaryExtensionsTests
+    internal sealed class DictionaryExtensionsTests
     {
         [Test]
         public void AddRangeDifferential_Dictionary_Empty_Test()
         {
             // Arrange
             var sut = new Dictionary<int, object>();
-            var addingDictionary = new Dictionary<int, object>();
 
             // Act 
-            sut.AddRangeDifferential(addingDictionary);
+            sut.AddRangeDifferential(new Dictionary<int, object>());
 
             // Assert
             Assert.AreEqual(0, sut.Count);
@@ -26,11 +25,10 @@ namespace PRF.Utils.CoreComponent.UnitTest.Extensions
         {
             // Arrange
             var sut = new Dictionary<int, object> { { 23, new object() } };
-            var addingDictionary = new Dictionary<int, object>();
 
             // Act 
             // ask to add an empty differential => we have to get an empty differential as a result
-            sut.AddRangeDifferential(addingDictionary);
+            sut.AddRangeDifferential(new Dictionary<int, object>());
 
             // Assert
             Assert.AreEqual(0, sut.Count);

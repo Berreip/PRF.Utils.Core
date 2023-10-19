@@ -15,13 +15,13 @@ namespace PRF.Utils.Tracer.UnitTest
         {
             foreach (TraceListener listener in Trace.Listeners)
             {
-                // vérification pollution listener statique
-                Assert.AreNotEqual(listener.Name, @"MainTracerSync", "il reste un traceur dans la liste des traceurs statiques = pollution");
+                // static listener pollution check
+                Assert.AreNotEqual(listener.Name, "MainTracerSync", "il reste un traceur dans la liste des traceurs statiques = pollution");
             }
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelInformationV1()
@@ -36,7 +36,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.TraceInformation("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -47,7 +47,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelInformationV2()
@@ -62,7 +62,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.TraceWarning("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -73,7 +73,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelInformationV3()
@@ -88,7 +88,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.TraceError("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -99,7 +99,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelInformationV4()
@@ -114,7 +114,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.Write("test", "category");
                 await ts.FlushAndCompleteAddingAsync();
@@ -125,7 +125,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelErrorV1()
@@ -140,7 +140,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.TraceInformation("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -151,7 +151,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelErrorV2()
@@ -166,7 +166,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.TraceWarning("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -177,7 +177,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelErrorV3()
@@ -192,7 +192,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.TraceError("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -203,7 +203,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelErrorV4()
@@ -218,7 +218,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.Write("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -229,7 +229,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelWarningV1()
@@ -244,7 +244,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.TraceInformation("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -255,7 +255,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelWarningV2()
@@ -270,7 +270,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.TraceWarning("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -281,7 +281,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelWarningV3()
@@ -296,7 +296,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.TraceError("test");
                 await ts.FlushAndCompleteAddingAsync();
@@ -307,7 +307,7 @@ namespace PRF.Utils.Tracer.UnitTest
         }
 
         /// <summary>
-        /// Teste le niveau de trace
+        /// TTest trace level
         /// </summary>
         [Test]
         public async Task TestSwitchLevelWarningV4()
@@ -322,7 +322,7 @@ namespace PRF.Utils.Tracer.UnitTest
 
             using (var ts = new TraceSourceSync(config))
             {
-                ts.OnTracesSent += t => { received = true; };
+                ts.OnTracesSent += _ => { received = true; };
 
                 Trace.Write("test");
                 await ts.FlushAndCompleteAddingAsync();
