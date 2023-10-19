@@ -63,7 +63,7 @@ internal sealed class ConcurrentDictionaryExtensionsTests
         var addingDictionary = new Dictionary<int, object>
         {
             { 26, new object() },
-            { 25, new object() }
+            { 25, new object() },
         };
 
         // Act 

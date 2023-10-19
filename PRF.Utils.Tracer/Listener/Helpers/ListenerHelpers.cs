@@ -20,7 +20,7 @@ namespace PRF.Utils.Tracer.Listener.Helpers
                 {SourceLevels.Warning, TraceEventType.Warning },
                 {SourceLevels.Information, TraceEventType.Information },
                 {SourceLevels.Verbose, TraceEventType.Verbose },
-                {SourceLevels.All, TraceEventType.Verbose } // All == verbose
+                {SourceLevels.All, TraceEventType.Verbose }, // All == verbose
             };
 
         private const string DEFAULT_NULL_STRING = @"NULL_DATA";
@@ -44,7 +44,7 @@ namespace PRF.Utils.Tracer.Listener.Helpers
         {
             return new[]
             {
-                new TraceData(new TraceEventCache(), nameof(TraceListenerSync), TraceEventType.Error, -1, exceptionMessage)
+                new TraceData(new TraceEventCache(), nameof(TraceListenerSync), TraceEventType.Error, -1, exceptionMessage),
             };
         }
 

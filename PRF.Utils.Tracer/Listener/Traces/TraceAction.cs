@@ -6,6 +6,6 @@
     internal enum TraceAction
     {
         Trace,
-        ForceFlush
+        ForceFlush,
     }
 }

@@ -22,6 +22,6 @@
         /// <seealso cref="InterceptionAttribute"/>
         /// <remarks>Attention, les attributs d'interceptions ne fonctionnent
         /// que sur les interfaces</remarks>
-        InterceptionAttributOnly
+        InterceptionAttributOnly,
     }
 }

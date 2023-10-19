@@ -32,7 +32,7 @@ public class TimerTraceTest
         var config = new TraceConfig
         {
             PageSize = 1000,
-            MaximumTimeForFlush = TimeSpan.FromMilliseconds(100)
+            MaximumTimeForFlush = TimeSpan.FromMilliseconds(100),
         };
 
         using (var traceListener = new TraceSourceSync(config))

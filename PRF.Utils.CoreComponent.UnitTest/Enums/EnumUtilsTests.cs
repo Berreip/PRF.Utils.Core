@@ -9,7 +9,7 @@ internal enum FooEnum
     Value0,
     DefaultValue,
     Value1,
-    Value2
+    Value2,
 }
 
 [TestFixture]

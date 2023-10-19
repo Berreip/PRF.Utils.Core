@@ -14,6 +14,6 @@
         /// <summary>
         /// Intercepteur qui trace le temps passé dans chaque méthode interceptée
         /// </summary>
-        TimeWatchInterceptor
+        TimeWatchInterceptor,
     }
 }

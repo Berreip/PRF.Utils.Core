@@ -193,7 +193,7 @@ public class InterceptionTest
                    new TraceConfig
                    {
                        TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-                       PageSize = 10000
+                       PageSize = 10000,
                    }))
         {
             _container.RegisterInstance(tracer);

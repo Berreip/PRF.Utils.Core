@@ -31,7 +31,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Information
+            TraceLevel = SourceLevels.Information,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -57,7 +57,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Information
+            TraceLevel = SourceLevels.Information,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -83,7 +83,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Information
+            TraceLevel = SourceLevels.Information,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -109,7 +109,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Information
+            TraceLevel = SourceLevels.Information,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -135,7 +135,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error
+            TraceLevel = SourceLevels.Error,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -161,7 +161,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error
+            TraceLevel = SourceLevels.Error,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -187,7 +187,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error
+            TraceLevel = SourceLevels.Error,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -213,7 +213,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error
+            TraceLevel = SourceLevels.Error,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -239,7 +239,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Warning
+            TraceLevel = SourceLevels.Warning,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -265,7 +265,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Warning
+            TraceLevel = SourceLevels.Warning,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -291,7 +291,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Warning
+            TraceLevel = SourceLevels.Warning,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -317,7 +317,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Warning
+            TraceLevel = SourceLevels.Warning,
         };
 
         using (var ts = new TraceSourceSync(config))
@@ -345,7 +345,7 @@ public class TestSwitchLevel
         var config = new TraceConfig
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error
+            TraceLevel = SourceLevels.Error,
         };
 
         using (var ts = new TraceSourceSync(config))

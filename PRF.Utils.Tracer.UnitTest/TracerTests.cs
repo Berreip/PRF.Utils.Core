@@ -443,7 +443,7 @@ public class TracerTests
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndClearAll,
             PageSize = upper,
-            MaximumTimeForFlush = TimeSpan.FromSeconds(5)
+            MaximumTimeForFlush = TimeSpan.FromSeconds(5),
         };
         using (var ts = new TraceSourceSync(config))
         {
@@ -487,7 +487,7 @@ public class TracerTests
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndClearAll,
             PageSize = upper,
-            MaximumTimeForFlush = TimeSpan.FromSeconds(5)
+            MaximumTimeForFlush = TimeSpan.FromSeconds(5),
         };
         using (var ts = new TraceSourceSync(config))
         {

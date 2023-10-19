@@ -33,7 +33,7 @@ namespace PRF.Utils.CoreComponents.Extensions
                     new[] {greenFactor, greenFactor, greenFactor, 0, 0},
                     new[] {blueFactor, blueFactor, blueFactor, 0, 0},
                     new[] {0f, 0f, 0f, 1f, 0f},
-                    new[] {0f, 0f, 0f, 0f, 1f}
+                    new[] {0f, 0f, 0f, 0f, 1f},
                 });
 
             using (var imageAttributes = new ImageAttributes())

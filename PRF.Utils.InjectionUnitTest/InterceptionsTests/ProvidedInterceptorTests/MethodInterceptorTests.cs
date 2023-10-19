@@ -30,7 +30,7 @@ public class MethodInterceptorTests
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
             PageSize = 1_000_000,
-            MaximumTimeForFlush = TimeSpan.FromSeconds(5)
+            MaximumTimeForFlush = TimeSpan.FromSeconds(5),
         };
 
         // instance de test:

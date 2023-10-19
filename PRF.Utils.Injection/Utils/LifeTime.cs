@@ -18,6 +18,6 @@
         /// <summary>
         /// le conteneur renverra une nouvelle instance de la classe à chaque demande faite par le consommateur
         /// </summary>
-        Transient
+        Transient,
     }
 }

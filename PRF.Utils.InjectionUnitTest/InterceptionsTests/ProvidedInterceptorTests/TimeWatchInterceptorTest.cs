@@ -25,7 +25,7 @@ public class TimeWatchInterceptorTest
         {
             TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
             PageSize = 1000,
-            MaximumTimeForFlush = TimeSpan.FromSeconds(5)
+            MaximumTimeForFlush = TimeSpan.FromSeconds(5),
         };
 
         // instance de test:

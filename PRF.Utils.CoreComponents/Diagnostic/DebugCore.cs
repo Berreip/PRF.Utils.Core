@@ -132,6 +132,6 @@ namespace PRF.Utils.CoreComponents.Diagnostic
         /// <summary>
         /// Kill the process immediatly
         /// </summary>
-        TerminateProcess
+        TerminateProcess,
     }
 }

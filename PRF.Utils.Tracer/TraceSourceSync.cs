@@ -145,6 +145,6 @@ namespace PRF.Utils.Tracer
         /// et efface préalablement tous les listeners présents (performances maximum)
         /// => peut être bcq plus performant mais empêche les remontées d'infos via l'output Visual Studio en debug par exemple
         /// </summary>
-        AddListenerToStaticAccessAndClearAll
+        AddListenerToStaticAccessAndClearAll,
     }
 }
