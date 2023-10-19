@@ -2,51 +2,50 @@
 using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
 
-namespace PRF.Utils.CoreComponent.UnitTest.Extensions
+namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
+
+[TestFixture]
+internal sealed class RandomExtensionsTests
 {
-    [TestFixture]
-    internal sealed class RandomExtensionsTests
+    private Random _rd;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
     {
-        private Random _rd;
+        _rd = new Random();
+    }
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
+    [Test]
+    [Repeat(100)]
+    public void NextBoolean()
+    {
+        //Arrange
+        var counter = 0;
+
+        //Act
+        for (var i = 0; i < 50_000; i++)
         {
-            _rd = new Random();
-        }
-
-        [Test]
-        [Repeat(100)]
-        public void NextBoolean()
-        {
-            //Arrange
-            var counter = 0;
-
-            //Act
-            for (var i = 0; i < 50_000; i++)
+            if (_rd.NextBoolean())
             {
-                if (_rd.NextBoolean())
-                {
-                    counter++;
-                }
+                counter++;
             }
-
-            //Assert
-            Assert.Greater(counter, 24000);
         }
 
-        [Test]
-        [Repeat(1_000)]
-        public void NextNumberBetweenOneAndLessOne()
-        {
-            //Arrange
+        //Assert
+        Assert.Greater(counter, 24000);
+    }
 
-            //Act
-            var res = _rd.NextNumberBetweenOneAndLessOne();
+    [Test]
+    [Repeat(1_000)]
+    public void NextNumberBetweenOneAndLessOne()
+    {
+        //Arrange
 
-            //Assert
-            Assert.GreaterOrEqual(res, -1);
-            Assert.LessOrEqual(res, 1);
-        }
+        //Act
+        var res = _rd.NextNumberBetweenOneAndLessOne();
+
+        //Assert
+        Assert.GreaterOrEqual(res, -1);
+        Assert.LessOrEqual(res, 1);
     }
 }
