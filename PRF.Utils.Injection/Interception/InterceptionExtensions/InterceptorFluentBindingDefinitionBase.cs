@@ -13,7 +13,7 @@ namespace PRF.Utils.Injection.Interception.InterceptionExtensions
         private readonly Func<Type, bool> _predicate;
 
         /// <summary>
-        /// Constructeur avec prédicat
+        /// Constructor with predicate
         /// </summary>
         protected InterceptorFluentBindingDefinitionBase(Container container, Func<Type, bool> predicate)
         {

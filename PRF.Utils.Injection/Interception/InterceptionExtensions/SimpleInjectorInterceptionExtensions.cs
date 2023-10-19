@@ -33,7 +33,7 @@ namespace PRF.Utils.Injection.Interception.InterceptionExtensions
                     return new ProxyGenerationOptions(new HookMethodsAndSetProperties());
                 case InterceptionHookOption.MethodsOnly:
                     return new ProxyGenerationOptions(new HookMethodsButNoProperties());
-                case InterceptionHookOption.InterceptionAttributOnly:
+                case InterceptionHookOption.InterceptionAttributeOnly:
                     return new ProxyGenerationOptions(new HookWithInterceptionAttribute());
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hookOption), hookOption, null);
@@ -48,7 +48,7 @@ namespace PRF.Utils.Injection.Interception.InterceptionExtensions
 
             if (interceptorRegistration == null)
             {
-                throw new ActivationException($@"Interceptor [{typeof(TInterceptor).Name}] should be registered before using interception");
+                throw new ActivationException($"Interceptor [{typeof(TInterceptor).Name}] should be registered before using interception");
             }
             return interceptorRegistration.BuildExpression();
         }
@@ -78,7 +78,7 @@ namespace PRF.Utils.Injection.Interception.InterceptionExtensions
                 if (!e.RegisteredServiceType.IsInterface)
                 {
                     // NOTE: We can only handle interfaces, because System.Runtime.Remoting.Proxies.RealProxy only supports interfaces.
-                    throw new NotSupportedException($@"Can't intercept type {e.RegisteredServiceType.Name} because it is not an interface.");
+                    throw new NotSupportedException($"Can't intercept type {e.RegisteredServiceType.Name} because it is not an interface.");
                 }
                 e.Expression = BuildProxyExpression(e, _proxyGenerationOptions);
             }
@@ -116,14 +116,14 @@ namespace PRF.Utils.Injection.Interception.InterceptionExtensions
     }
 
     /// <summary>
-    /// Classe permettant de créer des Proxy via la méthode GetProxy
+    /// Class used to create Proxy using the GetProxy method
     /// </summary>
     public static class Interceptor
     {
         private static readonly ProxyGenerator _generator = new ProxyGenerator();
         
         /// <summary>
-        /// Méthode de création d'un proxy
+        /// Method for creating a proxy
         /// </summary>
         public static object CreateProxy(Type type, IInterceptor interceptor, object target, ProxyGenerationOptions proxyGenerationOptions)
         {

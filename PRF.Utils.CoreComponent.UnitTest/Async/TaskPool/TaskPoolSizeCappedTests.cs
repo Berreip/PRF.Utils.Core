@@ -300,21 +300,21 @@ internal sealed class TaskPoolSizeCappedTests
 
     [Test]
     [Timeout(5000)]
-    public async Task AddWork_should_favor_parralelism_over_efficiency()
+    public async Task AddWork_should_favor_parallelism_over_efficiency()
     {
-        // when requesting 3 tasks on a taskPool of size 3, every one should be started in parralel,
+        // when requesting 3 tasks on a taskPool of size 3, every one should be started in parallel,
         // we should not wait for short period of time to see if the tasks can be done by the same thread
-        // (it is not the purpose of this coponent) 
+        // (it is not the purpose of this component) 
         //Arrange
         var sut = new TaskPoolSizeCapped(3);
         var mrev = new ManualResetEventSlim();
         var counter = 0;
-        var pendings = new List<IWorkInProgress>();
+        var pending = new List<IWorkInProgress>();
 
         //Act
         for (var i = 0; i < 3; i++)
         {
-            pendings.Add(sut.AddWork(_ =>
+            pending.Add(sut.AddWork(_ =>
             {
                 Interlocked.Increment(ref counter);
                 mrev.Wait(CancellationToken.None);
@@ -336,7 +336,7 @@ internal sealed class TaskPoolSizeCappedTests
         Assert.AreEqual(3, counter);
         // unlock and finish:
         mrev.Set();
-        await pendings.WaitAllAsync().ConfigureAwait(false);
+        await pending.WaitAllAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -462,7 +462,7 @@ internal sealed class TaskPoolSizeCappedTests
 
     [Test]
     [Timeout(5000)]
-    public void Wait_sync_waot_blocking_until_end_of_work_with_timeout()
+    public void Wait_sync_not_blocking_until_end_of_work_with_timeout()
     {
         //Arrange
         var sut = new TaskPoolSizeCapped(1);
@@ -616,7 +616,7 @@ internal sealed class TaskPoolSizeCappedTests
 
     [Test]
     [Timeout(5000)]
-    public async Task ParallelForEachSizedCappedAsync_Ienumerable_Extensions_async_callback()
+    public async Task ParallelForEachSizedCappedAsync_IEnumerable_Extensions_async_callback()
     {
         var counter = 0;
         var items = Enumerable.Range(0, 1000).Select(_ => new Item());
@@ -634,7 +634,7 @@ internal sealed class TaskPoolSizeCappedTests
 
     [Test]
     [Timeout(5000)]
-    public async Task ParallelForEachSizedCappedAsync_Ienumerable_Extensions_sync_callback()
+    public async Task ParallelForEachSizedCappedAsync_IEnumerable_Extensions_sync_callback()
     {
         var counter = 0;
         var items = Enumerable.Range(0, 1000).Select(_ => new Item());
@@ -648,7 +648,7 @@ internal sealed class TaskPoolSizeCappedTests
 
     [Test]
     [Timeout(5000)]
-    public void ParallelForEachSizedCapped_Ienumerable_Extension()
+    public void ParallelForEachSizedCapped_IEnumerable_Extension()
     {
         var counter = 0;
         var items = Enumerable.Range(0, 1000).Select(_ => new Item());

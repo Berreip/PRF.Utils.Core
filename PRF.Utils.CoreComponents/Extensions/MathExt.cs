@@ -5,17 +5,17 @@
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Le module MathExt regroupe les méthodes statique lié à quelques fonctions mathématiques
+    /// The MathExt module groups together static methods linked to a few mathematical functions
     /// </summary>
     public static class MathExt
     {
         /// <summary>
-        /// Donne le plus grand item entre deux valeurs implémentant IComparable
+        /// Returns the largest item between two values implementing IComparable
         /// </summary>
-        /// <param name="item1">la première valeur</param>
-        /// <param name="item2">la seconde valeur</param>
-        /// <typeparam name="T">le type des deux valeurs</typeparam>
-        /// <returns>la valeur la plus grande (défini par IComparable)</returns>
+        /// <param name="item1">the first value</param>
+        /// <param name="item2">the second value</param>
+        /// <typeparam name="T">the type of the two values</typeparam>
+        /// <returns>the largest value (defined by IComparable)</returns>
         /// <see cref="IComparable"/>
         public static T Max<T>(T item1, T item2) where T : IComparable
         {
@@ -23,12 +23,12 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Donne le plus petit item entre deux valeurs implémentant IComparable
+        /// Returns the smallest item between two values implementing IComparable
         /// </summary>
-        /// <param name="item1">la première valeur</param>
-        /// <param name="item2">la seconde valeur</param>
-        /// <typeparam name="T">le type des deux valeurs</typeparam>
-        /// <returns>la valeur la plus petite (défini par IComparable)</returns>
+        /// <param name="item1">the first value</param>
+        /// <param name="item2">the second value</param>
+        /// <typeparam name="T">the type of the two values</typeparam>
+        /// <returns>the smallest value (defined by IComparable)</returns>
         /// <see cref="IComparable"/>
         public static T Min<T>(T item1, T item2) where T : IComparable
         {
@@ -36,11 +36,11 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Implémentation typé pour les doubles: S'assure que le nombre demandé est situé entre min et max et limite sa valeur sinon
+        /// Typed implementation for doubles: Ensures that the requested number is between min and max and limits its value otherwise
         /// </summary>
-        /// <param name="val">la valeur</param>
-        /// <param name="min">la valeur minimal admise (incluse) </param>
-        /// <param name="max">la valeur maximal admise (incluse)</param>
+        /// <param name="val">value</param>
+        /// <param name="min">the minimum allowed value (inclusive) </param>
+        /// <param name="max">the maximum allowed value (inclusive)</param>
         public static double Clamp(double val, double min, double max)
         {
             if (val < min) return min;
@@ -50,11 +50,11 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Implémentation typé pour les int: S'assure que le nombre demandé est situé entre min et max et limite sa valeur sinon
+        /// Typed implementation for int: Ensures that the requested number is between min and max and limits its value otherwise
         /// </summary>
-        /// <param name="val">la valeur</param>
-        /// <param name="min">la valeur minimal admise (incluse) </param>
-        /// <param name="max">la valeur maximal admise (incluse)</param>
+        /// <param name="val">value</param>
+        /// <param name="min">the minimum allowed value (inclusive) </param>
+        /// <param name="max">the maximum allowed value (inclusive)</param>
         public static int Clamp(int val, int min, int max)
         {
             if (val < min) return min;
@@ -64,11 +64,11 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// S'assure que le type demandé est situé entre min et max et limite sa valeur sinon
+        /// Ensures that the requested type is between min and max and limits its value otherwise
         /// </summary>
-        /// <param name="val">la valeur</param>
-        /// <param name="min">la valeur minimal admise (incluse) </param>
-        /// <param name="max">la valeur maximal admise (incluse)</param>
+        /// <param name="val">value</param>
+        /// <param name="min">the minimum allowed value (inclusive) </param>
+        /// <param name="max">the maximum allowed value (inclusive)</param>
         public static T Clamp<T>(this T val, T min, T max) where T : IComparable
         {
             if (val.CompareTo(min) < 0) return min;

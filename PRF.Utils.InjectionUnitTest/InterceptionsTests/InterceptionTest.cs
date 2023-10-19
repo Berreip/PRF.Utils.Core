@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
-using PRF.Utils.InjectionUnitTest.ClasseForTests;
-using PRF.Utils.InjectionUnitTest.ClasseForTests.Interceptors;
+using PRF.Utils.InjectionUnitTest.ClassForTests;
+using PRF.Utils.InjectionUnitTest.ClassForTests.Interceptors;
 using PRF.Utils.Tracer;
 using PRF.Utils.Tracer.Configuration;
 using PRF.Utils.Tracer.Listener.Traces;
@@ -28,7 +28,7 @@ public class InterceptionTest
     }
 
     /// <summary>
-    /// Cas 1: test que l'interception fonctionne
+    /// Case 1: test that the interception works
     /// </summary>
     [Test]
     public async Task InterceptionTestV1()
@@ -62,7 +62,7 @@ public class InterceptionTest
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.IsNotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceInjectTracer"));
         Assert.IsNotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceStatic"));
@@ -100,14 +100,14 @@ public class InterceptionTest
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.IsNotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceInjectTracer"));
         Assert.IsNotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceStatic"));
     }
 
     /// <summary>
-    /// Test pour les propriété == tracé par défaut
+    /// Test for properties == default plot
     /// </summary>
     [Test]
     public async Task InterceptionTest_Property()
@@ -140,13 +140,13 @@ public class InterceptionTest
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour 
+        // A single return 
         Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length); //*2 car deux set et le get n'est pas tracé
+        Assert.AreEqual(2, traceReceived.Length); //*2 because two sets and the get is not traced
     }
 
     /// <summary>
-    /// Test pour les propriété == avec option sans trace
+    /// Test for == properties with no trace option
     /// </summary>
     [Test]
     public async Task InterceptionTest_Property_With_custom_Option()
@@ -181,7 +181,7 @@ public class InterceptionTest
     }
 
     /// <summary>
-    /// Test pour les attributs
+    /// Test for attributes
     /// </summary>
     [Test]
     public async Task InterceptionTest_Attribute()
@@ -201,7 +201,7 @@ public class InterceptionTest
             _container.RegisterInterceptor<InterceptorTraceInjectTracer>(LifeTime.Singleton);
             _container.Register<IClassVoidAttributeTest, ClassVoidAttributeTest>(LifeTime.Singleton);
 
-            _container.Intercept<IClassVoidAttributeTest>().With<InterceptorTraceInjectTracer>(InterceptionHookOption.InterceptionAttributOnly);
+            _container.Intercept<IClassVoidAttributeTest>().With<InterceptorTraceInjectTracer>(InterceptionHookOption.InterceptionAttributeOnly);
 
             count = 0;
             traceReceived = null;
@@ -221,7 +221,7 @@ public class InterceptionTest
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour 
+        // A single return 
         Assert.AreEqual(1, count);
         Assert.AreEqual(3, traceReceived.Length);
     }

@@ -1,6 +1,6 @@
 ﻿using Castle.DynamicProxy;
 
-namespace PRF.Utils.InjectionUnitTest.ClasseForTests.Interceptors;
+namespace PRF.Utils.InjectionUnitTest.ClassForTests.Interceptors;
 
 public class InterceptorDoNothing : IInterceptor
 {

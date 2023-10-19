@@ -120,7 +120,7 @@ public class TracerTests
         // setup
         var listenerCount = Trace.Listeners.Count;
 
-        var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAcces };
+        var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccess };
         using (var ts = new TraceSourceSync(config))
         {
             //Test
@@ -130,7 +130,7 @@ public class TracerTests
         //Verify
         // verification that we do not pollute static Listeners:
         Assert.AreEqual(listenerCount, Trace.Listeners.Count);
-        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != @"MainTracerSync"));
+        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
     }
 
     /// <summary>
@@ -150,7 +150,7 @@ public class TracerTests
 
         //Verify
         // verification that we do not pollute static Listeners:
-        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != @"MainTracerSync"));
+        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
         Assert.AreEqual(listenerCount, Trace.Listeners.Count);
     }
 
@@ -171,7 +171,7 @@ public class TracerTests
         //Verify
         // verification that we do not pollute the static Listeners BUT that we have removed the default listener:
         Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "Default"));
-        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != @"MainTracerSync"));
+        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
     }
 
     /// <summary>
@@ -199,7 +199,7 @@ public class TracerTests
         // setup
         var countCall = 0;
         var traceReceived = Array.Empty<string>();
-        var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAcces };
+        var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccess };
         using (var ts = new TraceSourceSync(config))
         {
             ts.OnTracesSent += o =>
@@ -218,7 +218,7 @@ public class TracerTests
         //Verify
         Assert.AreEqual(1, countCall);
         Assert.IsTrue(traceReceived.Contains("TraceError"));
-        Assert.IsTrue(traceReceived.Contains(@"format {0} - {1}")); // no formatting by default => we leave the arguments aside
+        Assert.IsTrue(traceReceived.Contains("format {0} - {1}")); // no formatting by default => we leave the arguments aside
     }
 
     [Test]

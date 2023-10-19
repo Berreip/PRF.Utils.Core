@@ -7,21 +7,21 @@ using System.Reflection;
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Extensions de 'Type'. Permet entre autre de simplifier certaines opération
+    /// 'Type' extensions. Allows, among other things, to simplify certain operations
     /// </summary>
     public static class TypeExtensions
     {
         /// <summary>
-        /// Renvoie la liste des propriétés publiques du type et des types parents du type demandé (utile dans le cas d'un interface pour 
-        /// connaitres propriétés des interfaces parents)
+        /// Returns the list of public properties of the type and parent types of the requested type (useful in the case of an interface for
+        /// know properties of parent interfaces)
         /// </summary>
-        /// <param name="type">le type dont on souhaite conaitre la hiérarchie de propriété</param>
-        /// <returns>la liste des propriétés publiques</returns>
+        /// <param name="type">the type whose property hierarchy we wish to know</param>
+        /// <returns>the list of public properties</returns>
         public static IEnumerable<PropertyInfo> GetPublicProperties(this Type type)
         {
             if (!type.IsInterface)
             {
-                // cas d'un type concret == pas besoin de parcourir la hiérarchie
+                // case of a concrete type == no need to traverse the hierarchy
                 return type.GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance);
             }
 
@@ -50,17 +50,18 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Indique si le type est dérivé d'une classe générique de base (et uniquement d'une classe)
+        /// Indicates whether the type is derived from a generic base class (and only from a class)
         /// </summary>
-        /// <param name="currentType">le type source dont on souhaite savoir s'il est dérivable d'un type générique</param>
-        /// <param name="genericType">le type générique cible</param>
-        /// <returns>true si le type source dérive du type générique cible</returns>
+        /// <param name="currentType">the source type of which we want to know if it is derivable from a generic type</param>
+        /// <param name="genericType">the target generic type</param>
+        /// <returns>true if the source type derives from the target generic type</returns>
         public static bool IsSubclassOfRawGeneric(this Type currentType, Type genericType)
         {
             if (!genericType.IsClass)
             {
                 throw new ArgumentException($"ERROR: {nameof(IsSubclassOfRawGeneric)} method :type {genericType.Name} is not a class");
             }
+
             if (!genericType.IsGenericType)
             {
                 throw new ArgumentException($"ERROR: {nameof(IsSubclassOfRawGeneric)} method :type {genericType.Name} is not a generic type");
@@ -72,8 +73,10 @@ namespace PRF.Utils.CoreComponents.Extensions
                 {
                     return true;
                 }
+
                 currentType = currentType.BaseType;
             }
+
             return false;
         }
     }

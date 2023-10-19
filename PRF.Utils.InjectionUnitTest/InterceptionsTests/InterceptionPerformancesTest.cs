@@ -5,8 +5,8 @@ using System.Threading;
 using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
-using PRF.Utils.InjectionUnitTest.ClasseForTests;
-using PRF.Utils.InjectionUnitTest.ClasseForTests.Interceptors;
+using PRF.Utils.InjectionUnitTest.ClassForTests;
+using PRF.Utils.InjectionUnitTest.ClassForTests.Interceptors;
 using PRF.Utils.Tracer;
 using PRF.Utils.Tracer.Configuration;
 
@@ -29,7 +29,7 @@ public class InterceptionPerformancesTest
     }
 
     /// <summary>
-    /// test que la création d'un proxy ne coute pas trop de ressources
+    /// test that creating a proxy does not cost too many resources
     /// </summary>
     [Test]
     public void PerformanceNewClassTestV2()
@@ -45,21 +45,22 @@ public class InterceptionPerformancesTest
         {
             _ = _container.Resolve<IClassVoidTest>();
         }
+
         watch.Stop();
 
         //Verify
-        Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1), 
-            $"Trop lent pour créer {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
+        Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
+            $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
-    /// test que la création d'un proxy ne coute pas trop de ressources
+    /// test that creating a proxy does not cost too many resources
     /// </summary>
     [Test]
     public void PerformanceNewClassTest_TransientV3()
     {
         //Configuration
-        var config = new TraceConfig {TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
+        var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
         _container.RegisterInstance(new TraceSourceSync(config));
 
         _container.RegisterInterceptor<InterceptorDoNothing>(LifeTime.Transient);
@@ -74,16 +75,17 @@ public class InterceptionPerformancesTest
         {
             _ = _container.Resolve<IClassVoidTest>();
         }
+
         watch.Stop();
 
         //Verify
         Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
-            $"Trop lent pour créer {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
+            $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
-    /// test que la création d'un proxy ne coute pas trop de ressources
-    /// => En singleton, c'est les mm instances qui doivent revenir donc on doit être plus rapide
+    /// test that creating a proxy does not cost too many resources
+    /// => In singleton, it is the mm instances that must return so we must be faster
     /// </summary>
     [Test]
     public void PerformanceNewClassTest_singletonV3()
@@ -104,15 +106,16 @@ public class InterceptionPerformancesTest
         {
             _ = _container.Resolve<IClassVoidTest>();
         }
+
         watch.Stop();
 
         //Verify
         Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
-            $"Trop lent pour créer {upper} objet transient avec intercepteur en singleton: time = {watch.ElapsedMilliseconds} ms");
+            $"Too slow to create {upper} transient object with singleton interceptor: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
-    /// test que la création d'un proxy ne coute pas trop de ressources
+    /// test that creating a proxy does not cost too many resources
     /// </summary>
     [Test]
     public void PerformanceNewClassTestV4()
@@ -122,7 +125,7 @@ public class InterceptionPerformancesTest
         _container.RegisterInstance(new TraceSourceSync(config));
 
         _container.RegisterInterceptor<InterceptorDoNothing>(LifeTime.Singleton);
-        _container.RegisterInterceptor<InterceptorDoNothing2>(LifeTime.Transient); // en enregistre un second pour vérifier la non perturbation
+        _container.RegisterInterceptor<InterceptorDoNothing2>(LifeTime.Transient); // records a second one to verify no disturbance
         _container.Register<IClassVoidTest, ClassVoidTest>(LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With<InterceptorDoNothing>();
         _container.Intercept<IClassVoidTest>().With<InterceptorDoNothing2>();
@@ -135,11 +138,12 @@ public class InterceptionPerformancesTest
         {
             _ = _container.Resolve<IClassVoidTest>();
         }
+
         watch.Stop();
 
         //Verify
         Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
-            $"Trop lent pour créer {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
+            $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
@@ -153,7 +157,7 @@ public class InterceptionPerformancesTest
         _container.RegisterInstance(new TraceSourceSync(config));
 
         _container.RegisterInterceptor<InterceptorDoNothing>(LifeTime.Singleton);
-        _container.RegisterInterceptor<InterceptorDoNothing2>(LifeTime.Transient); // en enregistre un second pour vérifier la non perturbation
+        _container.RegisterInterceptor<InterceptorDoNothing2>(LifeTime.Transient); // records a second one to verify no disturbance
         _container.Register<IClassVoidTest, ClassVoidTest>(LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With<InterceptorDoNothing>();
         _container.Intercept<IClassVoidTest>().With<InterceptorDoNothing2>();
@@ -166,15 +170,16 @@ public class InterceptionPerformancesTest
         {
             _ = _container.Resolve<IClassVoidTest>();
         }
+
         watch.Stop();
 
         //Verify
         Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
-            $"Trop lent pour créer {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
+            $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
-    /// test que l'appel d'une méthode sur un proxy ne coute pas trop de ressources
+    /// test that calling a method on a proxy does not cost too many resources
     /// </summary>
     [Test]
     [Ignore("performance test, do not use on server")]
@@ -193,15 +198,16 @@ public class InterceptionPerformancesTest
         {
             r.MethodCall();
         }
+
         watch.Stop();
 
         //Verify
         Assert.IsTrue(watch.Elapsed < TimeSpan.FromMilliseconds(500),
-            $"Trop lent pour créer {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
+            $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
-        
+
     /// <summary>
-    /// test que l'appel d'une méthode sur un proxy ne coute pas trop de ressources
+    /// test that calling a method on a proxy does not cost too many resources
     /// </summary>
     [Test]
     [Ignore("performance test, do not use on server")]
@@ -225,8 +231,9 @@ public class InterceptionPerformancesTest
         {
             r.MethodCall();
         }
+
         watch.Stop();
-            
+
         //Verify
         Assert.IsTrue(watch.Elapsed < TimeSpan.FromMilliseconds(500),
             $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");

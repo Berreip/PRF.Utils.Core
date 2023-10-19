@@ -20,12 +20,12 @@ namespace PRF.Utils.Injection.Interception.Interceptors
             var watch = Stopwatch.StartNew();
             try
             {
-                // Appel de l'instance concrete.
+                // Calling the concrete instance.
                 invocation.Proceed();
             }
             finally
             {
-                // gestion des méthodes dont le type de retour est une Task (asynchrones)
+                // management of methods whose return type is a Task (asynchronous)
                 if (invocation.ReturnValue is Task task)
                 {
                     invocation.ReturnValue = task.InterceptAsync(

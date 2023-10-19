@@ -7,8 +7,8 @@ using Castle.DynamicProxy;
 namespace PRF.Utils.Injection.Interception.Helpers
 {
     /// <summary>
-    /// Classe d'aide à la manipulation de méthodes asynchrones dans les intercepteurs.
-    /// Cette classe permet de créer des encapsulations génériques de taches
+    /// Helper class for handling asynchronous methods in interceptors.
+    /// This class allows you to create generic encapsulations of tasks
     /// </summary>
     internal static class InterceptorAsyncHelpers
     {
@@ -17,12 +17,12 @@ namespace PRF.Utils.Injection.Interception.Helpers
 
         private static readonly ConcurrentDictionary<Type, Func<Task, Action<object>, Task>> _taskWrapperCreators
             = new ConcurrentDictionary<Type, Func<Task, Action<object>, Task>>();
-        
+
         /// <summary>
-        /// Permet d'encaspuler une tache non générique OU générique
-        /// et de rajouter une action post await pour chaque cas (comme une trace de fin par exemple)
+        /// Allows you to encapsulate a non-generic OR generic task
+        /// and add a post await action for each case (like an end trace for example)
         /// </summary>
-        public static object InterceptAsync(this Task originalTask, 
+        public static object InterceptAsync(this Task originalTask,
             IInvocation invocation,
             Action postActionWithoutResult,
             Action<object> postActionWithResult)
@@ -32,56 +32,55 @@ namespace PRF.Utils.Injection.Interception.Helpers
                 : originalTask.InterceptWithResultAsync(invocation.ReturnValue, postActionWithResult);
         }
 
-
         /// <summary>
-        /// Permet d'encaspuler une tache non générique et de rajouter une action post await
-        /// (comme une trace de fin par exemple)
+        /// Allows you to encapsulate a non-generic task and add a post await action
+        /// (like an end trace for example)
         /// </summary>
         private static async Task InterceptAsync(this Task originalTask, Action postAwaitAction)
         {
-            // await la tache originale
+            // await the original task
             await originalTask.ConfigureAwait(false);
 
-            // appelle l'action de postAwait dans la foulée
+            // calls the postAwait action immediately
             postAwaitAction.Invoke();
         }
 
 
         /// <summary>
-        /// Permet d'encaspuler une tache non générique et de rajouter une action post await
-        /// (comme une trace de fin par exemple)
+        /// Allows you to encapsulate a non-generic task and add a post await
+        /// action (like an end trace for example)
         /// </summary>
         private static object InterceptWithResultAsync(this Task originalTask, object invocationReturnValue, Action<object> postAwaitAction)
         {
-            /* Dans un cas de méthodes asynchrones, le plus pertinent est de wrapper la task dans une autre task qui après un
-             * await va rajouter la trace de fin avec le résultat. Etant donné qu'il n'est pas possible de caster en Task<T>
-             * sans connaitre explicitement le type de T (ou en tt cas que je n'ai pas réussi sans utiliser des horreurs comme
-             * les dynamic ou la création de tache par reflexion), on génère à la volée un délégué de création que l'on met
-             * en cache dans un ConcurrentDictionary et qui servira aux prochains appels également.
-             * Cette approche est un compromis (pas tip top) */
+            /* In the case of asynchronous methods, the most relevant is to wrap the task in another task which after a
+             * await will add the end trace with the result. Since it is not possible to cast in Task<T>
+             * without explicitly knowing the type of T (or in any case I haven't succeeded without using horrors like
+             * dynamic or task creation by reflection), we generate on the fly a creation delegate which we put
+             * cached in a ConcurrentDictionary and which will be used for future calls as well.
+             * This approach is a compromise (not the absolute best) */
             return GetTaskGenericWrapper(invocationReturnValue.GetType()).Invoke(originalTask, postAwaitAction);
         }
 
         /// <summary>
-        /// Récupère ou crée s'il n'existe pas déjà un délégué wrappant une tache générique
-        /// et rajoutant une action post await
+        /// Get or create if a delegate wrapping a generic task does not already exist
+        /// and adding a post await action
         /// </summary>
-        /// <param name="taskType">le type de la tache (Task[int] par exemple)</param>
-        /// <returns>la fonction de création du wrapper</returns>
+        /// <param name="taskType">the type of the task (Task[int] for example)</param>
+        /// <returns>the wrapper creation function</returns>
         private static Func<Task, Action<object>, Task> GetTaskGenericWrapper(Type taskType)
         {
             return _taskWrapperCreators.GetOrAdd(taskType,
                 type => (Func<Task, Action<object>, Task>)_createWrapperMethodInfo
-                    // assigne le type concret actuellement manipulé à la méthode de création générique
+                    // assign the concrete type currently being handled to the generic creation method
                     .MakeGenericMethod(type.GenericTypeArguments[0])
-                    // puis créer le délégué
+                    // then create the delegate
                     .CreateDelegate(typeof(Func<Task, Action<object>, Task>)));
         }
 
         private static Task CreateWrapperTask<T>(Task task, Action<object> postAwaitAction)
         {
-            // sert seulement de passe plat pour récupérer une task typée (c'est le MakeGenericMethod
-            // qui s'occupera d'en déterminer le type au runtime)
+            // only serves as a pass-through to retrieve a typed task (this is the MakeGenericMethod
+            // which will take care of determining the type at runtime)
             return CreateGenericWrapperTask((Task<T>)task, postAwaitAction);
         }
 

@@ -13,7 +13,7 @@ using PRF.Utils.CoreComponents.Async.TaskPool;
 namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool;
 
 [TestFixture]
-internal sealed class PeformanceTaskPoolSizeTests
+internal sealed class PerformanceTaskPoolSizeTests
 {
     private const int POOL_MAXIMUM_SIZE = 10;
     private const int ITERATION = 200_000;

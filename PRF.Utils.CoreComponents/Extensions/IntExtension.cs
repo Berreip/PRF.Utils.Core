@@ -1,16 +1,16 @@
 ﻿namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Classe d'extension pour les types int
+    /// Extension class for int types
     /// </summary>
     public static class IntExtension
     {
         /// <summary>
-        /// Détermine si la valeur est comprise dans un intervalle donné.
+        /// Determines whether the value falls within a given range.
         /// </summary>
-        /// <param name="i">Valeur</param>
-        /// <param name="minValue">Valeur minimale (incluse)</param>
-        /// <param name="maxValue">Valeur maximale (incluse)</param>
+        /// <param name="i">Value</param>
+        /// <param name="minValue">Minimum value (inclusive)</param>
+        /// <param name="maxValue">Maximum value (inclusive)</param>
         public static bool IsInRange(this int i, int minValue, int maxValue)
         {
             return i >= minValue && i <= maxValue;

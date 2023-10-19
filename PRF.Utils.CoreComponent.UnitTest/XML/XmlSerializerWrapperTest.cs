@@ -8,25 +8,25 @@ namespace PRF.Utils.CoreComponent.UnitTest.XML;
 [TestFixture]
 public class JsonSerializerWrapperTest
 {
-    private FileInfo _xmlsmallFile;
+    private FileInfo _xmlSmallFile;
     private DirectoryInfo _testDirectory;
 
     [SetUp]
     public void TestInitialize()
     {
         // mock:
-        _testDirectory = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, @"XML"));
+        _testDirectory = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, "XML"));
 
-        _xmlsmallFile = _testDirectory.GetFile(@"testXml.xml");
-        Assert.IsNotNull(_xmlsmallFile);
-        Assert.IsTrue(_xmlsmallFile.Exists);
+        _xmlSmallFile = _testDirectory.GetFile("testXml.xml");
+        Assert.IsNotNull(_xmlSmallFile);
+        Assert.IsTrue(_xmlSmallFile.Exists);
     }
 
     [Test]
     public void SerializeToXml_returns_correct_values()
     {
         //Configuration
-        const string target = @"<TestClassToSerialize><Id>75</Id><Name>Robert</Name></TestClassToSerialize>";
+        const string target = "<TestClassToSerialize><Id>75</Id><Name>Robert</Name></TestClassToSerialize>";
         var dataToSerialize = new TestClassToSerialize { Id = 75, Name = "Robert" };
 
         //Test
@@ -37,13 +37,13 @@ public class JsonSerializerWrapperTest
     }
       
     /// <summary>
-    /// Cas 1: test que la dé-sérialisation est correctement faite en xml
+    /// Case 1: test that deserialization is correctly done in xml
     /// </summary>
     [Test]
     public void DeserializeFromXml()
     {
         //Configuration
-        var str = @"<TestClassToSerialize><Id>75</Id><Name>Robert</Name></TestClassToSerialize>";
+        const string str = "<TestClassToSerialize><Id>75</Id><Name>Robert</Name></TestClassToSerialize>";
 
         //Test
         var res = str.DeserializeFromXml<TestClassToSerialize>();
@@ -56,6 +56,8 @@ public class JsonSerializerWrapperTest
 
 public sealed class TestClassToSerialize
 {
+    // ReSharper disable PropertyCanBeMadeInitOnly.Global
     public int Id { get; set; }
     public string Name { get; set; }
+    // ReSharper restore PropertyCanBeMadeInitOnly.Global
 }

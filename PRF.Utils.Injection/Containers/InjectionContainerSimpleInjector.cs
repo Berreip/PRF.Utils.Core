@@ -13,9 +13,8 @@ namespace PRF.Utils.Injection.Containers
 {
     /// <inheritdoc cref="IInjectionContainer"/>
     public sealed class InjectionContainerSimpleInjector : IInjectionContainer
-    {
-        /// <summary>
-        /// Dictionnaire de conversion entre un LifeTime externe et l'implémentation SimpleInjector
+    {/// <summary>
+        /// Conversion dictionary between an external LifeTime and the SimpleInjector implementation
         /// </summary>
         private static readonly Dictionary<LifeTime, Lifestyle> _convertLifestyles = new Dictionary<LifeTime, Lifestyle>
         {
@@ -23,9 +22,8 @@ namespace PRF.Utils.Injection.Containers
             { LifeTime.Scoped, Lifestyle.Scoped },
             { LifeTime.Transient, Lifestyle.Transient },
         };
-
         /// <summary>
-        /// Le conteneur d'injection interne utilisé (dans notre cas, un conteneur SimpleInjector)
+        /// The internal injection container used (in our case, a SimpleInjector container)
         /// </summary>
         private readonly Container _internalContainer;
 
@@ -40,15 +38,15 @@ namespace PRF.Utils.Injection.Containers
             _internalContainer = new Container();
 
             // WARNING: Since V5, simple injector do auto-verifying of registered elements
-            // while this beaviour could make sense in some environment, it is highly unwanted when talking
+            // while this behaviour could make sense in some environment, it is highly unwanted when talking
             // about windows registered as transient as ALL of them will be resolved at first resolution of any type 
             // and all of them will never be exited. As a result, the application could never be closed...
             // From my point of view, it is not to the container to decide this kind of behaviour. This point of
-            // view is not negociable so i do not provide a way to tweak it.
+            // view is not negotiable so i do not provide a way to tweak it.
             _internalContainer.Options.EnableAutoVerification = false;
 
             _internalContainer.ResolveUnregisteredType += RaiseResolveUnregisteredType;
-            // s'enregistre soit mm dans le conteneur afin de pouvoir injecter éventuellement le conteneur
+            // register yourself in the container in order to possibly inject the container
             _internalContainer.RegisterInstance<IInjectionContainer>(this);
         }
 
@@ -57,7 +55,7 @@ namespace PRF.Utils.Injection.Containers
 
         private void RaiseResolveUnregisteredType(object sender, UnregisteredTypeEventArgs e)
         {
-            // Simple injector does not allow optional injection of empty Ienumerable. This makes sense in 99.99% of usages but in context where plugins could not even exists and where it is normal, it could be a desirable behaviour
+            // Simple injector does not allow optional injection of empty IEnumerable. This makes sense in 99.99% of usages but in context where plugins could not even exists and where it is normal, it could be a desirable behaviour
             if (typeof(IEnumerable).IsAssignableFrom(e.UnregisteredServiceType))
             {
                 var genericArguments = e.UnregisteredServiceType.GetGenericArguments();
@@ -140,9 +138,9 @@ namespace PRF.Utils.Injection.Containers
         }
 
         /// <inheritdoc/>
-        public void RegisterSingleton<TClass>(Func<TClass> instancecreator) where TClass : class
+        public void RegisterSingleton<TClass>(Func<TClass> instanceCreator) where TClass : class
         {
-            _internalContainer.RegisterSingleton(instancecreator);
+            _internalContainer.RegisterSingleton(instanceCreator);
         }
 
         /// <inheritdoc/>
@@ -232,13 +230,12 @@ namespace PRF.Utils.Injection.Containers
         {
             return _internalContainer.GetAllInstances<T>().ToList();
         }
-
         /// <summary>
-        /// La vérification consiste à résoudre tous les types enregistrés de façon à vérifier qu'il n'existe pas de références circulaires non détectées
-        /// dans le container SimpleInjector.
+        /// The check consists of resolving all registered types in order to verify that there are no undetected circular references
+        /// in the SimpleInjector container.
         /// </summary>
-        /// <remarks>Cette méthode n'est pas exposé depuis les interfaces car elle n'est pas proposé aux consommateurs (les bootstrappers)</remarks>
-        /// <returns>Renvoie le diagnostique des Erreurs et Warning sil y en a</returns>
+        /// <remarks>This method is not exposed from the interfaces because it is not offered to consumers (bootstrapper)</remarks>
+        /// <returns>Returns the diagnosis of Errors and Warnings if there are any</returns>
         public string Verify()
         {
             _internalContainer.Verify(VerificationOption.VerifyAndDiagnose);

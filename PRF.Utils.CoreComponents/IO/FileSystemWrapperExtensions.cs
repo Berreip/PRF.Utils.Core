@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace PRF.Utils.CoreComponents.IO
 {
@@ -10,8 +11,8 @@ namespace PRF.Utils.CoreComponents.IO
     public static class FileSystemWrapperExtensions
     {
         /// <summary>
-        /// Try to delete the folder and cycle up to the confirmation taht the file is deleted or the timeout is reached (use this methods only in unit tests)
-        /// Note: the deletion is NOT sync even if Ms pretends it. so using this in unit test context may be usefull
+        /// Try to delete the folder and cycle up to the confirmation that the file is deleted or the timeout is reached (use this methods only in unit tests)
+        /// Note: the deletion is NOT sync even if Ms pretends it. so using this in unit test context may be useful
         /// Default timeout is 5 seconds
         /// </summary>
         public static bool DeleteIfExistAndWaitDeletion(this IFileSystemInfo fileSystemInfo, TimeSpan? timeout = null, bool recursive = true)

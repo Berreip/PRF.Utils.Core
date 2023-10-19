@@ -456,7 +456,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         /// </summary>
         /// <param name="file">the file concerned</param>
         /// <param name="minimumPeriodBeforeTakingFiles">the minimum time requested</param>
-        public static bool IsOldEnought(this FileInfo file, TimeSpan minimumPeriodBeforeTakingFiles)
+        public static bool IsOldEnough(this FileInfo file, TimeSpan minimumPeriodBeforeTakingFiles)
         {
             // we take the oldest date between the creation date and the modification date == window behavior
             // Be careful to take the date correctly with the hours/minutes/seconds.

@@ -1,21 +1,23 @@
 ﻿using System.IO.Compression;
 using System.Text;
 
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Méthodes d'extensions des archives .Net
+    /// .Net archive extension methods
     /// </summary>
     public static class ZipFileExtension
     {
         /// <summary>
-        /// Créer un fichier directement au sein d'un zip à partir d'une chaîne de caractères
+        /// Create a file directly within a zip from a character string
         /// </summary>
-        /// <param name="zipArchive">l'archive concernée</param>
-        /// <param name="relativePathInArchive">le chemin relatif du fichier (avec le nom et l'extension)</param>
-        /// <param name="fileContent">le contenu du fichier à ajouter</param>
-        /// <param name="compressionLevel">le niveau de compression (optimal par défaut)</param>
-        /// <param name="encoding">l'encodage du fichier (UTF8 par défaut)</param>
+        /// <param name="zipArchive">the archive concerned</param>
+        /// <param name="relativePathInArchive">the relative path of the file (with name and extension)</param>
+        /// <param name="fileContent">the contents of the file to add</param>
+        /// <param name="compressionLevel">the compression level (optimal by default)</param>
+        /// <param name="encoding">file encoding (UTF8 by default)</param>
         public static void CreateFileEntryFromString(this ZipArchive zipArchive,
             string relativePathInArchive,
             string fileContent,
@@ -28,12 +30,12 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Créer un fichier directement au sein d'un zip à partir d'une chaîne de caractères
+        /// Create a file directly within a zip from a character string
         /// </summary>
-        /// <param name="zipArchive">l'archive concernée</param>
-        /// <param name="relativePathInArchive">le chemin relatif du fichier (avec le nom et l'extension)</param>
-        /// <param name="fileContent">le contenu du fichier à ajouter sous forme de bytes</param>
-        /// <param name="compressionLevel">le niveau de compression (optimal par défaut)</param>
+        /// <param name="zipArchive">the archive concerned</param>
+        /// <param name="relativePathInArchive">the relative path of the file (with name and extension)</param>
+        /// <param name="fileContent">the content of the file to add in the form of bytes</param>
+        /// <param name="compressionLevel">the compression level (optimal by default)</param>
         public static void CreateFileEntryFromByteArray(this ZipArchive zipArchive,
             string relativePathInArchive,
             byte[] fileContent,
@@ -44,6 +46,5 @@ namespace PRF.Utils.CoreComponents.Extensions
                 entry.Write(fileContent, 0, fileContent.Length);
             }
         }
-
     }
 }

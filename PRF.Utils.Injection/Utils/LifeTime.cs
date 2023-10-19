@@ -1,22 +1,22 @@
 ﻿namespace PRF.Utils.Injection.Utils
 {
     /// <summary>
-    /// Les différents types de durée de vie possibles pour les enregistrements d'une classe dans le conteneur d'injection
+    /// The different types of possible lifetime for the registrations of a class in the injection container
     /// </summary>
     public enum LifeTime
     {
         /// <summary>
-        /// La classe sera crée sous forme de singleton et la même instance sera renvoyé à chaque demande par le conteneur (comportement le plus courant)
+        /// The class will be created as a singleton and the same instance will be returned on each request by the container (most common behavior)
         /// </summary>
         Singleton,
 
         /// <summary>
-        /// Scoped lifetime: the class will be reused within th current scope (may vary depending on the injection framwork used)
+        /// Scoped lifetime: the class will be reused within th current scope (may vary depending on the injection framework used)
         /// </summary>
         Scoped,
 
         /// <summary>
-        /// le conteneur renverra une nouvelle instance de la classe à chaque demande faite par le consommateur
+        /// the container will return a new instance of the class on each request made by the consumer
         /// </summary>
         Transient,
     }

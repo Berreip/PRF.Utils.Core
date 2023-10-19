@@ -1,7 +1,7 @@
 ﻿namespace PRF.Utils.Tracer.Listener.Traces
 {
     /// <summary>
-    /// Lénumération des actions de traces pour le wrapper interne (rajouter une trace ou demander un flush de force)
+    /// The enumeration of trace actions for the internal wrapper (add a trace or request a force flush)
     /// </summary>
     internal enum TraceAction
     {

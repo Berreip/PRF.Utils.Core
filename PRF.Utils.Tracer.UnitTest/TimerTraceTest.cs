@@ -16,7 +16,7 @@ public class TimerTraceTest
         foreach (TraceListener listener in Trace.Listeners)
         {
             // static listener pollution check
-            Assert.AreNotEqual(listener.Name, @"MainTracerSync", "one tracer remains in the list of static tracers = pollution");
+            Assert.AreNotEqual(listener.Name, "MainTracerSync", "one tracer remains in the list of static tracers = pollution");
         }
     }
 

@@ -99,6 +99,7 @@ internal sealed class InjectionContainerTests
         Assert.AreEqual(10, _counter);
     }
 
+    // ReSharper disable once ClassNeverInstantiated.Local
     private class FooType
     {
         public FooType()

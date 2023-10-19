@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+// ReSharper disable UnusedMember.Global
 
 // ReSharper disable ClassNeverInstantiated.Global
 

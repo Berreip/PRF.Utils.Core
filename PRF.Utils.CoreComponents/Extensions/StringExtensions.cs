@@ -8,12 +8,12 @@ using System.Text.RegularExpressions;
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Les méthodes d'extensions lié au type 'string'
+    /// Extension methods linked to the 'string' type
     /// </summary>
     public static class StringExtensions
     {
         /// <summary>
-        /// Fait un replace sans tenir compte de la casse
+        /// Do a replace without taking case into account
         /// </summary>
         public static string ReplaceCaseInsensitive(this string str, string pattern, string replacedBy)
         {
@@ -21,7 +21,7 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Returns the strintg between the first part and the second part AND NULL if a part is not found at all
+        /// Returns the string between the first part and the second part AND NULL if a part is not found at all
         /// </summary>
         public static string GetBetween(this string s, string firstPart, string secondPart)
         {
@@ -33,24 +33,24 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Récupère un chemin relatif en supprimant la partie 'pathToRemove' mais en conservant les sous-dossiers qui suivent
-        /// Marche avec ou sans le '\' à la fin de beforeRelativePath
+        /// Get a relative path by removing the 'pathToRemove' part but keeping the following subfolders
+        /// Works with or without the '\' at the end of beforeRelativePath
         /// </summary>
-        /// <param name="filefullName">le chemin complet du fichier fichier</param>
-        /// <param name="pathToRemove">le chemin à supprimer</param>
-        /// <returns>le chemin relatif restant</returns>
-        public static string GetRelativePath(this string filefullName, string pathToRemove)
+        /// <param name="fileFullName">the full path of the file file</param>
+        /// <param name="pathToRemove">the path to remove</param>
+        /// <returns>the remaining relative path</returns>
+        public static string GetRelativePath(this string fileFullName, string pathToRemove)
         {
-            // efface le beforeRelativePath avec et sans '\'
-            // ex: C:\Toto\tata\tati\file.txt && beforeRelativePath =  C:\Toto\tata ==> tati\file.txt (SANS '\')
-            // ex: C:\Toto\tata\tati\file.txt && beforeRelativePath =  C:\Toto\tata\ ==> tati\file.txt (AVEC '\')
-            return filefullName.Replace(pathToRemove + Path.DirectorySeparatorChar, string.Empty).Replace(pathToRemove, string.Empty);
+            // clear the beforeRelativePath with and without '\'
+            // ex: C:\Toto\tata\tati\file.txt && beforeRelativePath =  C:\Toto\tata ==> tati\file.txt (WITH '\')
+            // ex: C:\Toto\tata\tati\file.txt && beforeRelativePath =  C:\Toto\tata\ ==> tati\file.txt (WITHOUT '\')
+            return fileFullName.Replace(pathToRemove + Path.DirectorySeparatorChar, string.Empty).Replace(pathToRemove, string.Empty);
         }
 
         /// <summary>
-        /// Supprime les lignes vides (ou seulement occupé par des espaces)
+        /// Remove empty lines (or only occupied by spaces)
         /// </summary>
-        /// <param name="str">la string dont on souhaite supprimer les lignes vides</param>
+        /// <param name="str">the string from which we wish to remove empty lines</param>
         public static string RemoveEmptyLines(this string str)
         {
             return Regex.Replace(str, $@"^\s*[{Environment.NewLine}]*", string.Empty, RegexOptions.Multiline).TrimEnd();
@@ -65,7 +65,7 @@ namespace PRF.Utils.CoreComponents.Extensions
         {
             return str?.IndexOf(searchedString, StringComparison.OrdinalIgnoreCase) >= 0;
         }
-        
+
         /// <summary>
         /// Do a string Equals in a case insensitive way
         /// You could provide a specific Culture info. by default, CultureInfo.InvariantCulture is used
@@ -113,15 +113,17 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Supprime les symboles incompatibles avec un nom de fichier
+        /// Remove symbols incompatible with a file name
         /// </summary>
-        /// <param name="str">la string dont on souhaite supprimer les symboles incompatibles avec un nom de fichier</param>
+        /// <param name="str">the string from which we wish to remove symbols incompatible with a file name</param>
         public static string RemoveInvalidPathCharacters(this string str)
         {
+            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
             foreach (var c in _illegal)
             {
                 str = str.Replace(c.ToString(), string.Empty);
             }
+
             return str;
         }
     }

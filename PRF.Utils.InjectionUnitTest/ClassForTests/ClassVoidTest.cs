@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using PRF.Utils.Injection.Utils;
 
-namespace PRF.Utils.InjectionUnitTest.ClasseForTests;
+// ReSharper disable ClassNeverInstantiated.Global
+
+namespace PRF.Utils.InjectionUnitTest.ClassForTests;
 
 // ReSharper disable UnusedParameter.Global
 public interface IClassVoidTest
@@ -35,19 +37,19 @@ public sealed class ClassVoidTest : IClassVoidTest
 {
     public void MethodCall()
     {
-        // juste un appel vide
+        // just an empty call
     }
 
     public int Prop { get; set; }
 
     public void MethodCallWithParameters(string param1, int param2, object param3)
     {
-        // juste un appel vide
+        // just an empty call
     }
 
     public double MethodCallWithParametersWithReturn(string param1, int param2, object param3)
     {
-        // juste un appel vide
+        // just an empty call
         return 569.489;
     }
 
@@ -59,7 +61,7 @@ public sealed class ClassVoidTest : IClassVoidTest
 
     public double MethodCallWithParametersWithParams(params string[] parameters)
     {
-        // juste un appel vide
+        // just an empty call
         return -1;
     }
 
@@ -101,7 +103,7 @@ public interface IClassVoidAttributeTest
     [Interception]
     void MethodCall();
 
-    // pour l'interception par attribut, il faut mettre les attributs sur le get ET sur le set indépendamment
+    // for interception by attribute, you must put the attributes on the get AND on the set independently
     int Prop
     {
         [Interception]
@@ -116,7 +118,7 @@ public sealed class ClassVoidAttributeTest : IClassVoidAttributeTest
 {
     public void MethodCall()
     {
-        // juste un appel vide
+        // just an empty call
     }
 
     public int Prop { get; set; }

@@ -7,8 +7,8 @@ namespace PRF.Utils.Injection.Interception.Interceptors
 {
     /// <inheritdoc />
     /// <summary>
-    /// Intercepteur qui trace les entrées et les sorties d'une méthode
-    /// Il est un peu plus compliqué car il intercepte également les méthodes asynchrones
+    /// Interceptor that traces the inputs and outputs of a method
+    /// It is a little more complicated because it also intercepts asynchronous methods
     /// </summary>
     public sealed class MethodTraceInterceptor : IInterceptor
     {
@@ -17,16 +17,16 @@ namespace PRF.Utils.Injection.Interception.Interceptors
         {
             var declaringTypeName = invocation.Method.DeclaringType?.Name;
 
-            // trace le début de l'appel
-            Trace.TraceInformation($@"START_{declaringTypeName}.{invocation.Method.Name}({string.Join(", ", invocation.Arguments)})");
+            // traces the start of the call
+            Trace.TraceInformation($"START_{declaringTypeName}.{invocation.Method.Name}({string.Join(", ", invocation.Arguments)})");
             try
             {
-                // Appel de l'instance concrete.
+                // Calling the concrete instance.
                 invocation.Proceed();
             }
             finally
             {
-                // gestion des méthodes dont le type de retour est une Task (asynchrones)
+                // management of methods whose return type is a Task (asynchronous)
                 if (invocation.ReturnValue is Task task)
                 {
                     invocation.ReturnValue = task.InterceptAsync(

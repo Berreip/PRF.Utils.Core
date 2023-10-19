@@ -4,40 +4,40 @@ using System.Diagnostics;
 namespace PRF.Utils.Tracer.Configuration
 {
     /// <summary>
-    /// La classe de configuration du traceur
+    /// The tracer configuration class
     /// </summary>
     public sealed class TraceConfig
     {
         /// <summary>
-        /// Le nom du traceur (exactement, celui du traceSource) sous lequel il sera sauvegardé 
+        /// The name of the tracer (exactly, that of the traceSource) under which it will be saved
         /// </summary>
-        /// <remarks> 
-        /// On propose un nom par défaut: cette décision de design pars du postulat que la simplicité d'utilisation des traces statiques, bien que
-        /// moins puissantes que les traces ajoutées directement au traceSource seront bcq plus utilisées par les devs.
-        /// En conséquence, avoir plusieurs traces sources (ce qui est une préconisation Microsoft) ne sera clairement pas clair
-        /// puisqu'il y aura un mélange de traces statique et directe dans des TracesSources différents. En proposant un nom
-        /// par défaut on regroupe les traceSource sous la même appelation
+        /// <remarks>
+        /// We propose a default name: this design decision starts from the premise that the simplicity of using static traces, although
+        /// less powerful than traces added directly to the traceSource will be used much more by devs.
+        /// Consequently, having several source traces (which is a Microsoft recommendation) will clearly not be clear
+        /// since there will be a mixture of static and direct traces in different TraceSources. By proposing a name
+        /// by default we group the traceSource under the same name
         /// </remarks>
-        public string TraceName { get; set; } = @"MainTracerSync";
+        public string TraceName { get; set; } = "MainTracerSync";
 
         /// <summary>
-        /// Le comportement du traceur vis à vis des appels statique à Trace.TraceInformation(..)
+        /// The behavior of the tracer with respect to static calls to Trace.TraceInformation(..)
         /// </summary>
         public TraceStaticBehavior TraceBehavior { get; set; } = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer;
 
         /// <summary>
-        /// Le niveau de trace à partir duquel on décide de tracer (SourceLevels.Information par défaut)
+        /// The trace level from which we decide to trace (SourceLevels.Information by default)
         /// </summary>
         public SourceLevels TraceLevel { get; set; } = SourceLevels.Information;
 
         /// <summary>
-        /// Le temps maximum entre deux flushs même si on n'atteint pas la taille de la page souhaité
+        /// The maximum time between two flushes even if we do not reach the desired page size
         /// </summary>
         public TimeSpan MaximumTimeForFlush { get; set; } = TimeSpan.FromMilliseconds(500);
-       
+
         /// <summary>
-        /// La taille des blocs de traces qui sont remonté via l'évènement OnTracesSent. On videra le
-        /// cache dès que ce nombre (ou le timer) est atteint
+        /// The size of the trace blocks that are reported via the OnTracesSent event. We will empty the
+        /// cache as soon as this number (or the timer) is reached
         /// </summary>
         public int PageSize { get; set; } = 10_000;
     }

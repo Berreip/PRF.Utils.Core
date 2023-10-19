@@ -142,10 +142,8 @@ internal sealed class DispatcherCoreTests
         var exception = 0;
 
         // Act 
-        void Callback() => throw new Exception();
-
         await AsyncWrapperBase.DispatchAndWrapAsyncBase(
-            Callback,
+            () => throw new Exception(),
             _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
         // Assert

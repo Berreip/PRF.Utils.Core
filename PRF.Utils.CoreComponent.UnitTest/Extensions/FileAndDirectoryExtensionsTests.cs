@@ -2,6 +2,7 @@
 using System.IO;
 using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
+// ReSharper disable StringLiteralTypo
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
@@ -14,7 +15,7 @@ internal sealed class FileAndDirectoryExtensionsTests
     public void TestInitialize()
     {
         // mock:
-        _testDirectory = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, @"Extensions"));
+        _testDirectory = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, "Extensions"));
         _testDirectory.CreateIfNotExist();
     }
 
@@ -75,7 +76,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = file.GetRelativePath(_testDirectory.Parent.FullName);
 
         //Assert
-        Assert.AreEqual($@"Extensions{Path.DirectorySeparatorChar}testFile.txt", res);
+        Assert.AreEqual($"Extensions{Path.DirectorySeparatorChar}testFile.txt", res);
     }
 
     [Test]
@@ -143,26 +144,26 @@ internal sealed class FileAndDirectoryExtensionsTests
     }
 
     [Test]
-    public void IsOldEnought_return_false_for_very_big_timespan()
+    public void IsOldEnough_return_false_for_very_big_timespan()
     {
         //Arrange
         var file = _testDirectory.GetFile("testFile.txt");
 
         //Act
-        var res = file.IsOldEnought(TimeSpan.MaxValue);
+        var res = file.IsOldEnough(TimeSpan.MaxValue);
 
         //Assert
         Assert.IsFalse(res);
     }
 
     [Test]
-    public void IsOldEnought_return_false_for_zero_timespan()
+    public void IsOldEnough_return_false_for_zero_timespan()
     {
         //Arrange
         var file = _testDirectory.GetFile("testFile.txt");
 
         //Act
-        var res = file.IsOldEnought(TimeSpan.Zero);
+        var res = file.IsOldEnough(TimeSpan.Zero);
 
         //Assert
         Assert.IsTrue(res);
@@ -193,7 +194,7 @@ internal sealed class FileAndDirectoryExtensionsTests
     {
         //Arrange
         var newDirectory = _testDirectory.Parent.CreateSubdirectoryIfNotExist(Guid.NewGuid().ToString());
-        // create files and subdiretory:
+        // create files and sub-directory:
         newDirectory.CreateFileIfNotExist("foo.txt");
         newDirectory.CreateSubdirectoryIfNotExist("subDir").CreateFileIfNotExist("subfileFoo.txt");
 
@@ -236,7 +237,7 @@ internal sealed class FileAndDirectoryExtensionsTests
     {
         //Arrange
         var newDirectory = _testDirectory.Parent.CreateSubdirectoryIfNotExist(Guid.NewGuid().ToString());
-        // create files and subdiretory:
+        // create files and sub-directory:
         newDirectory.CreateFileIfNotExist("foo.txt");
         newDirectory.CreateSubdirectoryIfNotExist("subDir").CreateFileIfNotExist("subfileFoo.txt");
 

@@ -1,27 +1,27 @@
 ﻿namespace PRF.Utils.Injection.Utils
 {
     /// <summary>
-    /// Les différents type d'interception disponible pour un interface
+    /// The different types of interception available for an interface
     /// </summary>
     public enum InterceptionHookOption
     {
         /// <summary>
-        /// Intercepte toute les méthodes et les setter des propriétés d'un interface
+        /// Intercepts all methods and setters of interface properties
         /// </summary>
         MethodsAndSetProperties,
 
         /// <summary>
-        /// Intercepte les méthodes seulement mais pas les propriétés d'un interface
+        /// Intercepts methods only but not interface properties
         /// </summary>
         MethodsOnly,
 
         /// <summary>
-        /// Intercepte les méthodes et propriétés (Get ou Set)
-        /// d'un interface ayant un InterceptionAttribute
+        /// Intercepts methods and properties (Get or Set)
+        /// of an interface having an InterceptionAttribute
         /// </summary>
         /// <seealso cref="InterceptionAttribute"/>
-        /// <remarks>Attention, les attributs d'interceptions ne fonctionnent
-        /// que sur les interfaces</remarks>
-        InterceptionAttributOnly,
+        /// <remarks>Be careful, the interception attributes do not work
+        /// only on interfaces</remarks>
+        InterceptionAttributeOnly,
     }
 }

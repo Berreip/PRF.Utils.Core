@@ -16,7 +16,7 @@ public class TestSwitchLevel
         foreach (TraceListener listener in Trace.Listeners)
         {
             // static listener pollution check
-            Assert.AreNotEqual(listener.Name, "MainTracerSync", "il reste un traceur dans la liste des traceurs statiques = pollution");
+            Assert.AreNotEqual(listener.Name, "MainTracerSync", "one tracer remains in the list of static tracers = pollution");
         }
     }
 
@@ -333,7 +333,7 @@ public class TestSwitchLevel
     }
 
     /// <summary>
-    /// Teste le changement dynamique de niveau de trace
+    /// Test dynamic trace level change
     /// </summary>
     [Test]
     public async Task TestSwitchChangeLevelV1()

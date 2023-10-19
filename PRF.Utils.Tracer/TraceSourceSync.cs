@@ -10,8 +10,8 @@ namespace PRF.Utils.Tracer
 {
     /// <inheritdoc cref="TraceSource" />
     /// <summary>
-    /// L'implémentation d'un trace source utilisant un TraceListenerSync. Cet objet est un traceSource uniquement
-    /// pour les cas où l'on décide de l'injecter et de manipuler directement
+    /// The implementation of a source trace using a TraceListenerSync. This object is a traceSource only
+    /// for cases where we decide to inject it and manipulate it directly
     /// </summary>
     public sealed class TraceSourceSync : TraceSource, IDisposable
     {
@@ -19,7 +19,7 @@ namespace PRF.Utils.Tracer
         private readonly TraceStaticBehavior _traceConfigBehavior;
 
         /// <summary>
-        /// L'évènement levé lorsqu'une page de trace à été constituée
+        /// The event raised when a trace page has been created
         /// </summary>
         public event Action<TraceData[]> OnTracesSent
         {
@@ -28,7 +28,7 @@ namespace PRF.Utils.Tracer
         }
 
         /// <summary>
-        /// Le niveau de trace à partir duquel on trace
+        /// The trace level from which we trace
         /// </summary>
         public SourceLevels TraceLevel
         {
@@ -38,15 +38,17 @@ namespace PRF.Utils.Tracer
 
         /// <inheritdoc />
         /// <summary>
-        /// Construit un traceur avec la configuration par défaut (TraceConfig)
+        /// Constructs a tracer with the default configuration (TraceConfig)
         /// </summary>
-        public TraceSourceSync(): this(new TraceConfig()){}
-        
+        public TraceSourceSync() : this(new TraceConfig())
+        {
+        }
+
         /// <inheritdoc />
         /// <summary>
-        /// Construit un traceur avec une configuration fournie par l'utilisateur
+        /// Constructs a tracer with user-provided configuration
         /// </summary>
-        /// <param name="traceConfig">la configuration du traceur</param>
+        /// <param name="traceConfig">tracer configuration</param>
         public TraceSourceSync(TraceConfig traceConfig) : base(traceConfig.TraceName, traceConfig.TraceLevel)
         {
             _traceListener = new TraceListenerSync(traceConfig.MaximumTimeForFlush, traceConfig.PageSize);
@@ -59,7 +61,7 @@ namespace PRF.Utils.Tracer
             {
                 case TraceStaticBehavior.DoNothing:
                     break;
-                case TraceStaticBehavior.AddListenerToStaticAcces:
+                case TraceStaticBehavior.AddListenerToStaticAccess:
                     Trace.Listeners.Add(_traceListener);
                     break;
                 case TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer:
@@ -76,19 +78,18 @@ namespace PRF.Utils.Tracer
         }
 
         /// <summary>
-        /// Met à jour le switch du trace Source mais également celui du listener (qui est dynamique pour pouvoir switcher de niveau
-        /// même sur les appels statiques à Trace.qqch)
+        /// Updates the source trace switch but also that of the listener (which is dynamic to be able to switch levels
+        /// even on static calls to Trace.Smthg)
         /// </summary>
         private void UpdateTraceSourceAndDynamicFilter(SourceLevels sourceLevels)
         {
             Switch.Level = sourceLevels;
             _traceListener.DynamicFilter = sourceLevels.ToTraceEventType();
-
         }
 
         /// <summary>
-        /// Met toutes les traces dans le buffer et vide ce dernier tout en cloturant le listener: IL NE PEUT
-        /// PLUS RECEVOIR DE NOUVELLES TRACES. La méthode attends la cloture du buffer pour revenir (d'où le async)
+        /// Puts all traces in the buffer and empties the latter while closing the listener: IT CANNOT
+        /// NO MORE RECEIVING NEW TRACKS. The method waits for the buffer to close to return (hence the async)
         /// </summary>
         public async Task FlushAndCompleteAddingAsync()
         {
@@ -99,15 +100,15 @@ namespace PRF.Utils.Tracer
         /// <inheritdoc />
         public void Dispose()
         {
-            // dispose le traceur
+            // arrange the plotter
             _traceListener.Dispose();
 
-            // retire si besoin le traceur
+            // remove the tracer if necessary
             switch (_traceConfigBehavior)
             {
                 case TraceStaticBehavior.DoNothing:
                     break;
-                case TraceStaticBehavior.AddListenerToStaticAcces:
+                case TraceStaticBehavior.AddListenerToStaticAccess:
                 case TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer:
                 case TraceStaticBehavior.AddListenerToStaticAccessAndClearAll:
                     Trace.Listeners.Remove(_traceListener);
@@ -119,31 +120,31 @@ namespace PRF.Utils.Tracer
     }
 
     /// <summary>
-    /// Le comportement du traceur par rapport aux traces statiques: => Trace.TraceInformation("...") etc...
+    /// The behavior of the tracer in relation to static traces: => Trace.TraceInformation("...") etc...
     /// </summary>
     public enum TraceStaticBehavior
     {
         /// <summary>
-        ///  valeur par défaut: le traceSource créer simplement un Listener et l'ajoute dans SA liste de listeners
+        /// default value: the traceSource simply creates a Listener and adds it to ITS list of listeners
         /// </summary>
         DoNothing,
 
         /// <summary>
-        /// Ajoute le Listener de traces à l'accès statique Trace.Listener (il sera donc appelé pour chaque appel statique Trace.Traceqqch..)
+        /// Adds the Trace Listener to the static Trace.Listener access (so it will be called for each static Trace.TraceSmthg.. call)
         /// </summary>
-        AddListenerToStaticAcces,
+        AddListenerToStaticAccess,
 
         /// <summary>
-        /// Ajoute le Listener de traces à l'accès statique Trace.Listener
-        /// et efface préalablement le listener par défaut si il est présent
-        /// => peut être bcq plus performant mais empêche les remontées d'infos via l'output Visual Studio en debug par exemple
+        /// Adds the Trace Listener to the static Trace.Listener access
+        /// and first clears the default listener if it is present
+        /// => can be a lot more efficient but prevents the reporting of information via Visual Studio output in debug for example
         /// </summary>
         AddListenerToStaticAccessAndRemoveDefaultTracer,
-
+        
         /// <summary>
-        /// Ajoute le Listener de traces à l'accès statique Trace.Listener
-        /// et efface préalablement tous les listeners présents (performances maximum)
-        /// => peut être bcq plus performant mais empêche les remontées d'infos via l'output Visual Studio en debug par exemple
+        /// Adds the Trace Listener to the static Trace.Listener access
+        /// and first deletes all present listeners (maximum performance)
+        /// => can be a lot more efficient but prevents the reporting of information via Visual Studio output in debug for example
         /// </summary>
         AddListenerToStaticAccessAndClearAll,
     }

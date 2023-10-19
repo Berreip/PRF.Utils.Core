@@ -14,7 +14,7 @@ public class FileAndDirectoryTests
     public void TestInitialize()
     {
         // mock:
-        _testDirectory = new DirectoryInfoWrapper(Path.Combine(TestContext.CurrentContext.TestDirectory, @"Extensions"));
+        _testDirectory = new DirectoryInfoWrapper(Path.Combine(TestContext.CurrentContext.TestDirectory, "Extensions"));
         _testDirectory.CleanDirectory();
     }
 

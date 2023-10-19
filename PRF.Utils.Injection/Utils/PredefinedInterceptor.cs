@@ -1,18 +1,18 @@
 ﻿namespace PRF.Utils.Injection.Utils
 {
     /// <summary>
-    /// La liste de tous les intercepteurs pré-configurés car d'usage classique. Il est possible de définir un intercepteur custom en
-    /// surchargeant l'interface IInterceptor
+    /// The list of all pre-configured interceptors for classic use. It is possible to define a custom interceptor by
+    /// overriding the IInterceptor interface
     /// </summary>
     public enum PredefinedInterceptors
     {
         /// <summary>
-        /// Intercepteur qui trace le début et la fin de chaque méthode interceptée et fait un ToString sur les paramètres de cette méthode
+        /// Interceptor that traces the start and end of each intercepted method and does a ToString on the parameters of this method
         /// </summary>
         MethodTraceInterceptor,
 
         /// <summary>
-        /// Intercepteur qui trace le temps passé dans chaque méthode interceptée
+        /// Interceptor that tracks the time spent in each intercepted method
         /// </summary>
         TimeWatchInterceptor,
     }

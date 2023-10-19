@@ -2,24 +2,27 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
+// ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Méthodes d'extensions pour les Bitmap
+    /// Extension methods for Bitmaps
     /// </summary>
     public static class BitmapExtensions
     {
         /// <summary>
-        /// Convertit l'image en niveaux de gris sans créer de copie.
-        /// L'instance originale est donc écrasée !
+        /// Converts the image to grayscale without creating a copy.
+        /// The original instance is therefore overwritten!
         /// </summary>
-        /// <param name="bmp">Image à convertir</param>
-        /// <param name="redPart">Proportion de rouge (en %)</param>
-        /// <param name="greenPart">Proportion de vert (en %)</param>
-        /// <param name="bluePart">Proportion de bleu (en %)</param>
+        /// <param name="bmp">Image to convert</param>
+        /// <param name="redPart">Proportion of red (in %)</param>
+        /// <param name="greenPart">Proportion of green (in %)</param>
+        /// <param name="bluePart">Proportion of blue (in %)</param>
         public static void ToGrayScale(this Bitmap bmp, int redPart, int greenPart, int bluePart)
         {
-            if(redPart + greenPart + bluePart != 100)
+            if (redPart + greenPart + bluePart != 100)
                 throw new ArgumentException("The sum of red, green and blue percentages must be equal to 100.");
 
             var redFactor = (float)redPart / 100;
@@ -29,11 +32,11 @@ namespace PRF.Utils.CoreComponents.Extensions
             var colorMatrix = new ColorMatrix(
                 new[]
                 {
-                    new[] {redFactor, redFactor, redFactor, 0, 0},
-                    new[] {greenFactor, greenFactor, greenFactor, 0, 0},
-                    new[] {blueFactor, blueFactor, blueFactor, 0, 0},
-                    new[] {0f, 0f, 0f, 1f, 0f},
-                    new[] {0f, 0f, 0f, 0f, 1f},
+                    new[] { redFactor, redFactor, redFactor, 0, 0 },
+                    new[] { greenFactor, greenFactor, greenFactor, 0, 0 },
+                    new[] { blueFactor, blueFactor, blueFactor, 0, 0 },
+                    new[] { 0f, 0f, 0f, 1f, 0f },
+                    new[] { 0f, 0f, 0f, 0f, 1f },
                 });
 
             using (var imageAttributes = new ImageAttributes())
@@ -47,9 +50,9 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Convertit l'image en niveaux de gris sans créer de copie.
-        /// L'instance originale est donc écrasée !
-        /// Répartition des couleurs : R=20%, V=60%, B=20%
+        /// Converts the image to grayscale without creating a copy.
+        /// The original instance is therefore overwritten!
+        /// Color distribution: R=20%, G=60%, B=20%
         /// </summary>
         public static void ToGrayScale(this Bitmap bmp)
         {
@@ -57,13 +60,13 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Retourne une copie de l'image en niveaux de gris.
-        /// L'instance originale n'est pas modifiée.
+        /// Returns a copy of the grayscale image.
+        /// The original instance is not modified.
         /// </summary>
-        /// <param name="bmp">Image à convertir</param>
-        /// <param name="redPart">Proportion de rouge (en %)</param>
-        /// <param name="greenPart">Proportion de vert (en %)</param>
-        /// <param name="bluePart">Proportion de bleu (en %)</param>
+        /// <param name="bmp">Image to convert</param>
+        /// <param name="redPart">Proportion of red (in %)</param>
+        /// <param name="greenPart">Proportion of green (in %)</param>
+        /// <param name="bluePart">Proportion of blue (in %)</param>
         public static Bitmap ToGrayScaleCopy(this Bitmap bmp, int redPart, int greenPart, int bluePart)
         {
             var copy = new Bitmap(bmp);
@@ -74,9 +77,9 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Retourne une copie de l'image en niveaux de gris.
-        /// L'instance originale n'est pas modifiée.
-        /// Répartition des couleurs : R=20%, V=60%, B=20%
+        /// Returns a copy of the grayscale image.
+        /// The original instance is not modified.
+        /// Color distribution: R=20%, G=60%, B=20%
         /// </summary>
         public static Bitmap ToGrayScaleCopy(this Bitmap bmp)
         {

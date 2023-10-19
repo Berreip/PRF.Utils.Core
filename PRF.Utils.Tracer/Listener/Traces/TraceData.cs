@@ -6,42 +6,42 @@
 namespace PRF.Utils.Tracer.Listener.Traces
 {
     /// <summary>
-    /// Les données de traces dans le buffer (immutables)
+    /// Trace data in the buffer (immutable)
     /// </summary>
     public struct TraceData
     {
         /// <summary>
-        /// Le niveau de la trace
+        /// The trace level
         /// </summary>
         public TraceEventType EventType { get; }
 
         /// <summary>
-        /// L'identifiant fourni par la source (idéalement un membre d'enum)
+        /// The identifier provided by the source (ideally an enum member)
         /// </summary>
         public int Id { get; }
 
         /// <summary>
-        /// Données additionelles éventuellement fournies par l'appelant (peut être null)
+        /// Additional data possibly provided by the caller (may be null)
         /// </summary>
         public object[] AdditionalData { get; }
 
         /// <summary>
-        /// Détail de la trace soit fourni par la méthode de trace (idéalement) soit créer à la volée lors de la trace (moins précis)
+        /// Trace details either provided by the trace method (ideally) or created on the fly during tracing (less precise)
         /// </summary>
         public TraceEventCache EventCache { get; }
 
         /// <summary>
-        /// Le message de la trace
+        /// The trace message
         /// </summary>
         public string Message { get; }
 
         /// <summary>
-        /// La source de la trace
+        /// The source of the trace
         /// </summary>
         public string Source { get; }
 
         /// <summary>
-        /// Constructeur détaillé
+        /// Detailed constructor
         /// </summary>
         public TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message, params object[] additionalData)
         {

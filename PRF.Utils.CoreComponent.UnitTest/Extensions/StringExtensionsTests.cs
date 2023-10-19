@@ -13,7 +13,7 @@ internal sealed class StringExtensionsTests
     public void ReplaceCaseInsensitive_returns_correct_value_with_same_case()
     {
         //Arrange
-        var str = "foo_content";
+        const string str = "foo_content";
 
         //Act
         var res = str.ReplaceCaseInsensitive("oo_conten", "AAA");
@@ -26,7 +26,7 @@ internal sealed class StringExtensionsTests
     public void ReplaceCaseInsensitive_returns_correct_value_with_different_case()
     {
         //Arrange
-        var str = "foo_content";
+        const string str = "foo_content";
 
         //Act
         var res = str.ReplaceCaseInsensitive("OO_CONTEN", "AAA");
@@ -39,7 +39,7 @@ internal sealed class StringExtensionsTests
     public void ReplaceCaseInsensitive_returns_correct_value_if_not_found()
     {
         //Arrange
-        var str = "foo_content";
+        const string str = "foo_content";
 
         //Act
         var res = str.ReplaceCaseInsensitive("OO_EN", "AAA");
@@ -52,7 +52,7 @@ internal sealed class StringExtensionsTests
     public void GetBetween_returns_correct_value()
     {
         //Arrange
-        var str = "foo_content";
+        const string str = "foo_content";
 
         //Act
         var res = str.GetBetween("foo", "ontent");
@@ -65,7 +65,7 @@ internal sealed class StringExtensionsTests
     public void GetBetween_returns_correct_value_if_second_part_not_found()
     {
         //Arrange
-        var str = "foo_content";
+        const string str = "foo_content";
 
         //Act
         var res = str.GetBetween("foo", "ontentdsfgfdgdfg");
@@ -78,7 +78,7 @@ internal sealed class StringExtensionsTests
     public void GetBetween_returns_correct_value_if_first_part_not_found()
     {
         //Arrange
-        var str = "foo_content";
+        const string str = "foo_content";
 
         //Act
         var res = str.GetBetween("fofsdgdfgdgo", "onte");
@@ -104,27 +104,31 @@ internal sealed class StringExtensionsTests
     public void RemoveEmptyLines_nominal()
     {
         //Arrange
-        var str = @"oo
-aaa
+        const string str = """
+                           oo
+                           aaa
 
-bb
-";
+                           bb
+
+                           """;
 
         //Act
         var res = str.RemoveEmptyLines();
 
         //Assert
         Assert.AreEqual(
-            @"oo
-aaa
-bb", res);
+            """
+            oo
+            aaa
+            bb
+            """, res);
     } 
         
     [Test]
     public void ContainsInsensitive_returns_true_if_contains_same_case()
     {
         //Arrange
-        var str = @"azerty78";
+        const string str = "azerty78";
 
         //Act
         var res = str.ContainsInsensitive("erty7");
@@ -137,7 +141,7 @@ bb", res);
     public void ContainsInsensitive_returns_true_if_contains_different_case()
     {
         //Arrange
-        var str = @"azerty78";
+        const string str = "azerty78";
 
         //Act
         var res = str.ContainsInsensitive("ERTY7");
@@ -150,7 +154,7 @@ bb", res);
     public void ContainsInsensitive_returns_false_if_does_not_contains()
     {
         //Arrange
-        var str = @"azerty78";
+        const string str = "azerty78";
 
         //Act
         var res = str.ContainsInsensitive("aaa");
@@ -163,7 +167,7 @@ bb", res);
     public void RemoveInvalidPathCharacters_nominal()
     {
         //Arrange
-        var str = @"az/erty78";
+        const string str = "az/erty78";
 
         //Act
         var res = str.RemoveInvalidPathCharacters();
@@ -202,7 +206,7 @@ bb", res);
     public void StartsWithInsensitive_throws_when_null_search()
     {
         //Arrange
-        var str = "foo";
+        const string str = "foo";
 
         //Act
         //Assert
@@ -238,7 +242,7 @@ bb", res);
     public void EndsWithInsensitive_throws_when_null_search()
     {
         //Arrange
-        var str = "foo";
+        const string str = "foo";
 
         //Act
         //Assert

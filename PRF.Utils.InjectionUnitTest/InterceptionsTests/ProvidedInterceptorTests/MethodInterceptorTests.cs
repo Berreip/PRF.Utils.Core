@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
-using PRF.Utils.InjectionUnitTest.ClasseForTests;
+using PRF.Utils.InjectionUnitTest.ClassForTests;
 using PRF.Utils.Tracer;
 using PRF.Utils.Tracer.Configuration;
 using PRF.Utils.Tracer.Listener.Traces;
@@ -149,7 +149,7 @@ public class MethodInterceptorTests
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2, traceReceived.Length);
         Assert.AreEqual("START_IClassVoidTest.MethodCallWithParameters(toto, 789, surchargeCustomObject)", traceReceived[0].Message);
@@ -158,7 +158,7 @@ public class MethodInterceptorTests
 
 
     /// <summary>
-    /// test d'interception pour les propriétés (setter exclusivement)
+    /// intercept test for properties (setter exclusively)
     /// </summary>
     [Test]
     public async Task MethodInterceptorTestV3()
@@ -186,7 +186,7 @@ public class MethodInterceptorTests
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2, traceReceived.Length);
         Assert.AreEqual("START_IClassVoidTest.set_Prop(45)", traceReceived[0].Message);
@@ -195,7 +195,7 @@ public class MethodInterceptorTests
 
 
     /// <summary>
-    /// test d'interception pour les propriétés => vérifie pas de trace getter
+    /// intercept test for properties =&gt; check no trace getter
     /// </summary>
     [Test]
     public async Task MethodInterceptorTestV4()
@@ -223,7 +223,7 @@ public class MethodInterceptorTests
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(0, count);
         Assert.AreEqual(0, traceReceived.Length);
     }
@@ -254,7 +254,7 @@ public class MethodInterceptorTests
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2, traceReceived.Length);
         Assert.AreEqual("START_IClassVoidTest.MethodCallWithParametersWithReturn(toto, 789, surchargeCustomObject)", traceReceived[0].Message);
@@ -281,13 +281,13 @@ public class MethodInterceptorTests
             };
 
             //Test
-            _ = instance.TryGetValue(true, out var _);
+            _ = instance.TryGetValue(true, out _);
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2, traceReceived.Length);
         Assert.AreEqual("START_IClassVoidTest.TryGetValue(True, 0)", traceReceived[0].Message);
@@ -321,7 +321,7 @@ public class MethodInterceptorTests
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2, traceReceived.Length);
         Assert.AreEqual("START_IClassVoidTest.MethodCallWithParametersWithParams(System.String[])", traceReceived[0].Message);
@@ -329,7 +329,7 @@ public class MethodInterceptorTests
     }
 
     /// <summary>
-    /// Gestion des méthodes asynchrones
+    /// Handling asynchronous methods
     /// </summary>
     [Test]
     public async Task MethodInterceptorTestV8()
@@ -358,7 +358,7 @@ public class MethodInterceptorTests
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2, traceReceived.Length);
         Assert.AreEqual("START_IClassVoidTest.MethodCallWaitAsync(00:00:00.0500000)", traceReceived[0].Message);
@@ -366,7 +366,7 @@ public class MethodInterceptorTests
     }
 
     /// <summary>
-    /// Gestion des méthodes asynchrones avec retour
+    /// Handling asynchronous methods with return
     /// </summary>
     [Test]
     public async Task MethodInterceptorTestV9()
@@ -395,7 +395,7 @@ public class MethodInterceptorTests
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2, traceReceived.Length);
         Assert.AreEqual("START_IClassVoidTest.MethodCallWaitWithReturnAsync(00:00:00.0500000)", traceReceived[0].Message);
@@ -403,7 +403,7 @@ public class MethodInterceptorTests
     }
 
     /// <summary>
-    /// Gestion des méthodes asynchrones avec retour
+    /// Handling asynchronous methods with return
     /// </summary>
     [Test]
     public async Task MethodInterceptorTestV10()
@@ -431,7 +431,7 @@ public class MethodInterceptorTests
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2, traceReceived.Length);
         Assert.AreEqual("START_IClassVoidTest.MethodCallWaitWithReturnDataAsync(00:00:00.0500000)", traceReceived[0].Message);
@@ -439,7 +439,7 @@ public class MethodInterceptorTests
     }
 
     /// <summary>
-    /// Gestion des méthodes asynchrones avec retour
+    /// Handling asynchronous methods with return
     /// </summary>
     [Test]
     public async Task MethodInterceptorTest_PerfV10()
@@ -471,13 +471,13 @@ public class MethodInterceptorTests
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2*upper, traceReceived.Length);
     }
 
     /// <summary>
-    /// Gestion des méthodes asynchrones avec retour
+    /// Handling asynchronous methods with return
     /// </summary>
     [Test]
     public async Task MethodInterceptorTest_PerfV11()
@@ -509,7 +509,7 @@ public class MethodInterceptorTests
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
-        // un seul retour (avec les deux traces des intercepteurs)
+        // A single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2 * upper, traceReceived.Length);
     }

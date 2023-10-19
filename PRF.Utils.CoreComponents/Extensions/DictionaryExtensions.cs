@@ -5,65 +5,65 @@ using System.Linq;
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Méthodes d'extensions pour les Dictionnaires et Dictionnaires Concurentiels
+    /// Extension methods for Dictionaries and Concurrent Dictionaries
     /// </summary>
     public static class DictionaryExtensions
     {
         /// <summary>
-        /// Ajoute les éléments demandés en gérant le différentiel (les éléments manquants sont ajoutés,
-        ///  les éléments en trop sont retirés, les autres sont laissés tel quel)
-        /// ATTENTION, on compare les éléments par clé et on remplace les valeurs.
-        /// La comparaison se base sur les égalités des types T1. Il faut donc bien penser à surcharger les opérateurs
-        /// d'égalité pour obtenir un comportement spécifique
+        /// Adds the requested elements by managing the differential (missing elements are added,
+        /// excess elements are removed, the others are left as is)
+        /// ATTENTION, we compare the elements by key and we replace the values.
+        /// The comparison is based on the equalities of the T1 types. We must therefore think carefully about overloading the operators
+        /// equality to obtain a specific behavior
         /// </summary>
-        /// <param name="dictionary">Le dictionnaire où l'on souhaite rajouter des éléments</param>
-        /// <param name="elementsToAdd">la liste des éléments à rajouter</param>
+        /// <param name="dictionary">The dictionary where we wish to add elements</param>
+        /// <param name="elementsToAdd">the list of elements to add</param>
         public static void AddRangeDifferential<T1, T2>(this Dictionary<T1, T2> dictionary, IEnumerable<KeyValuePair<T1, T2>> elementsToAdd)
         {
             var elementsPresent = new HashSet<T1>();
-            // parcours la liste d'éléments à ajouter une seule et unique fois
+            // scan the list of elements to add once and only once
             foreach (var keyValuePair in elementsToAdd)
             {
                 if (!dictionary.ContainsKey(keyValuePair.Key))
                 {
-                    // sinon on ajoute
+                    // otherwise we add
                     dictionary.Add(keyValuePair.Key, keyValuePair.Value);
                 }
-                // on signale l'élément comme présent
+
+                // we report the element as present
                 elementsPresent.Add(keyValuePair.Key);
             }
 
-            // puis on retire les éléments non présents:
+            // then we remove the elements not present:
             foreach (var res in dictionary.Where(o => !elementsPresent.Contains(o.Key)).ToList())
             {
                 dictionary.Remove(res.Key);
             }
         }
 
-
         /// <summary>
-        /// Ajoute les éléments demandés en gérant le différentiel (les éléments manquants sont ajoutés,
-        ///  les éléments en trop sont retirés, les autres sont laissés tel quel)
-        /// ATTENTION, on compare les éléments par clé et on remplace les valeurs.
-        /// La comparaison se base sur les égalités des types T1. Il faut donc bien penser à surcharger les opérateurs
-        /// d'égalité pour obtenir un comportement spécifique
+        /// Adds the requested elements by managing the differential (missing elements are added,
+        /// excess elements are removed, the others are left as is)
+        /// ATTENTION, we compare the elements by key and we replace the values.
+        /// The comparison is based on the equalities of the T1 types. We must therefore think carefully about overloading the operators
+        /// equality to obtain a specific behavior
         /// </summary>
-        /// <param name="dictionary">Le dictionnaire où l'on souhaite rajouter des éléments</param>
-        /// <param name="elementsToAdd">la liste des éléments à rajouter</param>
+        /// <param name="dictionary">The dictionary where we wish to add elements</param>
+        /// <param name="elementsToAdd">the list of elements to add</param>
         public static void AddRangeDifferential<T1, T2>(this ConcurrentDictionary<T1, T2> dictionary, IEnumerable<KeyValuePair<T1, T2>> elementsToAdd)
         {
             var elementsPresent = new HashSet<T1>();
-            // parcours la liste d'éléments à ajouter une seule et unique fois
+            // scan the list of elements to add once and only once
             foreach (var keyValuePair in elementsToAdd)
             {
-                // en cas de clé trouvé, l'update de fait que reprendre l'ancien élément
+                // in case of key found, the update only takes the old element
                 dictionary.AddOrUpdate(keyValuePair.Key, keyValuePair.Value, (key, value) => value);
 
-                // on signale l'élément comme présent
+                // we report the element as present
                 elementsPresent.Add(keyValuePair.Key);
             }
 
-            // puis on retire les éléments non présents:
+            // then we remove the elements not present:
             foreach (var res in dictionary.Where(o => !elementsPresent.Contains(o.Key)).ToList())
             {
                 dictionary.TryRemove(res.Key, out _);

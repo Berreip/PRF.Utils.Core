@@ -11,9 +11,8 @@ namespace PRF.Utils.Tracer.Listener.Traces
         public string Source { get; }
         public int Identifier { get; }
         public TraceAction Action { get; }
-
         /// <summary>
-        /// créer un TraceWrapper qui demande de forcer le flush des traces
+        /// create a TraceWrapper which asks to force the flushing of traces
         /// </summary>
         public TraceWrapper()
         {
@@ -22,16 +21,16 @@ namespace PRF.Utils.Tracer.Listener.Traces
 
         /// <inheritdoc />
         /// <summary>
-        /// Créer un TraceWrapper de trace quand on dispose seulement du message
+        /// Create a trace TraceWrapper when we only have the message
         /// </summary>
         public TraceWrapper(string message)
-            // pas de traceEventCache == on en créer un à la date actuelle (TOUJOURS EN UTC)
+            // no traceEventCache == we create one on the current date (ALWAYS IN UTC)
             : this(new TraceEventCache(), string.Empty, TraceEventType.Information, -1, message)
         {
         }
-
+        
         /// <summary>
-        /// Créer un TraceWrapper de trace quand on dispose des informations détaillées
+        /// Create a TraceWrapper when you have detailed information
         /// </summary>
         public TraceWrapper(TraceEventCache eventCache, string source, TraceEventType eventType, int identifier, string message, params object[] traceData)
         {

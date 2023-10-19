@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace PRF.Utils.CoreComponents.Extensions
 {
@@ -9,7 +10,7 @@ namespace PRF.Utils.CoreComponents.Extensions
     public static class ListFilteringExtension
     {
         /// <summary>
-        /// Filter a list up to the given number of element by removing at raandom some element. WARNING: the list itself is filtered, not a copy
+        /// Filter a list up to the given number of element by removing at random some element. WARNING: the list itself is filtered, not a copy
         /// </summary>
         public static void CapRandomized<T>(this List<T> listToFilter, int maxItemTarget)
         {
@@ -17,13 +18,13 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Filter a list up to the given number of element by removing at raandom some element. WARNING: the list itself is filtered, not a copy
+        /// Filter a list up to the given number of element by removing at random some element. WARNING: the list itself is filtered, not a copy
         /// </summary>
         public static void CapRandomized<T>(this List<T> listToFilter, int maxItemTarget, Random random)
         {
             if (maxItemTarget > listToFilter.Count)
             {
-                throw new ArgumentException("RandomCapList : la liste est plus petite que le nombre d'item maximum donc on ne devrait pas avoir de filtre dans ce cas");
+                throw new ArgumentException("RandomCapList: the list is smaller than the maximum number of items so we should not have a filter in this case");
             }
             if (maxItemTarget == listToFilter.Count || listToFilter.Count == 0)
             {
@@ -35,10 +36,9 @@ namespace PRF.Utils.CoreComponents.Extensions
                 listToFilter.RemoveAt(random.Next(0, listToFilter.Count - 1));
             }
         }
-
         /// <summary>
         /// return a random element from the list
-        /// Renvoie un élément tiré au hasard de la liste
+        /// Returns an element drawn randomly from the list
         /// </summary>
         public static T GetRandomElement<T>(this IReadOnlyList<T> list, Random random)
         {
