@@ -2,6 +2,7 @@
 using System.IO;
 using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
+// ReSharper disable StringLiteralTypo
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions
 {
@@ -242,6 +243,56 @@ bb", res);
             //Act
             //Assert
             Assert.Throws<ArgumentNullException>(() => str.EndsWithInsensitive(null));
+        }
+        
+        [Test]
+        // equals
+        [TestCase("Toto", "toto", true)]
+        [TestCase("tOTO", "TOTO", true)]
+        [TestCase("toto", "TOTo", true)]
+        [TestCase("TOTO", "TOTo", true)]
+        // not Equals
+        [TestCase("TOTO", "ot", false)]
+        [TestCase("TOTO", "TOT", false)]
+        [TestCase("TOTO", "OTO", false)]
+        [TestCase("TOTO", "TOTOTOTO", false)]
+        // accents => not equals 
+        [TestCase("totoe", "totoé", false)]
+        [TestCase("totoe", "totôe", false)]
+        public void EqualsInsensitive_returns_expected_result(string input, string match, bool expected)
+        {
+            //Arrange
+
+            //Act
+            var res = input.EqualsInsensitive(match);
+
+            //Assert
+            Assert.AreEqual(expected, res);
+        }
+        
+        [Test]
+        // equals
+        [TestCase("Toto", "toto", true)]
+        [TestCase("tOTO", "TOTO", true)]
+        [TestCase("toto", "TOTo", true)]
+        [TestCase("TOTO", "TOTo", true)]
+        // not Equals
+        [TestCase("TOTO", "ot", false)]
+        [TestCase("TOTO", "TOT", false)]
+        [TestCase("TOTO", "OTO", false)]
+        [TestCase("TOTO", "TOTOTOTO", false)]
+        // accents => equals 
+        [TestCase("totoe", "totoé", true)]
+        [TestCase("totoe", "totôe", true)]
+        public void EqualsInsensitiveAndIgnoreAccents_returns_expected_result(string input, string match, bool expected)
+        {
+            //Arrange
+
+            //Act
+            var res = input.EqualsInsensitiveAndIgnoreAccents(match);
+
+            //Assert
+            Assert.AreEqual(expected, res);
         }
     }
 }

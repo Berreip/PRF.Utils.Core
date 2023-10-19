@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -63,6 +64,30 @@ namespace PRF.Utils.CoreComponents.Extensions
         public static bool ContainsInsensitive(this string str, string searchedString)
         {
             return str?.IndexOf(searchedString, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+        
+        /// <summary>
+        /// Do a string Equals in a case insensitive way
+        /// You could provide a specific Culture info. by default, CultureInfo.InvariantCulture is used
+        /// </summary>
+        /// <param name="str">the string where we are looking for the searched input</param>
+        /// <param name="searchedString">the searched string</param>
+        /// <param name="info">OPTIONAL: You could provide a specific Culture info. by default, CultureInfo.InvariantCulture is used</param>
+        public static bool EqualsInsensitive(this string str, string searchedString, CultureInfo info = null)
+        {
+            return string.Compare(str, searchedString, info ?? CultureInfo.InvariantCulture, CompareOptions.IgnoreCase) == 0;
+        }
+
+        /// <summary>
+        /// Do a string Equals in a case insensitive way and also ignore accentuated letter.
+        /// You could provide a specific Culture info. by default, CultureInfo.InvariantCulture is used
+        /// </summary>
+        /// <param name="str">the string where we are looking for the searched input</param>
+        /// <param name="searchedString">the searched string</param>
+        /// <param name="info">OPTIONAL: You could provide a specific Culture info. by default, CultureInfo.InvariantCulture is used</param>
+        public static bool EqualsInsensitiveAndIgnoreAccents(this string str, string searchedString, CultureInfo info = null)
+        {
+            return string.Compare(str, searchedString, info ?? CultureInfo.InvariantCulture, CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreCase) == 0;
         }
 
         private static readonly string _illegal = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
