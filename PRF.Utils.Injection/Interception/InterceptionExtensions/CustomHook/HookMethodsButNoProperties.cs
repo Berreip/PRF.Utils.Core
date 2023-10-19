@@ -7,19 +7,23 @@ namespace PRF.Utils.Injection.Interception.InterceptionExtensions.CustomHook
 {
     /// <inheritdoc />
     /// <summary>
-    /// Intercepte les méthodes mais pas les propriétés
+    /// Intercept methods but not properties
     /// </summary>
     internal sealed class HookMethodsButNoProperties : IProxyGenerationHook
     {
-        public void MethodsInspected(){}
+        public void MethodsInspected()
+        {
+        }
 
-        public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo){}
+        public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
+        {
+        }
 
         public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
         {
             return type
                 .GetProperties()
-                .All(p => 
+                .All(p =>
                     p.GetSetMethod() != methodInfo && p.GetGetMethod() != methodInfo);
         }
     }

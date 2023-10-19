@@ -4,6 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using PRF.Utils.CoreComponents.Extensions;
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable UnusedMember.Global
 
 namespace PRF.Utils.CoreComponents.IO
 {
@@ -356,6 +359,7 @@ namespace PRF.Utils.CoreComponents.IO
         public IDirectoryInfo CreateSubdirectoryIfNotExists(string path)
         {
             var dir = new DirectoryInfo(Path.Combine(_source.FullName, path));
+            // ReSharper disable once InvertIf
             if (!dir.Exists)
             {
                 dir.Create();
@@ -514,8 +518,7 @@ namespace PRF.Utils.CoreComponents.IO
         /// <inheritdoc />
         public IFileInfo GetFile(string filePath)
         {
-            if (string.IsNullOrWhiteSpace(filePath)) return null;
-            return new FileInfoWrapper(Path.Combine(FullName, filePath));
+            return string.IsNullOrWhiteSpace(filePath) ? null : new FileInfoWrapper(Path.Combine(FullName, filePath));
         }
 
         /// <inheritdoc />
@@ -592,6 +595,7 @@ namespace PRF.Utils.CoreComponents.IO
         /// <inheritdoc />
         public IDirectoryInfo GetDirectory(string path)
         {
+            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (string.IsNullOrWhiteSpace(path)) return null;
             return new DirectoryInfoWrapper(Path.Combine(FullName, path));
         }

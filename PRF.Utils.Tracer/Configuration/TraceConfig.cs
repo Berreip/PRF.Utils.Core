@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 namespace PRF.Utils.Tracer.Configuration
 {

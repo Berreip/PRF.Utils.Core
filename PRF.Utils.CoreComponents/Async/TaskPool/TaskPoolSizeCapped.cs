@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace PRF.Utils.CoreComponents.Async.TaskPool
 {
@@ -22,7 +23,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         IWorkInProgress AddWork(Func<CancellationToken, Task> workToDoAsync);
 
         /// <summary>
-        /// Wait for the TaskPoolSizeCapped to be iddle (all work currently given to it are completed)
+        /// Wait for the TaskPoolSizeCapped to be idle (all work currently given to it are completed)
         /// (WARNING : new work can still be added while waiting and no exception from a specific task will be retrieved)
         /// If you want a waitAll for a batch of tasks, use provided .ParallelForEachSizedCappedAsync extension methods. 
         /// </summary>
@@ -66,7 +67,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         {
             _pendingWorks.Enqueue(work);
             // the number ot iteration depends on the current queue count: we resume worker if its index is greater than the remaining work count
-            // it avoid to resume too much workers if there is not enought work to do
+            // it avoid to resume too much workers if there is not enough work to do
             var iteration = Math.Min(_poolMaximumSize, _pendingWorks.Count);
             for (var i = 0; i < iteration; i++)
             {

@@ -99,7 +99,7 @@ namespace PRF.Utils.CoreComponents.Diagnostic
         public string Message { get; }
         
         /// <summary>
-        /// The caller method name (use a callerMembername attribute
+        /// The caller method name (use a callerMemberName attribute
         /// </summary>
         public string SourceMethod { get; }
 
@@ -115,7 +115,7 @@ namespace PRF.Utils.CoreComponents.Diagnostic
     }
 
     /// <summary>
-    /// The assertion failed response frome the registered callback
+    /// The assertion failed response from the registered callback
     /// </summary>
     public enum AssertionResponse
     {
@@ -130,7 +130,7 @@ namespace PRF.Utils.CoreComponents.Diagnostic
         Debug,
         
         /// <summary>
-        /// Kill the process immediatly
+        /// Kill the process immediately
         /// </summary>
         TerminateProcess,
     }

@@ -1,6 +1,9 @@
 ﻿using System.IO;
 using System.Text;
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable ReturnTypeCanBeEnumerable.Global
 
 // ReSharper disable ClassNeverInstantiated.Global
 

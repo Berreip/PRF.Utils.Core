@@ -2,6 +2,7 @@
 
 namespace PRF.Utils.InjectionUnitTest.ClassForTests.Interceptors;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class InterceptorDoNothing : IInterceptor
 {
     public void Intercept(IInvocation invocation)
@@ -13,6 +14,7 @@ public class InterceptorDoNothing : IInterceptor
     }
 }
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class InterceptorDoNothing2 : IInterceptor
 {
     public void Intercept(IInvocation invocation)

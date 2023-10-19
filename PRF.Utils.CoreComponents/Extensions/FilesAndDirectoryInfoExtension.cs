@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+// ReSharper disable OutParameterValueIsAlwaysDiscarded.Global
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -545,6 +546,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         /// </summary>
         public static FileInfo GetFile(this DirectoryInfo dir, string name)
         {
+            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (string.IsNullOrWhiteSpace(name)) return null;
             return new FileInfo(Path.Combine(dir.FullName, name));
         }
@@ -573,6 +575,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         /// </summary>
         public static DirectoryInfo GetDirectory(this DirectoryInfo dir, string name)
         {
+            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (string.IsNullOrWhiteSpace(name)) return null;
             return new DirectoryInfo(Path.Combine(dir.FullName, name));
         }

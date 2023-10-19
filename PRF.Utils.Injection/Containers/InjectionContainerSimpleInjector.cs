@@ -8,6 +8,7 @@ using PRF.Utils.Injection.Interception.InterceptionExtensions;
 using PRF.Utils.Injection.Utils;
 using SimpleInjector;
 using SimpleInjector.Diagnostics;
+// ReSharper disable UnusedMember.Global
 
 namespace PRF.Utils.Injection.Containers
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+// ReSharper disable UnusedMember.Global
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable MemberCanBePrivate.Global

@@ -206,6 +206,7 @@ internal interface IHandlerClass
     IReadOnlyCollection<IPluginClass> Plugins { get; }
 }
 
+// ReSharper disable once ClassNeverInstantiated.Global
 internal sealed class HandlerClass : IHandlerClass
 {
     public IReadOnlyCollection<IPluginClass> Plugins { get; }

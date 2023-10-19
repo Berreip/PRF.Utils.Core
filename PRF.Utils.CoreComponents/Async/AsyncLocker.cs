@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace PRF.Utils.CoreComponents.Async
 {
     /// <summary>
-    /// a locker that allow async lock (be very carrefull with this kind of lock as a deadlock is very common)
+    /// a locker that allow async lock (be very careful with this kind of lock as a deadlock is very common)
     /// </summary>
     public interface IAsyncLocker
     {

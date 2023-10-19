@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using PRF.Utils.Injection.Utils;
+// ReSharper disable OutParameterValueIsAlwaysDiscarded.Global
 
 // ReSharper disable ClassNeverInstantiated.Global
 

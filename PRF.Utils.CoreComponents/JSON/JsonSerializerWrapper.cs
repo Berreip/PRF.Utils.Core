@@ -3,27 +3,27 @@
 namespace PRF.Utils.CoreComponents.JSON
 {
     /// <summary>
-    /// Gestionnaire de sérialization et désérialization
+    /// Serialization and deserialization manager
     /// </summary>
     public static class JsonSerializerWrapper
     {
         /// <summary>
-        /// Désérialise en synchrone un string json en objet de type T
+        /// Synchronously deserialize a json string into an object of type T
         /// </summary>
-        /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
-        /// <param name="jsonString">la string à désérialiser (le contenu d'un fichier json par exemple)</param>
-        /// <returns>L'objet désérialisé</returns>
+        /// <typeparam name="T">the type of object to return</typeparam>
+        /// <param name="jsonString">the string to deserialize (the content of a json file for example)</param>
+        /// <returns>The deserialized object</returns>
         public static T DeserializeFromJson<T>(this string jsonString)
         {
             return JsonConvert.DeserializeObject<T>(jsonString);
         }
 
         /// <summary>
-        /// Sérialise en synchrone un objet en json
+        /// Synchronously serialize an object into json
         /// </summary>
-        /// <typeparam name="T">le type d'objet à sérialiser</typeparam>
-        /// <param name="data">l'objet à sérialiser</param>
-        /// <returns>la représentation en string de l'objet sérialisé</returns>
+        /// <typeparam name="T">the type of object to serialize</typeparam>
+        /// <param name="data">the object to serialize</param>
+        /// <returns>the string representation of the serialized object</returns>
         public static string SerializeToJson<T>(this T data)
         {
             return JsonConvert.SerializeObject(data);

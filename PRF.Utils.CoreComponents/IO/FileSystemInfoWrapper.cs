@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace PRF.Utils.CoreComponents.IO
 {

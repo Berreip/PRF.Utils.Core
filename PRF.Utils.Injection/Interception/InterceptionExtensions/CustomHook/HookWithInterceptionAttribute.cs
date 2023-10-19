@@ -7,7 +7,7 @@ namespace PRF.Utils.Injection.Interception.InterceptionExtensions.CustomHook
 {
     /// <inheritdoc />
     /// <summary>
-    /// Intercepte les méthodes et les propriétés possédant un attribut InterceptionAttribute
+    /// Intercepts methods and properties with an InterceptionAttribute attribute
     /// </summary>
     /// <seealso cref="T:PRF.Utils.Injection.Utils.InterceptionAttribute" />
     internal sealed class HookWithInterceptionAttribute : IProxyGenerationHook

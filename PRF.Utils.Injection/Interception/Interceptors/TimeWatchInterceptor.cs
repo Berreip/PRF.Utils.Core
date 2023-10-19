@@ -7,7 +7,7 @@ namespace PRF.Utils.Injection.Interception.Interceptors
 {
     /// <inheritdoc />
     /// <summary>
-    /// Intercepteur qui trace le temps passé dans une méthode
+    /// Interceptor that tracks time spent in a method
     /// </summary>
     public sealed class TimeWatchInterceptor : IInterceptor
     {
@@ -16,7 +16,7 @@ namespace PRF.Utils.Injection.Interception.Interceptors
         {
             var declaringTypeName = invocation.Method.DeclaringType?.Name;
 
-            // démarre un chrono
+            // start a timer
             var watch = Stopwatch.StartNew();
             try
             {
@@ -37,15 +37,13 @@ namespace PRF.Utils.Injection.Interception.Interceptors
                 {
                     StopWatchAndTrace(invocation, declaringTypeName, watch);
                 }
-               
             }
         }
 
         private static void StopWatchAndTrace(IInvocation invocation, string declaringTypeName, Stopwatch watch)
         {
-            // stoppe le timer et trace le temps passé
+            // stops the timer and tracks the time spent
             watch.Stop();
-            // trace du temps passé
             Trace.TraceInformation($"TIME_{declaringTypeName}.{invocation.Method.Name} = {watch.ElapsedMilliseconds}ms");
         }
     }

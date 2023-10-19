@@ -16,7 +16,7 @@ namespace PRF.Utils.CoreComponents.Enums
         private readonly Dictionary<string, T> _stringToEnum;
 
         /// <summary>
-        /// Create an enum from string converter with the given fallback value and an optional stringComparter (OrdinalIgnoreCase by default)
+        /// Create an enum from string converter with the given fallback value and an optional stringComparer (OrdinalIgnoreCase by default)
         /// </summary>
         public EnumStringConverterWithDefault(T defaultValue, StringComparer comparer = null)
         {
@@ -45,7 +45,7 @@ namespace PRF.Utils.CoreComponents.Enums
     public static class EnumUtils
     {
         /// <summary>
-        /// Create an enum from string converter with the given fallback value and an optional stringComparter (OrdinalIgnoreCase by default)
+        /// Create an enum from string converter with the given fallback value and an optional stringComparer (OrdinalIgnoreCase by default)
         /// </summary>
         public static EnumStringConverterWithDefault<T> CreateConverterWithDefault<T>(T defaultValue, StringComparer comparer = null) where T : struct, Enum
         {

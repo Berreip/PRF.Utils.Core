@@ -57,7 +57,7 @@ internal sealed class PerformanceTaskPoolSizeTests
         Assert.AreEqual(ITERATION, counter);
         // add the new iteration
         var mean = AddMean(watch, 0);
-        TestContext.WriteLine($"ellapsed = {watch.ElapsedMilliseconds} ms MEAN [{mean} ms]");
+        TestContext.WriteLine($"elapsed = {watch.ElapsedMilliseconds} ms MEAN [{mean} ms]");
     }
 
     private static int AddMean(Stopwatch watch, int key)

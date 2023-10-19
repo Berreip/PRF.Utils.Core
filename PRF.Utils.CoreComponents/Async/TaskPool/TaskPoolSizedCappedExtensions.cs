@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace PRF.Utils.CoreComponents.Async.TaskPool
 {

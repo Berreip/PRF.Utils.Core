@@ -5,16 +5,16 @@ using System.Reflection;
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Les méthodes d'extensions lié au 'Path'
+    /// Extension methods linked to the 'Path'
     /// </summary>
     public static class PathExtension
     {
         /// <summary>
-        /// La longueur maximal d'un path sur ce système
+        /// The maximum length of a path on this system
         /// </summary>
         public static int MaxPathLenght { get; } = SetMaxPathLenght();
 
-        private const int DEFAULT_VALUE_UNC = 260; // valeur par défaut UNC
+        private const int DEFAULT_VALUE_UNC = 260; // default value UNC
         private static int SetMaxPathLenght()
         {
             try

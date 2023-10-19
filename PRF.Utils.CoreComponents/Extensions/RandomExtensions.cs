@@ -3,12 +3,12 @@
 namespace PRF.Utils.CoreComponents.Extensions
 {
     /// <summary>
-    /// Extension de la classe Random
+    /// Extension of the Random class
     /// </summary>
     public static class RandomExtensions
     {
         /// <summary>
-        /// Renvoie true ou false au hasard
+        /// Return true or false randomly
         /// </summary>
         public static bool NextBoolean(this Random rd)
         {
@@ -16,7 +16,7 @@ namespace PRF.Utils.CoreComponents.Extensions
         }
 
         /// <summary>
-        /// Génère une valeur aléatoire entre -1 et 1
+        ///Generates a random value between -1 and 1
         /// </summary>
         public static double NextNumberBetweenOneAndLessOne(this Random rd)
         {

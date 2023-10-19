@@ -6,16 +6,16 @@ using System.Xml.Serialization;
 namespace PRF.Utils.CoreComponents.XML
 {
     /// <summary>
-    /// Gestionnaire de sérialization et désérialization
+    /// Serialization and deserialization manager
     /// </summary>
     public static class XmlSerializerWrapper
     {
         /// <summary>
-        /// Désérialise en synchrone un string XML en objet de type T
+        /// Synchronously deserialize an XML string into a T type object
         /// </summary>
-        /// <typeparam name="T">le type d'objet à renvoyer</typeparam>
-        /// <param name="xmlString">la string à désérialiser (le contenu d'un fichier xml par exemple)</param>
-        /// <returns>L'objet désérialisé</returns>
+        /// <typeparam name="T">the type of object to return</typeparam>
+        /// <param name="xmlString">the string to deserialize (the content of an xml file for example)</param>
+        /// <returns>The deserialized object</returns>
         public static T DeserializeFromXml<T>(this string xmlString) where T : new()
         {
             if (string.IsNullOrEmpty(xmlString)) return default;
@@ -28,11 +28,11 @@ namespace PRF.Utils.CoreComponents.XML
         }
 
         /// <summary>
-        /// Sérialise en synchrone un objet en xml
+        /// Synchronously serialize an object into xml
         /// </summary>
-        /// <typeparam name="T">le type d'objet à sérialiser</typeparam>
-        /// <param name="data">l'objet à sérialiser</param>
-        /// <returns>la représentation en string de l'objet sérialisé</returns>
+        /// <typeparam name="T">the type of object to serialize</typeparam>
+        /// <param name="data">the object to serialize</param>
+        /// <returns>the string representation of the serialized object</returns>
         public static string SerializeToXml<T>(this T data)
         {
             var serializerNamespace = new XmlSerializerNamespaces();
@@ -46,6 +46,7 @@ namespace PRF.Utils.CoreComponents.XML
             {
                 serializer.Serialize(xmlWriter, data, serializerNamespace);
             }
+
             return str.ToString();
         }
     }

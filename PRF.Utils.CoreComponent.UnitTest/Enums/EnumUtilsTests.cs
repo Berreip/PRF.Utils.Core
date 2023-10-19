@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using PRF.Utils.CoreComponents.Enums;
+// ReSharper disable UnusedMember.Global
 
 namespace PRF.Utils.CoreComponent.UnitTest.Enums;
 
@@ -49,6 +50,7 @@ internal sealed class EnumUtilsTests
         var sut = EnumUtils.CreateConverterWithDefault(FooEnum.DefaultValue);
 
         //Act
+        // ReSharper disable once StringLiteralTypo
         var enumConverted = sut.Convert("fdgsdfg");
             
         //Assert
