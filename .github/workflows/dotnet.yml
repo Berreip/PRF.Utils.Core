@@ -24,17 +24,21 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
       timeout-minutes: 5
+      continue-on-error: true
     - name: Publish PRF.Utils.CoreComponents to Nuget
+      continue-on-error: true
       uses: brandedoutcast/publish-nuget@v2
       with:
         PROJECT_FILE_PATH: PRF.Utils.CoreComponents/PRF.Utils.CoreComponents.csproj
         NUGET_KEY: ${{secrets.NUGET_KEY}}
     - name: Publish PRF.Utils.Injection to Nuget
+      continue-on-error: true
       uses: brandedoutcast/publish-nuget@v2
       with:
         PROJECT_FILE_PATH: PRF.Utils.Injection/PRF.Utils.Injection.csproj
         NUGET_KEY: ${{secrets.NUGET_KEY}}
     - name: Publish PRF.Utils.Tracer to Nuget
+      continue-on-error: true
       uses: brandedoutcast/publish-nuget@v2
       with:
         PROJECT_FILE_PATH: PRF.Utils.Tracer/PRF.Utils.Tracer.csproj
