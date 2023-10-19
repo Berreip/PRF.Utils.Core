@@ -35,7 +35,7 @@ public class InterceptionTest
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = System.Array.Empty<TraceData>();
 
         using (var tracer = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer, PageSize = 2 }))
         {
@@ -73,7 +73,7 @@ public class InterceptionTest
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = System.Array.Empty<TraceData>();
 
         using (var tracer = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer, PageSize = 2 }))
         {
@@ -114,7 +114,7 @@ public class InterceptionTest
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = System.Array.Empty<TraceData>();
         using (var tracer = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer, PageSize = 2 }))
         {
             _container.RegisterInstance(tracer);
@@ -134,7 +134,7 @@ public class InterceptionTest
             var instance = _container.Resolve<IClassVoidTest>();
             instance.Prop = 45; // setter
             instance.Prop = 45; // setter x2
-            var _ = instance.Prop; // getter = pas tracé
+            _ = instance.Prop;
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
@@ -170,13 +170,13 @@ public class InterceptionTest
             //Test
             var instance = _container.Resolve<IClassVoidTest>();
             instance.Prop = 45; // setter
-            var _ = instance.Prop; // getter
+            _ = instance.Prop;
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // aucun retour 
+        // no return 
         Assert.AreEqual(0, count);
     }
 
@@ -214,7 +214,7 @@ public class InterceptionTest
             //Test
             var instance = _container.Resolve<IClassVoidAttributeTest>();
             instance.Prop = 45; // setter
-            var _ = instance.Prop; // getter
+            _ = instance.Prop;
             instance.MethodCall();
 
             //Verify

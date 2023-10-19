@@ -10,8 +10,8 @@ namespace PRF.Utils.Tracer.Listener
 {
     /// <inheritdoc />
     /// <summary>
-    /// Le listener de trace custom. C'est lui qui s'occupe de centraliser les traces et de renvoyer des pages
-    /// de traces quand la page est pleine ou au bout d'un certain Timeout
+    /// The custom trace listener. It is he who takes care of centralizing the traces and returning pages
+    /// traces when the page is full or after a certain Timeout
     /// </summary>
     internal sealed class TraceListenerSync : TraceListener
     {
@@ -21,50 +21,50 @@ namespace PRF.Utils.Tracer.Listener
         private readonly Task _dequeueTask;
 
         /// <summary>
-        /// Temps maximum en cas de buffer plein avant de lancer une exception
+        /// Maximum time in case of full buffer before throwing an exception
         /// </summary>
         private readonly TimeSpan _maxTimeoutForFullBuffer = TimeSpan.FromSeconds(3);
 
         private readonly object _key = new object();
 
         /// <summary>
-        /// L'évènement levé lors de l'envoie d'une page
+        /// The event raised when sending a page
         /// </summary>
         public event Action<TraceData[]> OnTracesSent;
 
         /// <summary>
-        /// Le niveau de traces filtré au niveau du listener. Cette approche permet de faire du filtrage
-        /// dynamique même via les appels aux méthodes statiques Traces.TraceQqch(). Sinon, seul les appels
-        /// via le TraceSource sont filtrés.
+        /// The trace level filtered at the listener level. This approach allows filtering
+        /// dynamic even via calls to static Traces.TraceSmtg() methods. Otherwise, only calls
+        /// via the TraceSource are filtered.
         /// --------
-        /// La conséquence c'est quand même qu'une vérification supplémentaire doit être faite = léger impact sur les perfs
+        /// The consequence is that an additional check must be carried out = slight impact on performance
         /// </summary>
         public TraceEventType DynamicFilter { private get; set; } = TraceEventType.Information;
 
         /// <inheritdoc />
         /// <summary>
-        /// Construit un traceur avec un temps de flush maximum et une taille de page
+        /// Constructs a plotter with maximum flush time and page size
         /// </summary>
-        /// <param name="timeForFlush">la plage maximum de temps à partir duquel on va vider la pile malgré tt</param>
-        /// <param name="poolingPageSize">la taille des page émises par le traceur au maximum (elles peuvent être plus petites)</param>
+        /// <param name="timeForFlush">the maximum time range from which we will empty the stack despite tt</param>
+        /// <param name="poolingPageSize">the maximum size of the pages emitted by the plotter (they can be smaller)</param>
         public TraceListenerSync(TimeSpan timeForFlush, int poolingPageSize)
         {
             ListenerHelpers.CheckEntryValuesAndThrowExceptionIfFailed(timeForFlush, poolingPageSize);
 
             _poolingPageSize = poolingPageSize;
 
-            // on défini la taille maximum que pourra atteindre le buffer avant que les appels de trace soient
-            // bloquant (cas de remplissage extrèment plus rapide que le vidage via la tache Dequeue() == hautement improbable)
-            //=> cette taille est définie à la taille d'une page == on stocke au maximum une page dans le buffer 
+            // we define the maximum size that the buffer can reach before the trace calls are
+            // blocking (case of filling extremely faster than emptying via the Dequeue() task == highly improbable)
+            //=> this size is defined as the size of a page == we store a maximum of one page in the buffer
             _buffer = new BlockingCollection<TraceWrapper>(poolingPageSize);
 
-            // Configure le timer gérant le temps de flush maximum des pages
+            // Configures the timer managing the maximum page flush time
             _timer = new Timer(timeForFlush.TotalMilliseconds) { AutoReset = false };
             _timer.Elapsed += OnTimerElapsed;
             _timer.Start();
 
-            // démarre la pile d'analyse:
-            _dequeueTask = Task.Run(() => Dequeue());
+            // starts the analysis stack:
+            _dequeueTask = Task.Run(Dequeue);
         }
 
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
@@ -72,10 +72,10 @@ namespace PRF.Utils.Tracer.Listener
             lock (_key)
             {
                 if (_buffer.IsAddingCompleted) return;
-                // ajoute un forceFlush dans la pile
+                // add a forceFlush to the stack
                 _buffer.Add(new TraceWrapper());
 
-                // puis redémarre le timer
+                // then restart the timer
                 _timer.Start();
             }
         }
@@ -84,36 +84,37 @@ namespace PRF.Utils.Tracer.Listener
         {
             try
             {
-                // page actuelle en cours de constitution
-                var currentpage = new TraceData[_poolingPageSize];
+                // current page under construction
+                var currentPage = new TraceData[_poolingPageSize];
                 var currentIndex = 0;
                 // ReSharper disable once InconsistentlySynchronizedField => non sens ici
                 foreach (var trace in _buffer.GetConsumingEnumerable())
                 {
                     if (trace.Action == TraceAction.Trace)
                     {
-                        // stocke la donnée dans la page actuelle:
-                        currentpage[currentIndex] = new TraceData(trace);
+                        // stores the data in the current page:
+                        currentPage[currentIndex] = new TraceData(trace);
                         currentIndex++;
 
                         if (currentIndex != _poolingPageSize) continue;
                     }
-                    // arrête le timer
+
+                    // stop the timer
                     _timer.Stop();
-                    // si la page est pleine ou que l'on force le flush, on envoie la page:
-                    RaiseSentTraces(currentpage);
-                    currentpage = new TraceData[_poolingPageSize];
+                    // if the page is full or we force the flush, we send the page:
+                    RaiseSentTraces(currentPage);
+                    currentPage = new TraceData[_poolingPageSize];
                     currentIndex = 0;
 
-                    // redémarre le timer
+                    // restarts the timer
                     _timer.Start();
-
                 }
-                // stoppe le timer
+
+                // stop the timer
                 _timer.Stop();
 
-                // une fois le buffer fermé, on vide la pile restante:
-                EmptyClosedBuffer(currentIndex, currentpage);
+                // once the buffer is closed, we empty the remaining stack:
+                EmptyClosedBuffer(currentIndex, currentPage);
             }
             catch (Exception e)
             {
@@ -124,107 +125,107 @@ namespace PRF.Utils.Tracer.Listener
         // ReSharper disable once SuggestBaseTypeForParameter
         private void EmptyClosedBuffer(int currentIndex, TraceData[] currentPage)
         {
-            // si on vide 'tout pile' une page, alors il n'y a rien à envoyer
+            // if we completely empty a page, then there is nothing to send
             if (currentIndex == 0) return;
 
-            // sinon on redimensionne la page en fonction du nombre de traces présentes avant de l'envoyer
+            // otherwise we resize the page according to the number of traces present before sending it
             var adaptedPage = new TraceData[currentIndex];
             for (var i = 0; i < currentIndex; i++)
             {
                 adaptedPage[i] = currentPage[i];
             }
+
             RaiseSentTraces(adaptedPage);
         }
 
         /// <inheritdoc />
         public override void Write(string message)
         {
-            // On trace le message simple pour un appel direct à Trace.Write(...)
+            // We trace the simple message for a direct call to Trace.Write(...)
             AddToBuffer(new TraceWrapper(message));
         }
 
         /// <inheritdoc />
         public override void WriteLine(string message)
         {
-            // On trace le message simple pour un appel direct à Trace.WriteLine(...)
+            // We trace the simple message for a direct call to Trace.WriteLine(...)
             AddToBuffer(new TraceWrapper(message));
         }
 
         /// <inheritdoc />
         public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id, object data)
         {
-            if (DynamicFilter < eventType) return; // perf = filtre avant de construire le wrapper
+            if (DynamicFilter < eventType) return; // perf = filter before building the wrapper
             AddToBuffer(new TraceWrapper(eventCache, source, eventType, id, data.ToStringOrNull()));
         }
 
         /// <inheritdoc />
         public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id, params object[] data)
         {
-            if (DynamicFilter < eventType) return; // perf = filtre avant de construire le wrapper
+            if (DynamicFilter < eventType) return; // perf = filter before building the wrapper
             AddToBuffer(new TraceWrapper(eventCache, source, eventType, id, data.ToStringOrNullList()));
         }
 
         /// <inheritdoc />
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id)
         {
-            if (DynamicFilter < eventType) return; // perf = filtre avant de construire le wrapper
-            // rajoute l'info de TraceEvent si aucun message
+            if (DynamicFilter < eventType) return; // perf = filter before building the wrapper
+            // adds TraceEvent info if no message
             AddToBuffer(new TraceWrapper(eventCache, source, eventType, id, $"TraceEvent id:{id}"));
         }
 
         /// <inheritdoc />
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format, params object[] args)
         {
-            if (DynamicFilter < eventType) return; // perf = filtre avant de construire le wrapper
+            if (DynamicFilter < eventType) return; // perf = filter before building the wrapper
             AddToBuffer(new TraceWrapper(eventCache, source, eventType, id, format, args));
         }
 
         /// <inheritdoc />
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
         {
-            if (DynamicFilter < eventType) return; // perf = filtre avant de construire le wrapper
+            if (DynamicFilter < eventType) return; // perf = filter before building the wrapper
             AddToBuffer(new TraceWrapper(eventCache, source, eventType, id, message));
         }
 
         /// <summary>
-        /// Lève l'évènement de trace
+        /// Raise trace event
         /// </summary>
         private void RaiseSentTraces(TraceData[] traceArray)
         {
             var handler = OnTracesSent;
-            // s'il n'y a aucun handler, ON LE LANCE PAS D'EXCEPTION car après tout, on est peut être dans un contexte 
-            // où l'on ne souhaite pas tracer (TU...). Ce n'est pas la responsabilité du listener de savoir celà.
+            // if there is no handler, WE RUN IT WITH NO EXCEPTION because after all, we may be in a context
+            // where we do not wish to trace (TU...). It is not the responsibility of the listener to know this.
 
-            // De la même manière, l'évènement est levé en SYNCHRONE car c'est à l'abonné de gérer l'asynchronisme (très
-            // préférable pour ne pas emboliser le traceur) mais SUREMENT PAS au traceur de décider d'être asynchrone.
+            // In the same way, the event is raised in SYNCHRONOUS because it is up to the subscriber to manage the asynchronous pattern (very
+            // preferable so as not to slow down the tracer) but SURELY NOT for the tracer to decide to be asynchronous.
             handler?.Invoke(traceArray);
         }
 
         private void AddToBuffer(TraceWrapper trace)
         {
-            // le lock va empiler les appelants (mais c'est ce que l'on souhaite)
+            // the lock will stack the callers (but that's what we want)
             lock (_key)
             {
                 if (_buffer.IsAddingCompleted || _buffer.TryAdd(trace)) return;
             }
 
-            // l'appel temporisé n'est pas locké et gère donc le catch des ajout alors que la collection a été marquée comme terminée (CompleteAdding = true)
-            // ReSharper disable InconsistentlySynchronizedField => pas de lock pour ce cas car on ne souhaite pas bloquer le completeAdding aussi.
+            // the timed call is not locked and therefore manages the catch for additions even though the collection has been marked as completed (CompleteAdding = true)
+            // ReSharper disable InconsistentlySynchronizedField => no lock for this case because we do not want to block the completeAdding too.
             try
             {
-
-                // sinon, on envoie un évènement pour signaler que l'ajout n'a pu être fait immédiatement et on retente avec un temps d'attente
-                RaiseSentTraces(ListenerHelpers.GetExceptionArray($"impossible d'ajouter immédiatement le message {trace.Message}: buffer plein : {_buffer.Count}"));
+                // otherwise, we send an event to signal that the addition could not be made immediately and we try again with a waiting time
+                RaiseSentTraces(ListenerHelpers.GetExceptionArray($"unable to add message immediately {trace.Message}: buffer full: {_buffer.Count}"));
                 if (!_buffer.TryAdd(trace, _maxTimeoutForFullBuffer))
                 {
-                    // Dans le cas où l'on ne peut pas insérer une trace à la fin du timeout, on lance une exception
+                    // In the case where we cannot insert a trace at the end of the timeout, we throw an exception
                     throw new ArgumentException(
-                        $@"ERROR: Max timeout for trace insertion in buffer reached ({_maxTimeoutForFullBuffer.TotalMilliseconds} ms)");
+                        $"ERROR: Max timeout for trace insertion in buffer reached ({_maxTimeoutForFullBuffer.TotalMilliseconds} ms)");
                 }
             }
             catch (InvalidOperationException e)
             {
-                RaiseSentTraces(ListenerHelpers.GetExceptionArray($"InvalidOperationException (cas du buffer où CompleteAdding = true par exemple) dans les traces. {e}"));
+                RaiseSentTraces(ListenerHelpers.GetExceptionArray($"InvalidOperationException (case of the buffer where CompleteAdding = true for example) in the traces. {e}"));
             }
             // ReSharper restore InconsistentlySynchronizedField
         }
@@ -240,16 +241,15 @@ namespace PRF.Utils.Tracer.Listener
                 base.Dispose(disposing);
             }
         }
-
         /// <summary>
-        /// Cloture le buffer de traces et attends la fin de la tache de traces (via le async)
+        /// Close the trace buffer and wait for the end of the trace task (via async)
         /// </summary>
-        /// <returns>la tache de traces en train de se cloturer</returns>
+        /// <returns>the stain of traces being closed</returns>
         public async Task FlushAndCompleteAddingAsync()
         {
             lock (_key)
             {
-                // force le _timer à s'arrêter
+                // force the _timer to stop
                 _timer.Stop();
                 if (!_buffer.IsAddingCompleted)
                 {
@@ -257,14 +257,14 @@ namespace PRF.Utils.Tracer.Listener
                 }
             }
 
-            // attends la cloture de la collection et la fin de la tache de trace
+            // wait for the collection to close and the trace task to end
             await _dequeueTask.ConfigureAwait(false);
         }
 
         /// <summary>
-        /// En cas d'exception, on trace un message vers l'extérieur pour signaler le problème
+        /// In the event of an exception, we send a message to the outside to report the problem
         /// </summary>
-        /// <param name="e">l'exception</param>
+        /// <param name="e">the exception</param>
         private void RaiseException(Exception e)
         {
             RaiseSentTraces(ListenerHelpers.GetExceptionArray($"EXCEPTION IN TRACER: UNABLE TO FORMAT {e}"));

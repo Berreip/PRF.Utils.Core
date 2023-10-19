@@ -161,10 +161,7 @@ internal sealed class DispatcherCoreTests
 
         // Act 
         await AsyncWrapperBase.DispatchAndWrapAsyncBase(
-            () =>
-            {
-                throw new Exception();
-            },
+            () => throw new Exception(),
             _ => Interlocked.Increment(ref exception), // On exception
             () => Interlocked.Increment(ref finallyCalls)).ConfigureAwait(false); // On finally
 
@@ -182,15 +179,9 @@ internal sealed class DispatcherCoreTests
 
         // Act 
         await AsyncWrapperBase.DispatchAndWrapAsyncBase(
-            () =>
-            {
-                throw new Exception();
-            },
+            () => throw new Exception(),
             _ => Interlocked.Increment(ref exception), // On exception
-            () =>
-            {
-                throw new Exception();
-            }).ConfigureAwait(false); // On finally
+            () => throw new Exception()).ConfigureAwait(false); // On finally
 
         // Assert
         Assert.AreEqual(2, exception);
@@ -247,10 +238,7 @@ internal sealed class DispatcherCoreTests
 
         // Act 
         var res = await AsyncWrapperBase.DispatchAndWrapAsyncBase(
-            () =>
-            {
-                return 78;
-            },
+            () => 78,
             _ => Interlocked.Increment(ref exception)).ConfigureAwait(false);
 
         // Assert

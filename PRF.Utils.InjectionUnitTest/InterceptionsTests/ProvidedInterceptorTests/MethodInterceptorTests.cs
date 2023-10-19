@@ -36,20 +36,20 @@ public class MethodInterceptorTests
         // instance de test:
         _container = new InjectionContainerSimpleInjector();
 
-        // enregistre le type de la classe de test
+        // saves the type of the test class
         _container.Register<IClassVoidTest, ClassVoidTest>(LifeTime.Singleton);
     }
 
 
     /// <summary>
-    /// Cas 1: test que l'interception faite via MethodTraceInterceptor fonctionne
+    /// Case 1: test that the interception done via MethodTraceInterceptor works
     /// </summary>
     [Test]
     public async Task MethodInterceptorTestV1()
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -71,7 +71,7 @@ public class MethodInterceptorTests
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // a single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2, traceReceived.Length);
         Assert.AreEqual("START_IClassVoidTest.MethodCall()", traceReceived[0].Message);
@@ -79,7 +79,7 @@ public class MethodInterceptorTests
     }
 
     /// <summary>
-    /// Cas 1: test que l'interception faite via MethodTraceInterceptor fonctionne et est performante
+    /// Case 1: test that the interception made via MethodTraceInterceptor works and is efficient
     /// </summary>
     [Test]
     public async Task MethodInterceptorTestPerformanceV1()
@@ -87,13 +87,13 @@ public class MethodInterceptorTests
         //Configuration
         var count = 0;
         const int upper = 100_000;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
 
         var instance = _container.Resolve<IClassVoidTest>();
-        // supprime tt les traceurs (influent en debug)
+        // delete all tracers (important in debug)
         _traceConfig.TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndClearAll;
 
         using (var tracer = new TraceSourceSync(_traceConfig))
@@ -114,10 +114,10 @@ public class MethodInterceptorTests
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
-            Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1), $"TROP LENT: Le temps passé est de {watch.ElapsedMilliseconds} ms");
+            Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1), $"TOO SLOW: The time spent is {watch.ElapsedMilliseconds} ms");
         }
 
-        // un seul retour (avec les deux traces des intercepteurs)
+        // a single return (with the two traces of the interceptors)
         Assert.AreEqual(1, count);
         Assert.AreEqual(2 * upper, traceReceived.Length);
     }
@@ -128,7 +128,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -165,7 +165,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -202,7 +202,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -217,7 +217,7 @@ public class MethodInterceptorTests
             };
 
             //Test
-            var _ = instance.Prop;
+            _ = instance.Prop;
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
@@ -233,7 +233,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -248,7 +248,7 @@ public class MethodInterceptorTests
             };
 
             //Test
-            var _ = instance.MethodCallWithParametersWithReturn("toto", 789, new CustomObject());
+            _ = instance.MethodCallWithParametersWithReturn("toto", 789, new CustomObject());
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
@@ -266,7 +266,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -281,7 +281,7 @@ public class MethodInterceptorTests
             };
 
             //Test
-            var _ = instance.TryGetValue(true, out var _);
+            _ = instance.TryGetValue(true, out var _);
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
@@ -299,7 +299,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -315,7 +315,7 @@ public class MethodInterceptorTests
             };
 
             //Test
-            var _ = instance.MethodCallWithParametersWithParams("param1", "param2");
+            _ = instance.MethodCallWithParametersWithParams("param1", "param2");
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
@@ -336,7 +336,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -373,7 +373,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -389,7 +389,7 @@ public class MethodInterceptorTests
             };
 
             //Test
-            var _ = await instance.MethodCallWaitWithReturnAsync(TimeSpan.FromMilliseconds(50));
+            _ = await instance.MethodCallWaitWithReturnAsync(TimeSpan.FromMilliseconds(50));
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
@@ -410,7 +410,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.MethodTraceInterceptor);
@@ -426,7 +426,7 @@ public class MethodInterceptorTests
             };
 
             //Test
-            var _ = await instance.MethodCallWaitWithReturnDataAsync(TimeSpan.FromMilliseconds(50));
+            _ = await instance.MethodCallWaitWithReturnDataAsync(TimeSpan.FromMilliseconds(50));
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
@@ -446,7 +446,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
         const int upper = 1_000;
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
@@ -465,7 +465,7 @@ public class MethodInterceptorTests
             //Test
             for (var i = 0; i < upper; i++)
             {
-                var _ = await instance.MethodCallForPerf();
+                _ = await instance.MethodCallForPerf();
             }
 
             //Verify
@@ -484,7 +484,7 @@ public class MethodInterceptorTests
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
         const int upper = 1_000;
 
         _container.RegisterInterceptor(PredefinedInterceptors.MethodTraceInterceptor, LifeTime.Singleton);
@@ -503,7 +503,7 @@ public class MethodInterceptorTests
             //Test
             for (var i = 0; i < upper; i++)
             {
-                var _ = await instance.MethodCallForPerfInt();
+                _ = await instance.MethodCallForPerfInt();
             }
 
             //Verify

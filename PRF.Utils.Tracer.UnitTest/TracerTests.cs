@@ -29,10 +29,7 @@ public class TracerTests
         using (var traceListenerSync = new TraceListenerSync(TimeSpan.FromSeconds(1), 1000))
         {
             count = 0;
-            traceListenerSync.OnTracesSent += _ =>
-            {
-                Interlocked.Increment(ref count);
-            };
+            traceListenerSync.OnTracesSent += _ => { Interlocked.Increment(ref count); };
 
             try
             {
@@ -44,7 +41,6 @@ public class TracerTests
             }
             finally
             {
-
                 // retire le traceur
                 Trace.Listeners.Remove(traceListenerSync);
             }
@@ -62,10 +58,7 @@ public class TracerTests
         using (var traceListenerSync = new TraceListenerSync(TimeSpan.FromSeconds(1), 1000))
         {
             count = 0;
-            traceListenerSync.OnTracesSent += _ =>
-            {
-                Interlocked.Increment(ref count);
-            };
+            traceListenerSync.OnTracesSent += _ => { Interlocked.Increment(ref count); };
             try
             {
                 Trace.Listeners.Add(traceListenerSync);
@@ -76,7 +69,6 @@ public class TracerTests
             }
             finally
             {
-
                 // retire le traceur
                 Trace.Listeners.Remove(traceListenerSync);
             }
@@ -87,19 +79,16 @@ public class TracerTests
     }
 
     /// <summary>
-    /// Vérifie que si on configure un tracer en DoNothing, on ne récupère pas les traces issues des traceurs statiques
+    /// Check that if you configure a tracer in DoNothing, you do not recover traces from static tracers
     /// </summary>
     [Test]
     public async Task DoNothing()
     {
         // setup
-        var count =0;
+        var count = 0;
         using (var ts = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.DoNothing }))
         {
-            ts.OnTracesSent += _ =>
-            {
-                Interlocked.Increment(ref count);
-            };
+            ts.OnTracesSent += _ => { Interlocked.Increment(ref count); };
 
             //Test
             Trace.TraceInformation("Method1");
@@ -109,7 +98,7 @@ public class TracerTests
         //Verify
         Assert.AreEqual(0, count);
     }
-        
+
     [Test]
     public async Task DefaultTraceLevelCheck()
     {
@@ -123,29 +112,29 @@ public class TracerTests
     }
 
     /// <summary>
-    /// Vérifie qu'onne pollue pas la liste des listeners
+    /// verification that we do not pollute static Listeners:
     /// </summary>
     [Test]
     public async Task CleanListenersTest()
     {
         // setup
         var listenerCount = Trace.Listeners.Count;
-            
+
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAcces };
         using (var ts = new TraceSourceSync(config))
         {
-               
             //Test
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
-        // vérification que l'on ne pollue pas les Listeners statiques:
+        // verification that we do not pollute static Listeners:
         Assert.AreEqual(listenerCount, Trace.Listeners.Count);
         Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != @"MainTracerSync"));
     }
 
     /// <summary>
-    /// Vérifie qu'onne pollue pas la liste des listeners
+    /// verification that we do not pollute static Listeners:
     /// </summary>
     [Test]
     public async Task CleanListenersTestV2()
@@ -155,18 +144,18 @@ public class TracerTests
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.DoNothing };
         using (var ts = new TraceSourceSync(config))
         {
-
             //Test
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
-        // vérification que l'on ne pollue pas les Listeners statiques:
+        // verification that we do not pollute static Listeners:
         Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != @"MainTracerSync"));
         Assert.AreEqual(listenerCount, Trace.Listeners.Count);
     }
 
     /// <summary>
-    /// Vérifie qu'onne pollue pas la liste des listeners
+    /// verification that we do not pollute static Listeners:
     /// </summary>
     [Test]
     public async Task CleanListenersTestV3()
@@ -175,18 +164,18 @@ public class TracerTests
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
         using (var ts = new TraceSourceSync(config))
         {
-
             //Test
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
-        // vérification que l'on ne pollue pas les Listeners statiques MAIS que l'on a retiré le listener par défaut:
+        // verification that we do not pollute the static Listeners BUT that we have removed the default listener:
         Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "Default"));
         Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != @"MainTracerSync"));
     }
 
     /// <summary>
-    /// Vérifie qu'onne pollue pas la liste des listeners
+    /// verification that we do not pollute static Listeners:
     /// </summary>
     [Test]
     public async Task CleanListenersTestV4()
@@ -195,12 +184,12 @@ public class TracerTests
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndClearAll };
         using (var ts = new TraceSourceSync(config))
         {
-
             //Test
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
-        // vérification que la liste des Listeners statiques est vide:
+        // checking that the list of static Listeners is empty:
         Assert.AreEqual(0, Trace.Listeners.Count);
     }
 
@@ -209,14 +198,14 @@ public class TracerTests
     {
         // setup
         var countCall = 0;
-        string[] traceReceived={};
+        var traceReceived = Array.Empty<string>();
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAcces };
         using (var ts = new TraceSourceSync(config))
         {
             ts.OnTracesSent += o =>
             {
                 Interlocked.Increment(ref countCall);
-                // remplace sans lock car l'appel doit être unique et countCall sers de vérif
+                // replaces without lock because the call must be unique and countCall serves as a check
                 traceReceived = o.Select(t => t.Message).ToArray();
             };
 
@@ -225,10 +214,11 @@ public class TracerTests
             Trace.TraceError("format {0} - {1}", "param1", "param2");
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
         Assert.AreEqual(1, countCall);
         Assert.IsTrue(traceReceived.Contains("TraceError"));
-        Assert.IsTrue(traceReceived.Contains(@"format {0} - {1}")); // pas de formatage par défaut => on laisse les arguments à coté
+        Assert.IsTrue(traceReceived.Contains(@"format {0} - {1}")); // no formatting by default => we leave the arguments aside
     }
 
     [Test]
@@ -236,14 +226,14 @@ public class TracerTests
     {
         // setup
         var countCall = 0;
-        string[] traceReceived = { };
+        var traceReceived = Array.Empty<string>();
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
         using (var ts = new TraceSourceSync(config))
         {
             ts.OnTracesSent += o =>
             {
                 Interlocked.Increment(ref countCall);
-                // remplace sans lock car l'appel doit être unique et countCall sers de vérif
+                // replaces without lock because the call must be unique and countCall serves as a check
                 traceReceived = o.Select(t => t.Message).ToArray();
             };
 
@@ -252,6 +242,7 @@ public class TracerTests
             Trace.TraceInformation("format TraceInformation {0} - {1}", "param1", "param2");
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
         Assert.AreEqual(1, countCall);
         Assert.AreEqual(2, traceReceived.Length);
@@ -264,14 +255,14 @@ public class TracerTests
     {
         // setup
         var countCall = 0;
-        string[] traceReceived = { };
+        var traceReceived = Array.Empty<string>();
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
         using (var ts = new TraceSourceSync(config))
         {
             ts.OnTracesSent += o =>
             {
                 Interlocked.Increment(ref countCall);
-                // remplace sans lock car l'appel doit être unique et countCall sers de vérif
+                // replaces without lock because the call must be unique and countCall serves as a check
                 traceReceived = o.Select(t => t.Message).ToArray();
             };
 
@@ -280,6 +271,7 @@ public class TracerTests
             Trace.TraceWarning("format TraceWarning {0} - {1}", "param1", "param2");
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
         Assert.AreEqual(1, countCall);
         Assert.AreEqual(2, traceReceived.Length);
@@ -292,14 +284,14 @@ public class TracerTests
     {
         // setup
         var countCall = 0;
-        string[] traceReceived = { };
+        var traceReceived = Array.Empty<string>();
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
         using (var ts = new TraceSourceSync(config))
         {
             ts.OnTracesSent += o =>
             {
                 Interlocked.Increment(ref countCall);
-                // remplace sans lock car l'appel doit être unique et countCall sers de vérif
+                // replaces without lock because the call must be unique and countCall serves as a check
                 traceReceived = o.Select(t => t.Message).ToArray();
             };
 
@@ -310,6 +302,7 @@ public class TracerTests
             Trace.Write(new object(), "Write+object");
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
         Assert.AreEqual(1, countCall);
         Assert.AreEqual(4, traceReceived.Length);
@@ -324,14 +317,14 @@ public class TracerTests
     {
         // setup
         var countCall = 0;
-        string[] traceReceived = { };
+        var traceReceived = Array.Empty<string>();
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
         using (var ts = new TraceSourceSync(config))
         {
             ts.OnTracesSent += o =>
             {
                 Interlocked.Increment(ref countCall);
-                // remplace sans lock car l'appel doit être unique et countCall sers de vérif
+                // replaces without lock because the call must be unique and countCall serves as a check
                 traceReceived = o.Select(t => t.Message).ToArray();
             };
 
@@ -340,6 +333,7 @@ public class TracerTests
             Trace.WriteIf(false, "WriteIf false");
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
         Assert.AreEqual(1, countCall);
         Assert.AreEqual(1, traceReceived.Length);
@@ -351,14 +345,14 @@ public class TracerTests
     {
         // setup
         var countCall = 0;
-        string[] traceReceived = { };
+        var traceReceived = Array.Empty<string>();
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
         using (var ts = new TraceSourceSync(config))
         {
             ts.OnTracesSent += o =>
             {
                 Interlocked.Increment(ref countCall);
-                // remplace sans lock car l'appel doit être unique et countCall sers de vérif
+                // replaces without lock because the call must be unique and countCall serves as a check
                 traceReceived = o.Select(t => t.Message).ToArray();
             };
 
@@ -367,25 +361,27 @@ public class TracerTests
             ts.TraceData(TraceEventType.Information, 32, "param2", "param3");
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
         Assert.AreEqual(1, countCall);
         Assert.AreEqual(2, traceReceived.Length, $"array == {string.Join(", ", traceReceived)}");
         Assert.IsTrue(traceReceived.Contains("param1"), $"array == {string.Join(", ", traceReceived)}");
         Assert.IsTrue(traceReceived.Contains("param2, param3"), $"array == {string.Join(", ", traceReceived)}");
     }
+
     [Test]
     public async Task TraceDataTest_null()
     {
         // setup
         var countCall = 0;
-        string[] traceReceived = { };
+        var traceReceived = Array.Empty<string>();
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
         using (var ts = new TraceSourceSync(config))
         {
             ts.OnTracesSent += o =>
             {
                 Interlocked.Increment(ref countCall);
-                // remplace sans lock car l'appel doit être unique et countCall sers de vérif
+                // replaces without lock because the call must be unique and countCall serves as a check
                 traceReceived = o.Select(t => t.Message).ToArray();
             };
 
@@ -393,6 +389,7 @@ public class TracerTests
             ts.TraceData(TraceEventType.Information, 32, null);
             await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
         }
+
         //Verify
         Assert.AreEqual(1, countCall);
         Assert.AreEqual(1, traceReceived.Length, $"array == {string.Join(", ", traceReceived)}");
@@ -404,14 +401,14 @@ public class TracerTests
     {
         // setup
         var countCall = 0;
-        string[] traceReceived = { };
+        var traceReceived = Array.Empty<string>();
         var config = new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer };
         using (var ts = new TraceSourceSync(config))
         {
             ts.OnTracesSent += o =>
             {
                 Interlocked.Increment(ref countCall);
-                // remplace sans lock car l'appel doit être unique et countCall sers de vérif
+                // replaces without lock because the call must be unique and countCall serves as a check
                 traceReceived = o.Select(t => t.Message).ToArray();
             };
 
@@ -429,7 +426,7 @@ public class TracerTests
         Assert.IsTrue(traceReceived.Contains("message"), $"array contains: {string.Join(Environment.NewLine, traceReceived)}");
         Assert.IsTrue(traceReceived.Contains("format {0} - {1}"), $"array contains: {string.Join(Environment.NewLine, traceReceived)}");
     }
-        
+
     [Test]
     public async Task Trace_Performance()
     {
@@ -455,7 +452,7 @@ public class TracerTests
                     nbTraces += t.Length;
                 }
             };
-                
+
             //Test
             for (var i = 0; i < upper; i++)
             {
@@ -466,13 +463,13 @@ public class TracerTests
             await ts.FlushAndCompleteAddingAsync();
         }
 
-        // nombre de page renvoyé == 1 seule
+        // number of pages returned == 1 only
         Assert.AreEqual(1, count);
         Assert.AreEqual(upper, nbTraces);
     }
 
     /// <summary>
-    /// trace de performance utilisant un traceData plus simple (mais pas forcément plus rapide)
+    /// performance trace using a simpler (but not necessarily faster) traceData
     /// </summary>
     [Test]
     public async Task Trace_Performance_Trace_Data()
@@ -506,6 +503,7 @@ public class TracerTests
             {
                 Trace.Write("error test trace TU");
             }
+
             watch.Stop();
 
             //Verify
@@ -526,12 +524,9 @@ public class TracerTests
     {
         // setup
         var count = 0;
-        using (var ts = new TraceSourceSync(new TraceConfig {TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer }))
+        using (var ts = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer }))
         {
-            ts.OnTracesSent += _ =>
-            {
-                Interlocked.Increment(ref count);
-            };
+            ts.OnTracesSent += _ => { Interlocked.Increment(ref count); };
 
             //Verify
             await ts.FlushAndCompleteAddingAsync();
@@ -539,7 +534,7 @@ public class TracerTests
 
         Assert.AreEqual(0, count); // pas de réception de page car page vide
     }
-        
+
     /// <summary>
     /// Test that the trace does not pose a problem when the buffer has been closed
     /// </summary>
@@ -550,10 +545,7 @@ public class TracerTests
         var count = 0;
         using (var ts = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer }))
         {
-            ts.OnTracesSent += _ =>
-            {
-                Interlocked.Increment(ref count);
-            };
+            ts.OnTracesSent += _ => { Interlocked.Increment(ref count); };
 
             //Verify
             await ts.FlushAndCompleteAddingAsync();
@@ -573,10 +565,7 @@ public class TracerTests
         var count = 0;
         using (var ts = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer }))
         {
-            ts.OnTracesSent += _ =>
-            {
-                Interlocked.Increment(ref count);
-            };
+            ts.OnTracesSent += _ => { Interlocked.Increment(ref count); };
 
             //Verify
             await ts.FlushAndCompleteAddingAsync();

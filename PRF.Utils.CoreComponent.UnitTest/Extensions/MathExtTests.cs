@@ -50,7 +50,7 @@ internal sealed class MathExtTests
                 return _number.CompareTo(tmp._number);
             }
 
-            throw new ArgumentOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(obj), "foo message for unit tests");
         }
     }
         

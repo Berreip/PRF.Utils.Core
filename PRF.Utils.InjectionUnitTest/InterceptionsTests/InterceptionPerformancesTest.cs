@@ -43,7 +43,7 @@ public class InterceptionPerformancesTest
 
         for (var i = 0; i < upper; i++)
         {
-            var _ = _container.Resolve<IClassVoidTest>();
+            _ = _container.Resolve<IClassVoidTest>();
         }
         watch.Stop();
 
@@ -72,7 +72,7 @@ public class InterceptionPerformancesTest
 
         for (var i = 0; i < upper; i++)
         {
-            var _ = _container.Resolve<IClassVoidTest>();
+            _ = _container.Resolve<IClassVoidTest>();
         }
         watch.Stop();
 
@@ -102,7 +102,7 @@ public class InterceptionPerformancesTest
 
         for (var i = 0; i < upper; i++)
         {
-            var _ = _container.Resolve<IClassVoidTest>();
+            _ = _container.Resolve<IClassVoidTest>();
         }
         watch.Stop();
 
@@ -133,7 +133,7 @@ public class InterceptionPerformancesTest
 
         for (var i = 0; i < upper; i++)
         {
-            var _ = _container.Resolve<IClassVoidTest>();
+            _ = _container.Resolve<IClassVoidTest>();
         }
         watch.Stop();
 
@@ -143,7 +143,7 @@ public class InterceptionPerformancesTest
     }
 
     /// <summary>
-    /// Remplace la méthode d'enregistrement pour vérifier que le comportement est le même
+    /// Overrides the save method to verify that the behavior is the same
     /// </summary>
     [Test]
     public void PerformanceNewClassTestV5()
@@ -164,7 +164,7 @@ public class InterceptionPerformancesTest
 
         for (var i = 0; i < upper; i++)
         {
-            var _ = _container.Resolve<IClassVoidTest>();
+            _ = _container.Resolve<IClassVoidTest>();
         }
         watch.Stop();
 
@@ -229,6 +229,6 @@ public class InterceptionPerformancesTest
             
         //Verify
         Assert.IsTrue(watch.Elapsed < TimeSpan.FromMilliseconds(500),
-            $"Trop lent pour créer {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
+            $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 }

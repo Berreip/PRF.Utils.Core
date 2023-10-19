@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using PRF.Utils.CoreComponents.JSON;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PRF.Utils.CoreComponent.UnitTest.JSON;
 
@@ -7,13 +8,13 @@ namespace PRF.Utils.CoreComponent.UnitTest.JSON;
 public class JsonSerializerWrapperTest
 {
     /// <summary>
-    /// Cas 1: test que la sérialisation est correctement faite en Json
+    /// Cas 1: test that the serialization is correctly done in Json
     /// </summary>
     [Test]
     public void SerializeToJsonV1()
     {
         //Configuration
-        var target = @"{""Id"":75,""Name"":""Robert""}";
+        const string target = """{"Id":75,"Name":"Robert"}""";
         var dataToSerialize = new TestClassToSerializeJson { Id = 75, Name = "Robert" };
 
         //Test
@@ -24,13 +25,13 @@ public class JsonSerializerWrapperTest
     }
 
     /// <summary>
-    /// Cas 1: test que la dé-sérialisation est correctement faite en Json
+    /// Case 1: test that deserialization is correctly done in Json
     /// </summary>
     [Test]
     public void DeserializeFromJson()
     {
         //Configuration
-        var str = @"{""Id"":75,""Name"":""Robert""}";
+        const string str = """{"Id":75,"Name":"Robert"}""";
 
         //Test
         var res = str.DeserializeFromJson<TestClassToSerializeJson>();

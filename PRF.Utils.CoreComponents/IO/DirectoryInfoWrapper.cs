@@ -376,6 +376,7 @@ namespace PRF.Utils.CoreComponents.IO
         /// <inheritdoc />
         public IEnumerable<IDirectoryInfo> EnumerateDirectories()
         {
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var dir in _source.EnumerateDirectories())
             {
                 yield return new DirectoryInfoWrapper(dir);
@@ -385,6 +386,7 @@ namespace PRF.Utils.CoreComponents.IO
         /// <inheritdoc />
         public IEnumerable<IDirectoryInfo> EnumerateDirectories(string searchPattern)
         {
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var dir in _source.EnumerateDirectories(searchPattern))
             {
                 yield return new DirectoryInfoWrapper(dir);
@@ -394,6 +396,7 @@ namespace PRF.Utils.CoreComponents.IO
         /// <inheritdoc />
         public IEnumerable<IDirectoryInfo> EnumerateDirectories(string searchPattern, SearchOption searchOption)
         {
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var dir in _source.EnumerateDirectories(searchPattern, searchOption))
             {
                 yield return new DirectoryInfoWrapper(dir);
@@ -403,6 +406,7 @@ namespace PRF.Utils.CoreComponents.IO
         /// <inheritdoc />
         public IEnumerable<IFileInfo> EnumerateFiles()
         {
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var file in _source.EnumerateFiles())
             {
                 yield return new FileInfoWrapper(file);
@@ -412,6 +416,7 @@ namespace PRF.Utils.CoreComponents.IO
         /// <inheritdoc />
         public IEnumerable<IFileInfo> EnumerateFiles(string searchPattern)
         {
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var file in _source.EnumerateFiles(searchPattern))
             {
                 yield return new FileInfoWrapper(file);
@@ -421,6 +426,7 @@ namespace PRF.Utils.CoreComponents.IO
         /// <inheritdoc />
         public IEnumerable<IFileInfo> EnumerateFiles(string searchPattern, SearchOption searchOption)
         {
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var file in _source.EnumerateFiles(searchPattern, searchOption))
             {
                 yield return new FileInfoWrapper(file);

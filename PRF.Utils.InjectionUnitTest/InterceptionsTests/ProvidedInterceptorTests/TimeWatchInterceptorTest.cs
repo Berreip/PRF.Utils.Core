@@ -31,7 +31,7 @@ public class TimeWatchInterceptorTest
         // instance de test:
         _container = new InjectionContainerSimpleInjector();
 
-        // enregistre le type de la classe de test
+        // saves the type of the test class
         _container.Register<IClassVoidTest, ClassVoidTest>(LifeTime.Singleton);
     }
 
@@ -40,7 +40,7 @@ public class TimeWatchInterceptorTest
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.TimeWatchInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.TimeWatchInterceptor);
@@ -73,7 +73,7 @@ public class TimeWatchInterceptorTest
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.TimeWatchInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.TimeWatchInterceptor);
@@ -106,7 +106,7 @@ public class TimeWatchInterceptorTest
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.TimeWatchInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.TimeWatchInterceptor);
@@ -139,7 +139,7 @@ public class TimeWatchInterceptorTest
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
 
         _container.RegisterInterceptor(PredefinedInterceptors.TimeWatchInterceptor, LifeTime.Singleton);
         _container.Intercept<IClassVoidTest>().With(PredefinedInterceptors.TimeWatchInterceptor);
@@ -155,7 +155,7 @@ public class TimeWatchInterceptorTest
             };
 
             //Test
-            var _ = await instance.MethodCallWaitWithReturnDataAsync(TimeSpan.FromMilliseconds(50));
+            _ = await instance.MethodCallWaitWithReturnDataAsync(TimeSpan.FromMilliseconds(50));
 
             //Verify
             await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
@@ -172,7 +172,7 @@ public class TimeWatchInterceptorTest
     {
         //Configuration
         var count = 0;
-        TraceData[] traceReceived = { };
+        var traceReceived = Array.Empty<TraceData>();
         const int upper = 1_000;
 
         _container.RegisterInterceptor(PredefinedInterceptors.TimeWatchInterceptor, LifeTime.Singleton);
@@ -193,7 +193,7 @@ public class TimeWatchInterceptorTest
             //Test
             for (var i = 0; i < upper; i++)
             {
-                var _ = await instance.MethodCallForPerf();
+                _ = await instance.MethodCallForPerf();
             }
 
             //Verify

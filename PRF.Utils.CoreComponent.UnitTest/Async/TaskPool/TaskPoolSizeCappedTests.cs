@@ -60,7 +60,7 @@ internal sealed class TaskPoolSizeCappedTests
         var res = sut.AddWork(async _ =>
         {
             // ReSharper disable once MethodSupportsCancellation
-            await Task.Run(() => { }).ConfigureAwait(false);
+            await Task.Run(() => { }, CancellationToken.None).ConfigureAwait(false);
             Interlocked.Increment(ref counter);
         });
         await res.WaitAsync().ConfigureAwait(false);
@@ -194,7 +194,7 @@ internal sealed class TaskPoolSizeCappedTests
         {
             mrevFromTask.Set(); // unlock for cancellation
             // ReSharper disable once MethodSupportsCancellation
-            mrev.Wait();
+            mrev.Wait(CancellationToken.None);
             ctStatus = ct.IsCancellationRequested;
         });
         mrevFromTask.Wait(); // wait for the task to really start
@@ -259,7 +259,7 @@ internal sealed class TaskPoolSizeCappedTests
         {
             mrevAddNotStartedTask.Set(); // unlock adding new work when waiting task blocks the pool
             // ReSharper disable once MethodSupportsCancellation
-            mrevBlockingTask.Wait();
+            mrevBlockingTask.Wait(CancellationToken.None);
         });
         //add work to the blocked pool
         mrevAddNotStartedTask.Wait(); //wait for pool to be blocked by waiting task
@@ -317,7 +317,7 @@ internal sealed class TaskPoolSizeCappedTests
             pendings.Add(sut.AddWork(_ =>
             {
                 Interlocked.Increment(ref counter);
-                mrev.Wait();
+                mrev.Wait(CancellationToken.None);
             }));
         }
 
@@ -413,7 +413,7 @@ internal sealed class TaskPoolSizeCappedTests
         var mrev = new ManualResetEventSlim();
 
         //Act
-        var res = sut.AddWork(_ => mrev.Wait());
+        var res = sut.AddWork(_ => mrev.Wait(CancellationToken.None));
 
         var workEnded = await res.WaitAsync(TimeSpan.FromMilliseconds(100)).ConfigureAwait(false);
         mrev.Set();
@@ -505,7 +505,7 @@ internal sealed class TaskPoolSizeCappedTests
                             {
                                 var __ = i / (k + 1) + 20;
                             }
-                        }).ConfigureAwait(false);
+                        }, CancellationToken.None).ConfigureAwait(false);
 
                         Interlocked.Increment(ref counter);
                     });
@@ -654,10 +654,7 @@ internal sealed class TaskPoolSizeCappedTests
         var items = Enumerable.Range(0, 1000).Select(_ => new Item());
 
         //Act
-        items.ParallelForEachSizedCapped(poolMaximumSize: 10, _ =>
-        {
-            Interlocked.Increment(ref counter);
-        });
+        items.ParallelForEachSizedCapped(poolMaximumSize: 10, _ => { Interlocked.Increment(ref counter); });
 
         //Assert
         Assert.AreEqual(1000, counter);
@@ -672,10 +669,7 @@ internal sealed class TaskPoolSizeCappedTests
         var sut = new TaskPoolSizeCapped(10);
 
         //Act
-        sut.ParallelForEachSizedCapped(items: items, _ =>
-        {
-            Interlocked.Increment(ref counter);
-        });
+        sut.ParallelForEachSizedCapped(items: items, _ => { Interlocked.Increment(ref counter); });
 
         //Assert
         Assert.AreEqual(1000, counter);
