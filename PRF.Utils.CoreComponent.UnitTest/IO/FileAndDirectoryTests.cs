@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
+using PRF.Utils.CoreComponents.Extensions;
 using PRF.Utils.CoreComponents.IO;
 
 namespace PRF.Utils.CoreComponent.UnitTest.IO;
@@ -328,5 +329,93 @@ public class FileAndDirectoryTests
         Assert.AreEqual(_testDirectory.FullName, file.DirectoryName);
         Assert.IsFalse(file.IsReadOnly);
         Assert.AreEqual(0, file.Length);
+    }
+
+    [Test]
+    public void TryDelete_ShouldDeleteFileIfNotInUse()
+    {
+        // Arrange
+        var testFilePath = _testDirectory.GetFile("foo.txt").FullName;
+        var fileInfo = new FileInfo(testFilePath);
+
+        // Act
+        var success = fileInfo.TryDelete();
+
+        // Assert
+        Assert.IsTrue(success);
+        Assert.IsFalse(File.Exists(testFilePath));
+    }
+
+    [Test]
+    public void TryDelete_WithTimeout_ShouldDeleteFileWithinTimeout()
+    {
+        // Arrange
+        var testFilePath = _testDirectory.GetFile("foo.txt").FullName;
+        var fileInfo = new FileInfo(testFilePath);
+        var timeout = TimeSpan.FromSeconds(5);
+
+        // Act
+        var success = fileInfo.TryDelete(timeout);
+
+        // Assert
+        Assert.IsTrue(success);
+        Assert.IsFalse(File.Exists(testFilePath));
+    }
+
+    [Test]
+    public void TryDelete_WithInvalidTimeout_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var testFilePath = _testDirectory.GetFile("foo.txt").FullName;
+        var fileInfo = new FileInfo(testFilePath);
+        var invalidTimeout = TimeSpan.FromHours(2);
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => fileInfo.TryDelete(invalidTimeout));
+    }
+
+    [Test]
+    public void DeleteAndRetryIfLocked_ShouldDeleteFileWithRetries()
+    {
+        // Arrange
+        var testFilePath = _testDirectory.CreateFileIfNotExists("foo.txt").FullName;
+        var fileInfo = new FileInfo(testFilePath);
+
+        // Act
+        fileInfo.DeleteAndRetryIfLocked();
+
+        // Assert
+        Assert.IsFalse(File.Exists(testFilePath));
+    }
+
+    [Test]
+    public void DeleteAndRetryIfLocked_returns_if_already_deleted()
+    {
+        // Arrange
+        var testFilePath = _testDirectory.GetFile("foo.txt").FullName;
+        File.Delete(testFilePath);
+        var fileInfo = new FileInfo(testFilePath);
+
+        // Act
+        fileInfo.DeleteAndRetryIfLocked();
+
+        // Assert
+        Assert.IsFalse(File.Exists(testFilePath));
+    }
+
+    [Test]
+    public void DeleteAndRetryIfLocked_WhenFileIsLocked_ShouldThrowTimeoutException()
+    {
+        // Arrange
+        var testFilePath = _testDirectory.CreateFileIfNotExists("foo.txt").FullName;
+
+        // do not allow deletion
+        using (var _ = File.Open(testFilePath, FileMode.Open, FileAccess.Read, FileShare.None))
+        {
+            var fileInfo = new FileInfo(testFilePath);
+
+            // Act & Assert
+            Assert.Throws<TimeoutException>(() => fileInfo.DeleteAndRetryIfLocked(TimeSpan.FromMilliseconds(300)));
+        }
     }
 }

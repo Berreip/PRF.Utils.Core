@@ -706,12 +706,12 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
         /// <summary>
         /// Delete the file with retries for 10s if it is locked
         /// </summary>
-        public static void DeleteAndRetryIfLocked(this FileInfo file)
+        public static void DeleteAndRetryIfLocked(this FileInfo file, TimeSpan? timeout = null)
         {
             if (!file.ExistsExplicit()) return;
 
             var sw = new Stopwatch();
-            var timeout = TimeSpan.FromSeconds(10);
+            var timeoutComputed = timeout ?? TimeSpan.FromSeconds(10);
             sw.Start();
 
             while (sw.IsRunning)
@@ -723,7 +723,7 @@ limit = {PathExtension.MaxPathLenght}, path lenght = {wantedPath.Length}, path =
                 }
                 catch (Exception ex)
                 {
-                    if (sw.Elapsed > timeout)
+                    if (sw.Elapsed > timeoutComputed)
                     {
                         throw new TimeoutException($"Timeout occurred while trying to delete file: {file.FullName}", ex);
                     }
