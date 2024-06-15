@@ -23,8 +23,9 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
     /// <summary>
     /// Work shared base class
     /// </summary>
-    internal abstract class WorkBase : IWorkInProgress
+    internal abstract class WorkBase : IWorkInProgress, IDisposable
     {
+        private bool _disposed;
         protected readonly TaskCompletionSource<bool> _tcs;
         protected readonly CancellationTokenSource _cts;
 
@@ -47,6 +48,34 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         {
             _cts.Cancel();
             _tcs.TrySetCanceled();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // dispose managed state (managed objects).
+            }
+
+            _cts.Dispose();
+            _disposed = true;
+        }
+
+        ~WorkBase()
+        {
+            Dispose(false);
         }
     }
 

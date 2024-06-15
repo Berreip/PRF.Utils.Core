@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 // ReSharper disable UnusedMemberInSuper.Global
 
 namespace PRF.Utils.CoreComponents.Async.TaskPool
@@ -48,7 +49,10 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
 
             _poolMaximumSize = poolMaximumSize;
             _pendingWorks = new ConcurrentQueue<WorkBase>();
-            _runners = Enumerable.Range(0, poolMaximumSize).Select(o => new WorkRunner(_pendingWorks)).ToArray();
+            _runners = Enumerable
+                .Range(0, poolMaximumSize)
+                .Select(_ => new WorkRunner(_pendingWorks))
+                .ToArray();
         }
 
         /// <inheritdoc />
@@ -67,12 +71,13 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         {
             _pendingWorks.Enqueue(work);
             // the number ot iteration depends on the current queue count: we resume worker if its index is greater than the remaining work count
-            // it avoid to resume too much workers if there is not enough work to do
+            // it avoid to resume too many workers if there is not enough work to do
             var iteration = Math.Min(_poolMaximumSize, _pendingWorks.Count);
             for (var i = 0; i < iteration; i++)
             {
-               _runners[i].Resume();
+                _runners[i].Resume();
             }
+
             return work;
         }
 
@@ -95,21 +100,25 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
                     {
                         while (_queue.TryDequeue(out var workPending))
                         {
-                            // if cancellation requested, go to the next one
-                            if (!workPending.IsCancellationRequested)
+                            using (workPending)
                             {
-                                switch (workPending)
+                                // if cancellation requested, go to the next one
+                                if (!workPending.IsCancellationRequested)
                                 {
-                                    case Work work:
-                                        work.DoWork();
-                                        break;
+                                    switch (workPending)
+                                    {
+                                        case Work work:
+                                            work.DoWork();
+                                            break;
 
-                                    case WorkAsync workAsync:
-                                        await workAsync.DoWorkAsync().ConfigureAwait(false);
-                                        break;
+                                        case WorkAsync workAsync:
+                                            await workAsync.DoWorkAsync().ConfigureAwait(false);
+                                            break;
+                                    }
                                 }
                             }
                         }
+
                         // when done, reset the key
                         _key = 0;
                     });

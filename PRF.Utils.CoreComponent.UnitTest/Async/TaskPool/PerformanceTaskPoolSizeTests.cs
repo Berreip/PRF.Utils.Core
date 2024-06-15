@@ -60,6 +60,35 @@ internal sealed class PerformanceTaskPoolSizeTests
         TestContext.WriteLine($"elapsed = {watch.ElapsedMilliseconds} ms MEAN [{mean} ms]");
     }
 
+    [Test]
+    [Repeat(10)]
+    [Ignore("For Memory footprint")]
+    public async Task TaskPoolSizeCapped_Memory_FootPrint_Ensure_Ressource_are_disposed()
+    {
+        var sut = new TaskPoolSizeCapped(20);
+        var startTestTotalMemory = GC.GetTotalMemory(true);
+
+        //Act
+        for (var i = 0; i < 10_000_000; i++)
+        {
+            sut.AddWork(_ =>
+            {
+                // ReSharper disable once ConvertToConstant.Local
+                var r = 56;
+                // ReSharper disable once UnusedVariable : FOO METHOD
+                var t = r * r;
+            });
+
+        }
+
+        await sut.WaitIdleAsync().ConfigureAwait(false);
+
+        //Assert
+        var endTestTotalMemory = GC.GetTotalMemory(true);
+        var sizeInBytes = endTestTotalMemory - startTestTotalMemory;
+        Console.WriteLine($"Size in bytes = {sizeInBytes}");
+    }
+
     private static int AddMean(Stopwatch watch, int key)
     {
         if (_means.TryGetValue(key, out var tuple))

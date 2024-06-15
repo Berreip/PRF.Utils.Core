@@ -33,31 +33,33 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         /// </summary>
         public static async Task<bool> WaitAsync(this IWorkInProgress work, TimeSpan timeout)
         {
-            var cts = new CancellationTokenSource();
-            var isTimeoutReached = false;
+            using (var cts = new CancellationTokenSource())
+            {
+                var isTimeoutReached = false;
 
-            // wait either the task or the timeout in a race condition
-            await Task.WhenAny(
-                work.WaitAsync(),
-                Task.Run(async () =>
-                {
-                    try
+                // wait either the task or the timeout in a race condition
+                await Task.WhenAny(
+                    work.WaitAsync(),
+                    Task.Run((Func<Task>)(async () =>
                     {
-                        await Task.Delay(timeout, cts.Token).ConfigureAwait(false);
-                        if (!cts.IsCancellationRequested)
+                        try
                         {
-                            isTimeoutReached = true;
+                            await Task.Delay(timeout, cts.Token).ConfigureAwait(false);
+                            if (!cts.IsCancellationRequested)
+                            {
+                                isTimeoutReached = true;
+                            }
                         }
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // normal cancellation if task ends before
-                    }
-                }, cts.Token)).ConfigureAwait(false);
+                        catch (OperationCanceledException)
+                        {
+                            // normal cancellation if task ends before
+                        }
+                    }), cts.Token)).ConfigureAwait(false);
 
-            // cancel if needed the timeout task
-            cts.Cancel();
-            return !isTimeoutReached;
+                // cancel if needed the timeout task
+                cts.Cancel();
+                return !isTimeoutReached;
+            }
         }
 
         /// <summary>

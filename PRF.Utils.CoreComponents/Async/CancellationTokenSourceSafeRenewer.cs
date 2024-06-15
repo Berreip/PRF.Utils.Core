@@ -1,11 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace PRF.Utils.CoreComponents.Async
 {
     /// <summary>
-    /// Provide an access to a cancellation token and allow to renew the source at any given time in a thread safe way
+    /// Provide access to a cancellation token and allow to renew the source at any given time in a thread safe way
     /// </summary>
-    public sealed class CancellationTokenSourceSafeRenewer
+    public sealed class CancellationTokenSourceSafeRenewer : IDisposable
     {
         private readonly object _key = new object();
         private CancellationTokenSource _cts;
@@ -18,7 +19,12 @@ namespace PRF.Utils.CoreComponents.Async
             lock (_key)
             {
                 // cancel previous if any
-                _cts?.Cancel();
+                var previousCts = _cts;
+                if (previousCts != null)
+                {
+                    previousCts.Cancel();
+                    previousCts.Dispose();
+                }
                 // and renew the source
                 _cts = new CancellationTokenSource();
                 return _cts.Token;
@@ -33,6 +39,7 @@ namespace PRF.Utils.CoreComponents.Async
             lock (_key)
             {
                 // create new source if needed
+                // ReSharper disable once ConvertIfStatementToNullCoalescingAssignment
                 if (_cts == null)
                 {
                     _cts = new CancellationTokenSource();
@@ -48,12 +55,22 @@ namespace PRF.Utils.CoreComponents.Async
         {
             lock (_key)
             {
-                if (_cts != null)
+                var previousCts = _cts;
+                if (previousCts != null)
                 {
-                    _cts.Cancel();
+                    previousCts.Cancel();
+                    previousCts.Dispose();
                     _cts = null;
                 }
             }
+        }
+
+        /// <summary>
+        /// Dispose the CancellationTokenSourceSafeRenewer BUT DO NOT CANCEL IT.
+        /// </summary>
+        public void Dispose()
+        {
+            _cts?.Dispose();
         }
     }
 }
