@@ -8,13 +8,14 @@
     <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
     <PackageTags>Static, Trace, TraceSource, TraceListener</PackageTags>
     <Description>Provide custom traceSource and TraceListener to collect and aggregate static call to Trace.TraceInformation(), TraceWarning() ...</Description>
+    <PackageReleaseNotes>Update dependencies</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <Version>2.0.2</Version>
+    <Version>2.0.3</Version>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
-    <AssemblyVersion>2.0.2.0</AssemblyVersion>
-    <FileVersion>2.0.2.0</FileVersion><!-- Include symbol files (*.pdb) in the built .nupkg -->
+    <AssemblyVersion>2.0.3.0</AssemblyVersion>
+    <FileVersion>2.0.3.0</FileVersion><!-- Include symbol files (*.pdb) in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
