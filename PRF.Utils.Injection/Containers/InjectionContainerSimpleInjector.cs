@@ -275,6 +275,7 @@ namespace PRF.Utils.Injection.Containers
 
             public IEnumerator<T> GetEnumerator()
             {
+                // ReSharper disable once NotDisposedResourceIsReturned => Do not use attributes
                 return _backing.GetEnumerator();
             }
 

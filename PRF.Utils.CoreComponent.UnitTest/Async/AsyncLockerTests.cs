@@ -98,7 +98,6 @@ internal sealed class AsyncLockerTests
         //Act
         using (var key = locker.WaitLock())
         {
-            key.Dispose();
         }
 
         //Assert

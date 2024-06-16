@@ -37,15 +37,17 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
             {
                 var isTimeoutReached = false;
 
+                var token = cts.Token;
                 // wait either the task or the timeout in a race condition
                 await Task.WhenAny(
                     work.WaitAsync(),
+                    // ReSharper disable once RedundantCast
                     Task.Run((Func<Task>)(async () =>
                     {
                         try
                         {
-                            await Task.Delay(timeout, cts.Token).ConfigureAwait(false);
-                            if (!cts.IsCancellationRequested)
+                            await Task.Delay(timeout, token).ConfigureAwait(false);
+                            if (!token.IsCancellationRequested)
                             {
                                 isTimeoutReached = true;
                             }
@@ -81,7 +83,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var item in items)
             {
-                allWorksInProgress.Add(tpsc.AddWork(async ct => await callbackAsync(item).ConfigureAwait(false)));
+                allWorksInProgress.Add(tpsc.AddWork(async _ => await callbackAsync(item).ConfigureAwait(false)));
             }
             await allWorksInProgress.WaitAllAsync().ConfigureAwait(false);
         }
@@ -95,7 +97,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var item in items)
             {
-                allWorksInProgress.Add(tpsc.AddWork(ct => callbackSync(item)));
+                allWorksInProgress.Add(tpsc.AddWork(_ => callbackSync(item)));
             }
             await allWorksInProgress.WaitAllAsync().ConfigureAwait(false);
         }

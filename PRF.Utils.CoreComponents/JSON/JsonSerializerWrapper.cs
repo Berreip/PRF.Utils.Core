@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace PRF.Utils.CoreComponents.JSON
 {
@@ -15,7 +15,7 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <returns>The deserialized object</returns>
         public static T DeserializeFromJson<T>(this string jsonString)
         {
-            return JsonConvert.DeserializeObject<T>(jsonString);
+            return JsonSerializer.Deserialize<T>(jsonString);
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace PRF.Utils.CoreComponents.JSON
         /// <returns>the string representation of the serialized object</returns>
         public static string SerializeToJson<T>(this T data)
         {
-            return JsonConvert.SerializeObject(data);
+            return JsonSerializer.Serialize(data);
         }
     }
 }

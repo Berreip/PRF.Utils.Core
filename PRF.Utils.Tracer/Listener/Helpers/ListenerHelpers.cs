@@ -14,7 +14,7 @@ namespace PRF.Utils.Tracer.Listener.Helpers
         private static readonly Dictionary<SourceLevels, TraceEventType> _converter
             = new Dictionary<SourceLevels, TraceEventType>
             {
-                { SourceLevels.Off, TraceEventType.Critical }, // no off for TraceEventType so just the critical
+                { SourceLevels.Off, TraceEventType.Critical }, // Off for TraceEventType so just the critical
                 { SourceLevels.Critical, TraceEventType.Critical },
                 { SourceLevels.Error, TraceEventType.Error },
                 { SourceLevels.Warning, TraceEventType.Warning },

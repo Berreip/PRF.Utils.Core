@@ -57,7 +57,7 @@ namespace PRF.Utils.CoreComponents.Extensions
             foreach (var keyValuePair in elementsToAdd)
             {
                 // in case of key found, the update only takes the old element
-                dictionary.AddOrUpdate(keyValuePair.Key, keyValuePair.Value, (key, value) => value);
+                dictionary.AddOrUpdate(keyValuePair.Key, keyValuePair.Value, (_, value) => value);
 
                 // we report the element as present
                 elementsPresent.Add(keyValuePair.Key);
