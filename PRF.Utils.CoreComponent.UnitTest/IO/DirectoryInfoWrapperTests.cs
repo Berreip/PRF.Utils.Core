@@ -1,35 +1,33 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using CommonUnitTest;
 using PRF.Utils.CoreComponents.IO;
 
 namespace PRF.Utils.CoreComponent.UnitTest.IO;
 
-internal sealed class DirectoryInfoWrapperTests
+public sealed class DirectoryInfoWrapperTests : IDisposable
 {
-    private IDirectoryInfo _sut;
-    private string _testDirectoryPath;
-    private DirectoryInfoWrapper _otherDir;
+    private readonly IDirectoryInfo _sut;
+    private readonly string _testDirectoryPath;
+    private readonly DirectoryInfoWrapper _otherDir;
 
-    [SetUp]
-    public void TestInitialize()
+    public DirectoryInfoWrapperTests()
     {
         // mock:
-        _sut = new DirectoryInfoWrapper(Path.Combine(TestContext.CurrentContext.TestDirectory, "Dir"));
-        _otherDir = new DirectoryInfoWrapper(Path.Combine(TestContext.CurrentContext.TestDirectory, "OtherDir"));
+        _sut = new DirectoryInfoWrapper(UnitTestFolder.Get("Dir"));
+        _otherDir = new DirectoryInfoWrapper(UnitTestFolder.Get("OtherDir"));
         _testDirectoryPath = _sut.FullName;
         _sut.CleanDirectory();
     }
 
-    [TearDown]
-    public void TestCleanup()
+    public void Dispose()
     {
         _sut.DeleteIfExistAndWaitDeletion(TimeSpan.FromSeconds(5));
         _otherDir.DeleteIfExistAndWaitDeletion(TimeSpan.FromSeconds(5));
     }
 
-    [Test]
+    [Fact]
     public void EnumerateFiles_ShouldReturnFilesInDirectory()
     {
         // Arrange
@@ -40,12 +38,12 @@ internal sealed class DirectoryInfoWrapperTests
         var files = _sut.EnumerateFiles().ToArray();
 
         // Assert
-        Assert.AreEqual(2, files.Length);
-        Assert.IsTrue(files.Any(f => f.Name == "File1.txt"));
-        Assert.IsTrue(files.Any(f => f.Name == "File2.txt"));
+        Assert.Equal(2, files.Length);
+        Assert.Contains(files, f => f.Name == "File1.txt");
+        Assert.Contains(files, f => f.Name == "File2.txt");
     }
 
-    [Test]
+    [Fact]
     public void EnumerateFiles_WithSearchPattern_ShouldReturnMatchingFiles()
     {
         // Arrange
@@ -56,11 +54,11 @@ internal sealed class DirectoryInfoWrapperTests
         var csvFiles = _sut.EnumerateFiles("*.csv").ToArray();
 
         // Assert
-        Assert.AreEqual(1, csvFiles.Length);
-        Assert.AreEqual("File2.csv", csvFiles[0].Name);
+        Assert.Single(csvFiles);
+        Assert.Equal("File2.csv", csvFiles[0].Name);
     }
 
-    [Test]
+    [Fact]
     public void EnumerateFiles_WithSearchOption_ShouldIncludeSubdirectories()
     {
         // Arrange
@@ -72,12 +70,12 @@ internal sealed class DirectoryInfoWrapperTests
         var allFiles = _sut.EnumerateFiles("*", SearchOption.AllDirectories).ToArray();
 
         // Assert
-        Assert.AreEqual(2, allFiles.Length);
-        Assert.IsTrue(allFiles.Any(f => f.Name == "File1.txt"));
-        Assert.IsTrue(allFiles.Any(f => f.Name == "File3.txt"));
+        Assert.Equal(2, allFiles.Length);
+        Assert.Contains(allFiles, f => f.Name == "File1.txt");
+        Assert.Contains(allFiles, f => f.Name == "File3.txt");
     }
 
-    [Test]
+    [Fact]
     public void GetDirectories_ShouldReturnDirectoriesMatchingSearchPattern()
     {
         // Arrange
@@ -89,12 +87,12 @@ internal sealed class DirectoryInfoWrapperTests
         var subdirs = _sut.GetDirectories("Subdir*");
 
         // Assert
-        Assert.AreEqual(2, subdirs.Length);
-        Assert.IsTrue(subdirs.Any(d => d.Name == "Subdir1"));
-        Assert.IsTrue(subdirs.Any(d => d.Name == "Subdir2"));
+        Assert.Equal(2, subdirs.Length);
+        Assert.Contains(subdirs, d => d.Name == "Subdir1");
+        Assert.Contains(subdirs, d => d.Name == "Subdir2");
     }
 
-    [Test]
+    [Fact]
     public void GetFiles_ShouldReturnAllFilesInDirectory()
     {
         // Arrange
@@ -105,12 +103,12 @@ internal sealed class DirectoryInfoWrapperTests
         var files = _sut.GetFiles();
 
         // Assert
-        Assert.AreEqual(2, files.Length);
-        Assert.IsTrue(files.Any(f => f.Name == "File1.txt"));
-        Assert.IsTrue(files.Any(f => f.Name == "File2.csv"));
+        Assert.Equal(2, files.Length);
+        Assert.Contains(files, f => f.Name == "File1.txt");
+        Assert.Contains(files, f => f.Name == "File2.csv");
     }
 
-    [Test]
+    [Fact]
     public void TryGetFile_WhenFileExists_ShouldReturnTrueAndSetFileInfo()
     {
         // Arrange
@@ -120,12 +118,12 @@ internal sealed class DirectoryInfoWrapperTests
         var result = _sut.TryGetFile("ExistingFile.txt", out var fileInfo);
 
         // Assert
-        Assert.IsTrue(result);
-        Assert.IsNotNull(fileInfo);
-        Assert.AreEqual("ExistingFile.txt", fileInfo.Name);
+        Assert.True(result);
+        Assert.NotNull(fileInfo);
+        Assert.Equal("ExistingFile.txt", fileInfo.Name);
     }
 
-    [Test]
+    [Fact]
     public void MoveTo_ShouldMoveDirectoryToSpecifiedLocation()
     {
         // Arrange
@@ -136,11 +134,11 @@ internal sealed class DirectoryInfoWrapperTests
         _sut.MoveTo(destinationPath);
 
         // Assert
-        Assert.IsTrue(Directory.Exists(destinationPath));
-        Assert.IsFalse(Directory.Exists(_testDirectoryPath));
+        Assert.True(Directory.Exists(destinationPath));
+        Assert.False(Directory.Exists(_testDirectoryPath));
     }
 
-    [Test]
+    [Fact]
     public void CopyTo_ShouldCreateTargetDirectoryAndCopyContents()
     {
         // Arrange
@@ -152,15 +150,15 @@ internal sealed class DirectoryInfoWrapperTests
         var result = _sut.CopyTo(targetPath);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.IsTrue(Directory.Exists(targetPath));
-        Assert.IsTrue(Directory.Exists(Path.Combine(targetPath, "Subdir1")));
-        Assert.IsTrue(Directory.Exists(Path.Combine(targetPath, "Subdir2")));
-        Assert.IsTrue(File.Exists(Path.Combine(targetPath, "Subdir1", "File1.txt")));
-        Assert.IsTrue(File.Exists(Path.Combine(targetPath, "Subdir2", "File2.txt")));
+        Assert.NotNull(result);
+        Assert.True(Directory.Exists(targetPath));
+        Assert.True(Directory.Exists(Path.Combine(targetPath, "Subdir1")));
+        Assert.True(Directory.Exists(Path.Combine(targetPath, "Subdir2")));
+        Assert.True(File.Exists(Path.Combine(targetPath, "Subdir1", "File1.txt")));
+        Assert.True(File.Exists(Path.Combine(targetPath, "Subdir2", "File2.txt")));
     }
 
-    [Test]
+    [Fact]
     public void CleanDirectory_ShouldRemoveAllFilesAndSubdirectories()
     {
         // Arrange
@@ -172,13 +170,13 @@ internal sealed class DirectoryInfoWrapperTests
         var result = _sut.CleanDirectory();
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(0, Directory.GetFiles(_testDirectoryPath).Length);
-        Assert.AreEqual(0, Directory.GetDirectories(_testDirectoryPath).Length);
+        Assert.NotNull(result);
+        Assert.Empty(Directory.GetFiles(_testDirectoryPath));
+        Assert.Empty(Directory.GetDirectories(_testDirectoryPath));
     }
 
 
-    [Test]
+    [Fact]
     public void EstimateSize_ShouldCalculateTotalSizeOfFiles()
     {
         // Arrange
@@ -189,10 +187,10 @@ internal sealed class DirectoryInfoWrapperTests
         var totalSize = _sut.EstimateSize(SearchOption.AllDirectories);
 
         // Assert
-        Assert.AreEqual(20, totalSize); // Assuming 10 bytes per file
+        Assert.Equal(20, totalSize); // Assuming 10 bytes per file
     }
 
-    [Test]
+    [Fact]
     public void GetDirectory_ShouldReturnSubdirectoryIfExists()
     {
         // Arrange
@@ -202,11 +200,11 @@ internal sealed class DirectoryInfoWrapperTests
         var subDir = _sut.GetDirectory("Subdir1");
 
         // Assert
-        Assert.IsNotNull(subDir);
-        Assert.AreEqual("Subdir1", subDir.Name);
+        Assert.NotNull(subDir);
+        Assert.Equal("Subdir1", subDir.Name);
     }
 
-    [Test]
+    [Fact]
     public void TryGetDirectory_WhenSubdirectoryExists_ShouldReturnTrueAndSetSubdirectory()
     {
         // Arrange
@@ -216,8 +214,8 @@ internal sealed class DirectoryInfoWrapperTests
         var result = _sut.TryGetDirectory("ExistingSubdir", out var subDir);
 
         // Assert
-        Assert.IsTrue(result);
-        Assert.IsNotNull(subDir);
-        Assert.AreEqual("ExistingSubdir", subDir.Name);
+        Assert.True(result);
+        Assert.NotNull(subDir);
+        Assert.Equal("ExistingSubdir", subDir.Name);
     }
 }

@@ -1,22 +1,21 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using CommonUnitTest;
 using PRF.Utils.CoreComponents.IO;
 
 namespace PRF.Utils.CoreComponent.UnitTest.IO;
 
-internal sealed class FileInfoWrapperTests
+public sealed class FileInfoWrapperTests : IDisposable
 {
-    private IFileInfo _sut;
-    private string _testFilePath;
-    private DirectoryInfoWrapper _testDirectory;
+    private readonly IFileInfo _sut;
+    private readonly string _testFilePath;
+    private readonly DirectoryInfoWrapper _testDirectory;
 
-    [SetUp]
-    public void TestInitialize()
+    public FileInfoWrapperTests()
     {
         // mock:
-        _testDirectory = new DirectoryInfoWrapper(Path.Combine(TestContext.CurrentContext.TestDirectory, "Extensions"));
+        _testDirectory = new DirectoryInfoWrapper(UnitTestFolder.Get("FileInfoWrapperTests"));
         _testDirectory.CleanDirectory();
 
         _sut = _testDirectory.GetFile("TestFile.txt");
@@ -24,13 +23,12 @@ internal sealed class FileInfoWrapperTests
         _testFilePath = _sut.FullName;
     }
 
-    [TearDown]
-    public void TestCleanup()
+    public void Dispose()
     {
         _testDirectory.DeleteIfExistAndWaitDeletion(TimeSpan.FromSeconds(5));
     }
 
-    [Test]
+    [Fact]
     public void DeleteIfExist_WhenFileExists_ShouldDeleteFile()
     {
         // Arrange
@@ -39,21 +37,21 @@ internal sealed class FileInfoWrapperTests
         var result = _sut.DeleteIfExist();
 
         // Assert
-        Assert.IsTrue(result);
-        Assert.IsFalse(File.Exists(_testFilePath));
+        Assert.True(result);
+        Assert.False(File.Exists(_testFilePath));
     }
 
-    [Test]
+    [Fact]
     public void DeleteIfExist_WhenFileDoesNotExist_ShouldNotThrowException()
     {
         // Arrange
         File.Delete(_testFilePath); // Ensure file does not exist
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => _sut.DeleteIfExist());
+        // Act & Assert (does not throw)
+        _sut.DeleteIfExist();
     }
 
-    [Test]
+    [Fact]
     public void Directory_ShouldReturnParentDirectory()
     {
         // Arrange
@@ -62,11 +60,11 @@ internal sealed class FileInfoWrapperTests
         var directory = _sut.Directory;
 
         // Assert
-        Assert.IsNotNull(directory);
-        Assert.AreEqual(Path.GetDirectoryName(_testFilePath), directory.FullName);
+        Assert.NotNull(directory);
+        Assert.Equal(Path.GetDirectoryName(_testFilePath), directory.FullName);
     }
 
-    [Test]
+    [Fact]
     public void DirectoryName_ShouldReturnParentDirectoryPath()
     {
         // Arrange
@@ -75,10 +73,10 @@ internal sealed class FileInfoWrapperTests
         var directoryName = _sut.DirectoryName;
 
         // Assert
-        Assert.AreEqual(Path.GetDirectoryName(_testFilePath), directoryName);
+        Assert.Equal(Path.GetDirectoryName(_testFilePath), directoryName);
     }
 
-    [Test]
+    [Fact]
     public void DeleteIfExistAndWaitDeletion_WhenFileExists_ShouldDeleteFileAndWait()
     {
         // Arrange
@@ -87,21 +85,21 @@ internal sealed class FileInfoWrapperTests
         var result = _sut.DeleteIfExistAndWaitDeletion();
 
         // Assert
-        Assert.IsTrue(result);
-        Assert.IsFalse(File.Exists(_testFilePath));
+        Assert.True(result);
+        Assert.False(File.Exists(_testFilePath));
     }
 
-    [Test]
+    [Fact]
     public void DeleteIfExistAndWaitDeletion_WhenFileDoesNotExist_ShouldNotThrowException()
     {
         // Arrange
         File.Delete(_testFilePath); // Ensure file does not exist
 
-        // Act & Assert
-        Assert.DoesNotThrow(() => _sut.DeleteIfExistAndWaitDeletion());
+        // Act & Assert (does not throw)
+        _sut.DeleteIfExistAndWaitDeletion();
     }
 
-    [Test]
+    [Fact]
     public void DeleteIfExistAndWaitDeletion_WhenTimeoutExceedsOneHour_ShouldThrowArgumentException()
     {
         // Arrange
@@ -110,16 +108,16 @@ internal sealed class FileInfoWrapperTests
         Assert.Throws<ArgumentException>(() => _sut.DeleteIfExistAndWaitDeletion(timeout: TimeSpan.FromHours(2)));
     }
 
-    [Test]
+    [Fact]
     public async Task DeleteIfExistAndWaitDeletion_WhenFile_already_deleted()
     {
         // Arrange
         _sut.DeleteIfExist(); // Ensure file does not exist
 
         // Act
-        var result = await Task.Run(() => _sut.DeleteIfExistAndWaitDeletion(timeout: TimeSpan.FromSeconds(1))).ConfigureAwait(false);
+        var result = await Task.Run(() => _sut.DeleteIfExistAndWaitDeletion(timeout: TimeSpan.FromSeconds(1))).ConfigureAwait(true);
 
         // Assert
-        Assert.IsTrue(result);
+        Assert.True(result);
     }
 }

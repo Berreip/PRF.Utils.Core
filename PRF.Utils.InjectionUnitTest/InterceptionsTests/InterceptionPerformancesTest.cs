@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
-using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 using PRF.Utils.InjectionUnitTest.ClassForTests;
@@ -12,26 +11,25 @@ using PRF.Utils.Tracer.Configuration;
 
 namespace PRF.Utils.InjectionUnitTest.InterceptionsTests;
 
-[TestFixture]
+
 public class InterceptionPerformancesTest
 {
-    private IInjectionContainer _container;
+    private readonly IInjectionContainer _container;
 
-    [SetUp]
-    public void TestInitialize()
+    public InterceptionPerformancesTest()
     {
         // mock:
         // set the current culture to En-Us for testing
         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 
-        // instance de test:
+        // instance de test :
         _container = new InjectionContainerSimpleInjector();
     }
 
     /// <summary>
     /// test that creating a proxy does not cost too many resources
     /// </summary>
-    [Test]
+    [Fact]
     public void PerformanceNewClassTestV2()
     {
         //Configuration
@@ -49,14 +47,14 @@ public class InterceptionPerformancesTest
         watch.Stop();
 
         //Verify
-        Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
+        Assert.True(watch.Elapsed < TimeSpan.FromSeconds(1),
             $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
     /// test that creating a proxy does not cost too many resources
     /// </summary>
-    [Test]
+    [Fact]
     public void PerformanceNewClassTest_TransientV3()
     {
         //Configuration
@@ -79,7 +77,7 @@ public class InterceptionPerformancesTest
         watch.Stop();
 
         //Verify
-        Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
+        Assert.True(watch.Elapsed < TimeSpan.FromSeconds(1),
             $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 
@@ -87,7 +85,7 @@ public class InterceptionPerformancesTest
     /// test that creating a proxy does not cost too many resources
     /// => In singleton, it is the mm instances that must return so we must be faster
     /// </summary>
-    [Test]
+    [Fact]
     public void PerformanceNewClassTest_singletonV3()
     {
         //Configuration
@@ -110,14 +108,14 @@ public class InterceptionPerformancesTest
         watch.Stop();
 
         //Verify
-        Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
+        Assert.True(watch.Elapsed < TimeSpan.FromSeconds(1),
             $"Too slow to create {upper} transient object with singleton interceptor: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
     /// test that creating a proxy does not cost too many resources
     /// </summary>
-    [Test]
+    [Fact]
     public void PerformanceNewClassTestV4()
     {
         //Configuration
@@ -142,14 +140,14 @@ public class InterceptionPerformancesTest
         watch.Stop();
 
         //Verify
-        Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
+        Assert.True(watch.Elapsed < TimeSpan.FromSeconds(1),
             $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
     /// Overrides the save method to verify that the behavior is the same
     /// </summary>
-    [Test]
+    [Fact]
     public void PerformanceNewClassTestV5()
     {
         //Configuration
@@ -174,15 +172,14 @@ public class InterceptionPerformancesTest
         watch.Stop();
 
         //Verify
-        Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1),
+        Assert.True(watch.Elapsed < TimeSpan.FromSeconds(1),
             $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
     /// test that calling a method on a proxy does not cost too many resources
     /// </summary>
-    [Test]
-    [Ignore("performance test, do not use on server")]
+    [Fact(Skip = "performance test, do not use on server")]
     public void PerformanceCallTest2()
     {
         //Configuration
@@ -202,15 +199,14 @@ public class InterceptionPerformancesTest
         watch.Stop();
 
         //Verify
-        Assert.IsTrue(watch.Elapsed < TimeSpan.FromMilliseconds(500),
+        Assert.True(watch.Elapsed < TimeSpan.FromMilliseconds(500),
             $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
     /// test that calling a method on a proxy does not cost too many resources
     /// </summary>
-    [Test]
-    [Ignore("performance test, do not use on server")]
+    [Fact(Skip = "performance test, do not use on server")]
     public void PerformanceCallTest3()
     {
         //Configuration
@@ -235,7 +231,7 @@ public class InterceptionPerformancesTest
         watch.Stop();
 
         //Verify
-        Assert.IsTrue(watch.Elapsed < TimeSpan.FromMilliseconds(500),
+        Assert.True(watch.Elapsed < TimeSpan.FromMilliseconds(500),
             $"Too slow to create {upper} objet transient: time = {watch.ElapsedMilliseconds} ms");
     }
 }

@@ -1,23 +1,16 @@
 ﻿using System;
-using NUnit.Framework;
+using CommonUnitTest;
 using PRF.Utils.CoreComponents.Extensions;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
-[TestFixture]
-internal sealed class RandomExtensionsTests
+public sealed class RandomExtensionsTests
 {
-    private Random _rd;
+    private readonly Random _rd = new Random();
 
-    [OneTimeSetUp]
-    public void OneTimeSetUp()
-    {
-        _rd = new Random();
-    }
-
-    [Test]
+    [Theory]
     [Repeat(100)]
-    public void NextBoolean()
+    public void NextBoolean(int _)
     {
         //Arrange
         var counter = 0;
@@ -32,12 +25,12 @@ internal sealed class RandomExtensionsTests
         }
 
         //Assert
-        Assert.Greater(counter, 24000);
+        Assert.True(counter > 24000);
     }
 
-    [Test]
+    [Theory]
     [Repeat(1_000)]
-    public void NextNumberBetweenOneAndLessOne()
+    public void NextNumberBetweenOneAndLessOne(int _)
     {
         //Arrange
 
@@ -45,7 +38,7 @@ internal sealed class RandomExtensionsTests
         var res = _rd.NextNumberBetweenOneAndLessOne();
 
         //Assert
-        Assert.GreaterOrEqual(res, -1);
-        Assert.LessOrEqual(res, 1);
+        Assert.True(res >= -1);
+        Assert.True(res <= 1);
     }
 }

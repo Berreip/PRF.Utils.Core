@@ -1,31 +1,29 @@
 ﻿using System;
 using System.IO;
-using NUnit.Framework;
+using CommonUnitTest;
 using PRF.Utils.CoreComponents.Extensions;
+
 // ReSharper disable StringLiteralTypo
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
-[TestFixture]
-internal sealed class FileAndDirectoryExtensionsTests
+public sealed class FileAndDirectoryExtensionsTests : IDisposable
 {
-    private DirectoryInfo _testDirectory;
+    private readonly DirectoryInfo _testDirectory;
 
-    [SetUp]
-    public void TestInitialize()
+    public FileAndDirectoryExtensionsTests()
     {
         // mock:
-        _testDirectory = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, "Extensions"));
+        _testDirectory = UnitTestFolder.Get("FileAndDirectoryExtensionsTests");
         _testDirectory.CreateIfNotExist();
     }
 
-    [TearDown]
-    public void TestCleanup()
+    public void Dispose()
     {
         _testDirectory.DeleteIfExistAndWaitDeletion(TimeSpan.FromSeconds(5));
     }
-        
-    [Test]
+
+    [Fact]
     public void GetFile_returns_null_for_null_input()
     {
         //Arrange
@@ -34,10 +32,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = _testDirectory.GetFile(null);
 
         //Assert
-        Assert.IsNull(res);
+        Assert.Null(res);
     }
 
-    [Test]
+    [Fact]
     public void GetFile_returns_file_for_existing_file()
     {
         //Arrange
@@ -47,12 +45,12 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = _testDirectory.GetFile("testFile.txt");
 
         //Assert
-        Assert.IsNotNull(res);
-        Assert.IsTrue(res.Exists);
+        Assert.NotNull(res);
+        Assert.True(res.Exists);
     }
 
 
-    [Test]
+    [Fact]
     public void GetFile_returns_file_for_non_existing_file()
     {
         //Arrange
@@ -61,11 +59,11 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = _testDirectory.GetFile("unknown.txt");
 
         //Assert
-        Assert.IsNotNull(res);
-        Assert.IsFalse(res.Exists);
+        Assert.NotNull(res);
+        Assert.False(res.Exists);
     }
 
-    [Test]
+    [Fact]
     public void GetRelativePath_returns_correct_relative_path()
     {
         //Arrange
@@ -76,10 +74,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = file.GetRelativePath(_testDirectory.Parent.FullName);
 
         //Assert
-        Assert.AreEqual($"Extensions{Path.DirectorySeparatorChar}testFile.txt", res);
+        Assert.Equal($"FileAndDirectoryExtensionsTests{Path.DirectorySeparatorChar}testFile.txt", res);
     }
 
-    [Test]
+    [Fact]
     public void IsEmpty_returns_true_when_directory_is_empty()
     {
         //Arrange
@@ -91,7 +89,7 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = tempDirectory.IsEmpty();
 
             //Assert
-            Assert.IsTrue(res);
+            Assert.True(res);
         }
         finally
         {
@@ -99,7 +97,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void IsEmpty_returns_false_when_directory_not_empty()
     {
         //Arrange
@@ -109,10 +107,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = _testDirectory.IsEmpty();
 
         //Assert
-        Assert.IsFalse(res);
+        Assert.False(res);
     }
 
-    [Test]
+    [Fact]
     public void CreateFileIfNotExist_without_rename()
     {
         //Arrange
@@ -123,7 +121,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         try
         {
             //Assert
-            Assert.IsTrue(file.Exists);
+            Assert.True(file.Exists);
         }
         finally
         {
@@ -131,7 +129,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void EstimateSize_return_correct_estimation()
     {
         //Arrange
@@ -140,10 +138,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var size = _testDirectory.EstimateSize(SearchOption.AllDirectories);
 
         //Assert
-        Assert.AreEqual(0, size);
+        Assert.Equal(0, size);
     }
 
-    [Test]
+    [Fact]
     public void IsOldEnough_return_false_for_very_big_timespan()
     {
         //Arrange
@@ -153,10 +151,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = file.IsOldEnough(TimeSpan.MaxValue);
 
         //Assert
-        Assert.IsFalse(res);
+        Assert.False(res);
     }
 
-    [Test]
+    [Fact]
     public void IsOldEnough_return_false_for_zero_timespan()
     {
         //Arrange
@@ -166,10 +164,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = file.IsOldEnough(TimeSpan.Zero);
 
         //Assert
-        Assert.IsTrue(res);
+        Assert.True(res);
     }
 
-    [Test]
+    [Fact]
     public void CreateDirectoryAndTryClean_create_the_directory_if_it_does_not_exists()
     {
         //Arrange
@@ -181,7 +179,7 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = newDirectory.CreateDirectoryAndTryClean();
 
             //Assert
-            Assert.IsTrue(res.Exists);
+            Assert.True(res.Exists);
         }
         finally
         {
@@ -189,7 +187,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void CreateDirectoryAndTryClean_clean_the_directory()
     {
         //Arrange
@@ -204,8 +202,8 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = newDirectory.CreateDirectoryAndTryClean();
 
             //Assert
-            Assert.IsTrue(res.Exists);
-            Assert.IsTrue(res.IsEmpty());
+            Assert.True(res.Exists);
+            Assert.True(res.IsEmpty());
         }
         finally
         {
@@ -213,7 +211,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void CleanDirectory_create_the_directory_if_it_does_not_exists()
     {
         //Arrange
@@ -224,7 +222,7 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = newDirectory.CleanDirectory();
 
             //Assert
-            Assert.IsTrue(res.Exists);
+            Assert.True(res.Exists);
         }
         finally
         {
@@ -232,7 +230,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void CleanDirectory_clean_the_directory_when_it_exists()
     {
         //Arrange
@@ -247,8 +245,8 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = newDirectory.CleanDirectory();
 
             //Assert
-            Assert.IsTrue(res.Exists);
-            Assert.IsTrue(res.IsEmpty());
+            Assert.True(res.Exists);
+            Assert.True(res.IsEmpty());
         }
         finally
         {
@@ -256,7 +254,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void CreateIfNotExistAndClose_returns_true_when_the_file_is_created()
     {
         //Arrange
@@ -269,8 +267,8 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = file.CreateIfNotExistAndClose();
 
             //Assert
-            Assert.IsTrue(res);
-            Assert.IsTrue(file.Exists);
+            Assert.True(res);
+            Assert.True(file.Exists);
         }
         finally
         {
@@ -278,7 +276,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void CreateIfNotExistAndClose_returns_false_when_the_file_is_already_created()
     {
         //Arrange
@@ -291,8 +289,8 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = file.CreateIfNotExistAndClose();
 
             //Assert
-            Assert.IsFalse(res);
-            Assert.IsTrue(file.Exists);
+            Assert.False(res);
+            Assert.True(file.Exists);
         }
         finally
         {
@@ -300,7 +298,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void Directory_CreateIfNotExist_returns_false_when_the_directory_is_already_created()
     {
         //Arrange
@@ -312,8 +310,8 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = newDirectory.CreateIfNotExist();
 
             //Assert
-            Assert.IsFalse(res);
-            Assert.IsTrue(newDirectory.Exists);
+            Assert.False(res);
+            Assert.True(newDirectory.Exists);
         }
         finally
         {
@@ -321,7 +319,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void Directory_CreateIfNotExist_returns_true_when_the_directory_is_created()
     {
         //Arrange
@@ -333,8 +331,8 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = newDirectory.CreateIfNotExist();
 
             //Assert
-            Assert.IsTrue(res);
-            Assert.IsTrue(newDirectory.Exists);
+            Assert.True(res);
+            Assert.True(newDirectory.Exists);
         }
         finally
         {
@@ -342,7 +340,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void DeleteIfExist_returns_true_when_the_file_is_deleted()
     {
         //Arrange
@@ -355,8 +353,8 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = file.DeleteIfExist();
 
             //Assert
-            Assert.IsTrue(res);
-            Assert.IsFalse(file.Exists);
+            Assert.True(res);
+            Assert.False(file.Exists);
         }
         finally
         {
@@ -364,7 +362,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void DeleteIfExist_returns_false_when_the_file_is_already_deleted()
     {
         //Arrange
@@ -377,8 +375,8 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = file.DeleteIfExist();
 
             //Assert
-            Assert.IsFalse(res);
-            Assert.IsFalse(file.Exists);
+            Assert.False(res);
+            Assert.False(file.Exists);
         }
         finally
         {
@@ -386,7 +384,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void AutoRenameFileToAvoidDuplicate_returns_available_name()
     {
         //Arrange
@@ -399,8 +397,8 @@ internal sealed class FileAndDirectoryExtensionsTests
             var res = new FileInfo(FilesAndDirectoryInfoExtension.AutoRenameFileToAvoidDuplicate(file.FullName));
 
             //Assert
-            Assert.AreEqual(newDirectory.FullName, res.Directory?.FullName);
-            Assert.AreEqual("foo(2).txt", res.Name);
+            Assert.Equal(newDirectory.FullName, res.Directory?.FullName);
+            Assert.Equal("foo(2).txt", res.Name);
         }
         finally
         {
@@ -408,7 +406,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void AutoRenameFileToAvoidDuplicate_returns_available_name_with_more_file()
     {
         //Arrange
@@ -424,8 +422,8 @@ internal sealed class FileAndDirectoryExtensionsTests
                 res.CreateIfNotExistAndClose(); // create it for the next iteration
 
                 //Assert
-                Assert.AreEqual(newDirectory.FullName, res.Directory?.FullName);
-                Assert.AreEqual($"foo({i}).txt", res.Name);
+                Assert.Equal(newDirectory.FullName, res.Directory?.FullName);
+                Assert.Equal($"foo({i}).txt", res.Name);
             }
         }
         finally
@@ -434,7 +432,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void ContainsInvalidCharFromName_returns_true_if_file_contains_invalid_char()
     {
         //Arrange
@@ -443,10 +441,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = FilesAndDirectoryInfoExtension.ContainsInvalidCharFromName("dfds//fù##?<>sdf");
 
         //Assert
-        Assert.IsTrue(res);
+        Assert.True(res);
     }
 
-    [Test]
+    [Fact]
     public void ContainsInvalidCharFromName_returns_true_if_file_contains_invalid_char_slash()
     {
         //Arrange
@@ -455,10 +453,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = FilesAndDirectoryInfoExtension.ContainsInvalidCharFromName("dfdsf/sdf");
 
         //Assert
-        Assert.IsTrue(res);
+        Assert.True(res);
     }
 
-    [Test]
+    [Fact]
     public void ContainsInvalidCharFromName_returns_false_if_file_does_not_contains_invalid_char()
     {
         //Arrange
@@ -467,10 +465,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = FilesAndDirectoryInfoExtension.ContainsInvalidCharFromName("df@ù^^sfdf");
 
         //Assert
-        Assert.IsFalse(res);
+        Assert.False(res);
     }
 
-    [Test]
+    [Fact]
     public void EscapeInvalidPathFromName_escapes_invalid_char()
     {
         //Arrange
@@ -479,10 +477,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = FilesAndDirectoryInfoExtension.EscapeInvalidPathFromName("dfdsf/sdf");
 
         //Assert
-        Assert.AreEqual("dfdsfsdf", res);
+        Assert.Equal("dfdsfsdf", res);
     }
 
-    [Test]
+    [Fact]
     public void EscapeInvalidPathFromName_escapes_invalid_char_slash()
     {
         //Arrange
@@ -491,10 +489,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = FilesAndDirectoryInfoExtension.EscapeInvalidPathFromName("dfdsf/sdf");
 
         //Assert
-        Assert.AreEqual("dfdsfsdf", res);
+        Assert.Equal("dfdsfsdf", res);
     }
 
-    [Test]
+    [Fact]
     public void EscapeInvalidPathFromName_returns_false_if_file_does_not_contains_invalid_char()
     {
         //Arrange
@@ -503,10 +501,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = FilesAndDirectoryInfoExtension.EscapeInvalidPathFromName("df@ù^^sfdf");
 
         //Assert
-        Assert.AreEqual("df@ù^^sfdf", res);
+        Assert.Equal("df@ù^^sfdf", res);
     }
 
-    [Test]
+    [Fact]
     public void IsValidDirectory_returns_true_for_valid_directory_path()
     {
         //Arrange
@@ -515,10 +513,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = FilesAndDirectoryInfoExtension.IsValidDirectory(_testDirectory.FullName);
 
         //Assert
-        Assert.IsTrue(res);
+        Assert.True(res);
     }
 
-    [Test]
+    [Fact]
     public void IsValidDirectory_returns_false_for_invalid_directory_path()
     {
         //Arrange
@@ -527,11 +525,11 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = FilesAndDirectoryInfoExtension.IsValidDirectory("?");
 
         //Assert
-        Assert.IsFalse(res);
+        Assert.False(res);
     }
 
 
-    [Test]
+    [Fact]
     public void AutoRenameDirectoryToAvoidDuplicate_returns_available_names()
     {
         //Arrange
@@ -544,11 +542,11 @@ internal sealed class FileAndDirectoryExtensionsTests
             {
                 //Act
                 var res = FilesAndDirectoryInfoExtension.AutoRenameDirectoryToAvoidDuplicate(subDirectory.FullName);
-                Assert.IsFalse(res.Exists);
+                Assert.False(res.Exists);
                 res.CreateIfNotExist(); // create it for the next iteration
 
                 //Assert
-                Assert.AreEqual($"dirTemp({i})", res.Name);
+                Assert.Equal($"dirTemp({i})", res.Name);
             }
         }
         finally
@@ -557,7 +555,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void AutoRenameDirectoryToAvoidDuplicateWithCreateDirectory_returns_available_names_and_create_directories()
     {
         //Arrange
@@ -570,10 +568,10 @@ internal sealed class FileAndDirectoryExtensionsTests
             {
                 //Act
                 var res = FilesAndDirectoryInfoExtension.AutoRenameDirectoryToAvoidDuplicateWithCreateDirectory(subDirectory.FullName);
-                Assert.IsTrue(res.Exists);
+                Assert.True(res.Exists);
 
                 //Assert
-                Assert.AreEqual($"dirTemp({i})", res.Name);
+                Assert.Equal($"dirTemp({i})", res.Name);
             }
         }
         finally
@@ -582,7 +580,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void CopyTo_copy_content_and_does_not_alter_original_directoryInfo()
     {
         //Arrange
@@ -594,9 +592,9 @@ internal sealed class FileAndDirectoryExtensionsTests
         {
             var copy = subDirectory.CopyTo(newDirectory.GetDirectory("subOther").FullName);
 
-            Assert.AreEqual("dirTemp", subDirectory.Name, "the original directoryinfo should not be altered");
-            Assert.AreEqual("subOther", copy.Name);
-            Assert.IsTrue(copy.TryGetFile("foo.txt", out _));
+            Assert.True("dirTemp" == subDirectory.Name, "the original directoryinfo should not be altered");
+            Assert.Equal("subOther", copy.Name);
+            Assert.True(copy.TryGetFile("foo.txt", out _));
         }
         finally
         {
@@ -605,7 +603,7 @@ internal sealed class FileAndDirectoryExtensionsTests
     }
 
 
-    [Test]
+    [Fact]
     public void CopyToWithCheckLenght_lower_than_lenght()
     {
         //Arrange
@@ -617,9 +615,9 @@ internal sealed class FileAndDirectoryExtensionsTests
         {
             var copy = subDirectory.CopyToWithCheckLenght(newDirectory.GetDirectory("subOther").FullName);
 
-            Assert.AreEqual("dirTemp", subDirectory.Name, "the original directoryinfo should not be altered");
-            Assert.AreEqual("subOther", copy.Name);
-            Assert.IsTrue(copy.TryGetFile("foo.txt", out _));
+            Assert.True("dirTemp" == subDirectory.Name, "the original directoryinfo should not be altered");
+            Assert.Equal("subOther", copy.Name);
+            Assert.True(copy.TryGetFile("foo.txt", out _));
         }
         finally
         {
@@ -627,7 +625,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void ReadAllText_returns_file_content_as_string()
     {
         //Arrange
@@ -638,10 +636,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = file.ReadAllText();
 
         //Assert
-        Assert.AreEqual("Lorem ipsum", res);
+        Assert.Equal("Lorem ipsum", res);
     }
 
-    [Test]
+    [Fact]
     public void DirectoryInfo_DeleteIfExist_return_false_if_already_deleted()
     {
         //Arrange
@@ -651,10 +649,10 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = dir.DeleteIfExist();
 
         //Assert
-        Assert.IsFalse(res);
+        Assert.False(res);
     }
 
-    [Test]
+    [Fact]
     public void DirectoryInfo_DeleteIfExist_return_true_if_deleted()
     {
         //Arrange
@@ -664,26 +662,25 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = dir.DeleteIfExist();
 
         //Assert
-        Assert.IsTrue(res);
+        Assert.True(res);
     }
 
-    [Test]
+    [Fact]
     public void AppendTextLine_on_existing_file()
     {
         //Arrange
         _testDirectory.CleanDirectory();
         _testDirectory.CreateFileIfNotExist("testFile.txt");
-            
+
         var fileCopy = _testDirectory.GetFile("testFile.txt").CopyTo(_testDirectory.GetFile("copy.txt").FullName);
 
         try
         {
-
             //Act
             fileCopy.AppendTextLine("toto");
 
             //Assert
-            Assert.AreEqual($"toto{Environment.NewLine}", fileCopy.ReadAllText());
+            Assert.Equal($"toto{Environment.NewLine}", fileCopy.ReadAllText());
         }
         finally
         {
@@ -691,7 +688,7 @@ internal sealed class FileAndDirectoryExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void TryGetDirectory_returns_true_if_directory_exists()
     {
         //Arrange
@@ -700,11 +697,11 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = _testDirectory.Parent.TryGetDirectory(_testDirectory.Name, out var retrievedDirectory);
 
         //Assert
-        Assert.IsTrue(res);
-        Assert.AreEqual(_testDirectory.FullName, retrievedDirectory.FullName);
+        Assert.True(res);
+        Assert.Equal(_testDirectory.FullName, retrievedDirectory.FullName);
     }
 
-    [Test]
+    [Fact]
     public void TryGetDirectory_returns_false_if_directory_does_not_exists()
     {
         //Arrange
@@ -713,6 +710,6 @@ internal sealed class FileAndDirectoryExtensionsTests
         var res = _testDirectory.TryGetDirectory("foo", out _);
 
         //Assert
-        Assert.IsFalse(res);
+        Assert.False(res);
     }
 }

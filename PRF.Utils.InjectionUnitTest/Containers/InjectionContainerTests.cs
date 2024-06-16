@@ -1,21 +1,18 @@
-﻿using NUnit.Framework;
-using PRF.Utils.Injection.Containers;
+﻿using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 
 namespace PRF.Utils.InjectionUnitTest.Containers;
 
-[TestFixture]
-internal sealed class InjectionContainerTests
+public sealed class InjectionContainerTests
 {
     private static int _counter;
 
-    [SetUp]
-    public void TestInitialize()
+    public InjectionContainerTests()
     {
         _counter = 0;
     }
 
-    [Test]
+    [Fact]
     public void InjectionContainer_Register_Nominal()
     {
         // Arrange
@@ -26,11 +23,11 @@ internal sealed class InjectionContainerTests
         var foo = sut.Resolve<FooType>();
 
         // Assert
-        Assert.IsNotNull(foo);
-        Assert.AreEqual(1, _counter);
+        Assert.NotNull(foo);
+        Assert.Equal(1, _counter);
     }
 
-    [Test]
+    [Fact]
     public void InjectionContainer_Register_Resolve_Multiple_Time()
     {
         // Arrange
@@ -41,14 +38,14 @@ internal sealed class InjectionContainerTests
         for (var i = 0; i < 10; i++)
         {
             var foo = sut.Resolve<FooType>();
-            Assert.IsNotNull(foo);
+            Assert.NotNull(foo);
         }
 
         // Assert
-        Assert.AreEqual(1, _counter);
+        Assert.Equal(1, _counter);
     }
 
-    [Test]
+    [Fact]
     public void InjectionContainer_Register_Resolve_Multiple_Time_Transient_Repro_Bug_Double_Resolve()
     {
         // Arrange
@@ -59,11 +56,11 @@ internal sealed class InjectionContainerTests
         var foo = sut.Resolve<FooType>();
 
         // Assert
-        Assert.IsNotNull(foo);
-        Assert.AreEqual(1, _counter);
+        Assert.NotNull(foo);
+        Assert.Equal(1, _counter);
     }
 
-    [Test]
+    [Fact]
     public void InjectionContainer_Register_Resolve_Multiple_Time_Transient()
     {
         // Arrange
@@ -74,14 +71,14 @@ internal sealed class InjectionContainerTests
         for (var i = 0; i < 10; i++)
         {
             var foo = sut.Resolve<FooType>();
-            Assert.IsNotNull(foo);
+            Assert.NotNull(foo);
         }
 
         // Assert
-        Assert.AreEqual(10, _counter);
+        Assert.Equal(10, _counter);
     }
         
-    [Test]
+    [Fact]
     public void InjectionContainer_Register_Collection()
     {
         // Arrange
@@ -92,11 +89,11 @@ internal sealed class InjectionContainerTests
         for (var i = 0; i < 10; i++)
         {
             var foo = sut.Resolve<FooType>();
-            Assert.IsNotNull(foo);
+            Assert.NotNull(foo);
         }
 
         // Assert
-        Assert.AreEqual(10, _counter);
+        Assert.Equal(10, _counter);
     }
 
     // ReSharper disable once ClassNeverInstantiated.Local

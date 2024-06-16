@@ -1,24 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 
 namespace PRF.Utils.InjectionUnitTest.Containers;
 
-[TestFixture]
-internal sealed class RegisterCollectionTests
+public sealed class RegisterCollectionTests
 {
-    private IInjectionContainer _sut;
+    private readonly IInjectionContainer _sut= new InjectionContainerSimpleInjector();
 
-    [SetUp]
-    public void TestInitialize()
-    {
-        // software under test:
-        _sut = new InjectionContainerSimpleInjector();
-    }
-
-    [Test]
+    [Fact]
     public void EmptyCollection()
     {
         //Configuration
@@ -29,10 +20,10 @@ internal sealed class RegisterCollectionTests
         var res = _sut.Resolve<IHandlerClass>();
 
         //Verify
-        Assert.AreEqual(0, res.Plugins.Count);
+        Assert.Empty(res.Plugins);
     }
         
-    [Test]
+    [Fact]
     public void NominalCollection()
     {
         //Configuration
@@ -43,13 +34,13 @@ internal sealed class RegisterCollectionTests
         var res = _sut.Resolve<IHandlerClass>();
 
         //Verify
-        Assert.AreEqual(3, res.Plugins.Count);
-        Assert.IsTrue(res.Plugins.Any(o => o is PluginClass1));
-        Assert.IsTrue(res.Plugins.Any(o => o is PluginClass2));
-        Assert.IsTrue(res.Plugins.Any(o => o is PluginClass3));
+        Assert.Equal(3, res.Plugins.Count);
+        Assert.Contains(res.Plugins, o => o is PluginClass1);
+        Assert.Contains(res.Plugins, o => o is PluginClass2);
+        Assert.Contains(res.Plugins, o => o is PluginClass3);
     }
         
-    [Test]
+    [Fact]
     public void CompletedCollection_Singleton()
     {
         //Configuration
@@ -61,13 +52,13 @@ internal sealed class RegisterCollectionTests
         var res = _sut.Resolve<IHandlerClass>();
 
         //Verify
-        Assert.AreEqual(3, res.Plugins.Count);
-        Assert.IsTrue(res.Plugins.Any(o => o is PluginClass1));
-        Assert.IsTrue(res.Plugins.Any(o => o is PluginClass2));
-        Assert.IsTrue(res.Plugins.Any(o => o is PluginClass3));
+        Assert.Equal(3, res.Plugins.Count);
+        Assert.Contains(res.Plugins, o => o is PluginClass1);
+        Assert.Contains(res.Plugins, o => o is PluginClass2);
+        Assert.Contains(res.Plugins, o => o is PluginClass3);
     }
              
-    [Test]
+    [Fact]
     public void CompletedCollection_Singleton_CheckInstance()
     {
         //Configuration
@@ -82,11 +73,11 @@ internal sealed class RegisterCollectionTests
         //Verify
         for (var i = 0; i < res.Count; i++)
         {
-            Assert.AreSame(res2[i], res[i]);
+            Assert.Same(res2[i], res[i]);
         }
     }
         
-    [Test]
+    [Fact]
     public void CompletedCollection_Transient()
     {
         //Configuration
@@ -98,13 +89,13 @@ internal sealed class RegisterCollectionTests
         var res = _sut.Resolve<IHandlerClass>();
 
         //Verify
-        Assert.AreEqual(3, res.Plugins.Count);
-        Assert.IsTrue(res.Plugins.Any(o => o is PluginClass1));
-        Assert.IsTrue(res.Plugins.Any(o => o is PluginClass2));
-        Assert.IsTrue(res.Plugins.Any(o => o is PluginClass3));
+        Assert.Equal(3, res.Plugins.Count);
+        Assert.Contains(res.Plugins, o => o is PluginClass1);
+        Assert.Contains(res.Plugins, o => o is PluginClass2);
+        Assert.Contains(res.Plugins, o => o is PluginClass3);
     }
         
-    [Test]
+    [Fact]
     public void CompletedCollection_Transient_CheckInstance()
     {
         //Configuration
@@ -118,11 +109,11 @@ internal sealed class RegisterCollectionTests
         //Verify
         for (var i = 0; i < res.Count; i++)
         {
-            Assert.AreNotSame(res2[i], res[i]);
+            Assert.NotSame(res2[i], res[i]);
         }
     }  
         
-    [Test]
+    [Fact]
     public void RegisterOrAppendCollection_CheckInstance_when_mixed_singleton_transient()
     {
         //Configuration
@@ -139,16 +130,16 @@ internal sealed class RegisterCollectionTests
             var expected = res2[i];
             if (expected is PluginClass1)
             {
-                Assert.AreSame(expected, res[i]);
+                Assert.Same(expected, res[i]);
             }
             else
             {
-                Assert.AreNotSame(expected, res[i]);
+                Assert.NotSame(expected, res[i]);
             }
         }
     }
     
-    [Test]
+    [Fact]
     public void RegisterOrAppendCollection_works_when_registering_instances()
     {
         //Configuration
@@ -162,13 +153,13 @@ internal sealed class RegisterCollectionTests
         var res = _sut.Resolve<IReadOnlyList<IPluginClass>>();
 
         //Verify
-        Assert.AreEqual(3, res.Count);
-        Assert.AreSame(pluginClass1, res[0]);
-        Assert.AreSame(pluginClass2, res[1]);
-        Assert.AreSame(pluginClass3, res[2]);
+        Assert.Equal(3, res.Count);
+        Assert.Same(pluginClass1, res[0]);
+        Assert.Same(pluginClass2, res[1]);
+        Assert.Same(pluginClass3, res[2]);
     } 
         
-    [Test]
+    [Fact]
     public void RegisterOrAppendCollection_does_not_throw_for_empty_list()
     {
         //Configuration
@@ -180,7 +171,7 @@ internal sealed class RegisterCollectionTests
     }
         
         
-    [Test]
+    [Fact]
     public void RegisterOrAppendCollection_works_when_mixing_instance_registrations_and_type()
     {
         //Configuration
@@ -194,10 +185,10 @@ internal sealed class RegisterCollectionTests
         var res = _sut.Resolve<IReadOnlyList<IPluginClass>>();
 
         //Verify
-        Assert.AreEqual(3, res.Count);
-        Assert.AreSame(pluginClass1, res[0]);
-        Assert.AreSame(pluginClass2, res[1]);
-        Assert.IsTrue(res[2] is PluginClass3);
+        Assert.Equal(3, res.Count);
+        Assert.Same(pluginClass1, res[0]);
+        Assert.Same(pluginClass2, res[1]);
+        Assert.True(res[2] is PluginClass3);
     } 
 }
 

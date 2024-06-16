@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 using PRF.Utils.InjectionUnitTest.ClassForTests;
@@ -11,14 +10,13 @@ using PRF.Utils.Tracer.Listener.Traces;
 
 namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTests;
 
-[TestFixture]
+[Collection("Trace Tests Collection No SYNC #1")] // indicate to xUnit that this collection should not be run in parallel (has been set on other file too)
 public class TimeWatchInterceptorTest
 {
-    private IInjectionContainer _container;
-    private TraceConfig _traceConfig;
+    private readonly IInjectionContainer _container;
+    private readonly TraceConfig _traceConfig;
 
-    [SetUp]
-    public void TestInitialize()
+    public TimeWatchInterceptorTest()
     {
         // mock:
         _traceConfig = new TraceConfig
@@ -28,14 +26,14 @@ public class TimeWatchInterceptorTest
             MaximumTimeForFlush = TimeSpan.FromSeconds(5),
         };
 
-        // instance de test:
+        // instance de test :
         _container = new InjectionContainerSimpleInjector();
 
         // saves the type of the test class
         _container.Register<IClassVoidTest, ClassVoidTest>(LifeTime.Singleton);
     }
 
-    [Test]
+    [Fact]
     public async Task TimeWatchInterceptorTestV1()
     {
         //Configuration
@@ -59,16 +57,16 @@ public class TimeWatchInterceptorTest
             instance.MethodCall();
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(1, traceReceived.Length);
-        Assert.IsTrue(traceReceived[0].Message.StartsWith("TIME_IClassVoidTest.MethodCall = "));
+        Assert.Equal(1, count);
+        Assert.Single(traceReceived);
+        Assert.StartsWith("TIME_IClassVoidTest.MethodCall = ", traceReceived[0].Message);
     }
 
-    [Test]
+    [Fact]
     public async Task TimeWatchInterceptorTestV2()
     {
         //Configuration
@@ -89,19 +87,19 @@ public class TimeWatchInterceptorTest
             };
 
             //Test
-            await instance.MethodCallWaitAsync(TimeSpan.FromMilliseconds(50)).ConfigureAwait(false);
+            await instance.MethodCallWaitAsync(TimeSpan.FromMilliseconds(50));
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(1, traceReceived.Length);
-        Assert.IsTrue(traceReceived[0].Message.StartsWith("TIME_IClassVoidTest.MethodCallWaitAsync = "));
+        Assert.Equal(1, count);
+        Assert.Single(traceReceived);
+        Assert.StartsWith("TIME_IClassVoidTest.MethodCallWaitAsync = ", traceReceived[0].Message);
     }
 
-    [Test]
+    [Fact]
     public async Task TimeWatchInterceptorTestV3()
     {
         //Configuration
@@ -126,16 +124,16 @@ public class TimeWatchInterceptorTest
             instance.MethodCallWait(TimeSpan.FromMilliseconds(50));
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(1, traceReceived.Length);
-        Assert.IsTrue(traceReceived[0].Message.StartsWith("TIME_IClassVoidTest.MethodCallWait = "));
+        Assert.Equal(1, count);
+        Assert.Single(traceReceived);
+        Assert.StartsWith("TIME_IClassVoidTest.MethodCallWait = ", traceReceived[0].Message);
     }
 
-    [Test]
+    [Fact]
     public async Task TimeWatchInterceptorTestV4()
     {
         //Configuration
@@ -159,16 +157,16 @@ public class TimeWatchInterceptorTest
             _ = await instance.MethodCallWaitWithReturnDataAsync(TimeSpan.FromMilliseconds(50));
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(1, traceReceived.Length);
-        Assert.IsTrue(traceReceived[0].Message.StartsWith("TIME_IClassVoidTest.MethodCallWaitWithReturnDataAsync = "));
+        Assert.Equal(1, count);
+        Assert.Single(traceReceived);
+        Assert.StartsWith("TIME_IClassVoidTest.MethodCallWaitWithReturnDataAsync = ", traceReceived[0].Message);
     }
 
-    [Test]
+    [Fact]
     public async Task TimeWatchInterceptorTestV4Perf()
     {
         //Configuration
@@ -198,11 +196,11 @@ public class TimeWatchInterceptorTest
             }
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(upper, traceReceived.Length);
+        Assert.Equal(1, count);
+        Assert.Equal(upper, traceReceived.Length);
     }
 }

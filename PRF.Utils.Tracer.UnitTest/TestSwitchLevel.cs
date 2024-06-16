@@ -2,28 +2,25 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using PRF.Utils.Tracer.Configuration;
 
 namespace PRF.Utils.Tracer.UnitTest;
 
-[TestFixture]
 public class TestSwitchLevel
 {
-    [SetUp]
-    public void TestInitialize()
+    public TestSwitchLevel()
     {
         foreach (TraceListener listener in Trace.Listeners)
         {
             // static listener pollution check
-            Assert.AreNotEqual(listener.Name, "MainTracerSync", "one tracer remains in the list of static tracers = pollution");
+            Assert.True(listener.Name != "MainTracerSync", "one tracer remains in the list of static tracers = pollution");
         }
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelInformationV1()
     {
         // setup
@@ -41,15 +38,15 @@ public class TestSwitchLevel
             Trace.TraceInformation("test");
             await ts.FlushAndCompleteAddingAsync();
         }
-            
+
         //Verify
-        Assert.IsTrue(received); // SourceLevels.Information + Trace.TraceInformation = ok
+        Assert.True(received); // SourceLevels.Information + Trace.TraceInformation = ok
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelInformationV2()
     {
         // setup
@@ -69,13 +66,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsTrue(received);
+        Assert.True(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelInformationV3()
     {
         // setup
@@ -95,13 +92,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsTrue(received);
+        Assert.True(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelInformationV4()
     {
         // setup
@@ -121,13 +118,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsTrue(received);
+        Assert.True(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelErrorV1()
     {
         // setup
@@ -147,13 +144,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsFalse(received);
+        Assert.False(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelErrorV2()
     {
         // setup
@@ -173,13 +170,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsFalse(received);
+        Assert.False(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelErrorV3()
     {
         // setup
@@ -199,13 +196,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsTrue(received);
+        Assert.True(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelErrorV4()
     {
         // setup
@@ -225,13 +222,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsTrue(received);
+        Assert.True(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelWarningV1()
     {
         // setup
@@ -251,13 +248,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsFalse(received);
+        Assert.False(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelWarningV2()
     {
         // setup
@@ -277,13 +274,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsTrue(received);
+        Assert.True(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelWarningV3()
     {
         // setup
@@ -303,13 +300,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsTrue(received);
+        Assert.True(received);
     }
 
     /// <summary>
     /// TTest trace level
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchLevelWarningV4()
     {
         // setup
@@ -329,13 +326,13 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.IsTrue(received);
+        Assert.True(received);
     }
 
     /// <summary>
     /// Test dynamic trace level change
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TestSwitchChangeLevelV1()
     {
         // setup
@@ -370,9 +367,9 @@ public class TestSwitchLevel
         }
 
         //Verify
-        Assert.AreEqual(1, listMessages.Count);
-        Assert.IsTrue(listMessages.Contains("test2"));
-        Assert.IsFalse(listMessages.Contains("test1"));
-        Assert.IsFalse(listMessages.Contains("test3"));
+        Assert.Single(listMessages);
+        Assert.Contains("test2", listMessages);
+        Assert.DoesNotContain("test1", listMessages);
+        Assert.DoesNotContain("test3", listMessages);
     }
 }

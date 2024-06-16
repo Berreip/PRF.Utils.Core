@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 using PRF.Utils.InjectionUnitTest.ClassForTests;
@@ -12,25 +11,17 @@ using PRF.Utils.Tracer.Listener.Traces;
 
 namespace PRF.Utils.InjectionUnitTest.InterceptionsTests;
 
-[TestFixture]
+
+#pragma warning disable xUnit2002
+[Collection("Trace Tests Collection No SYNC #1")] // indicate to xUnit that this collection should not be run in parallel (has been set on other file too)
 public class InterceptionTest
 {
-    private IInjectionContainer _container;
-
-    [SetUp]
-    public void TestInitialize()
-    {
-        // mock:
-
-
-        // instance de test:
-        _container = new InjectionContainerSimpleInjector();
-    }
+    private readonly IInjectionContainer _container = new InjectionContainerSimpleInjector();
 
     /// <summary>
     /// Case 1: test that the interception works
     /// </summary>
-    [Test]
+    [Fact]
     public async Task InterceptionTestV1()
     {
         //Configuration
@@ -59,16 +50,16 @@ public class InterceptionTest
             instance.MethodCall();
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.IsNotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceInjectTracer"));
-        Assert.IsNotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceStatic"));
+        Assert.Equal(1, count);
+        Assert.NotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceInjectTracer"));
+        Assert.NotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceStatic"));
     }
 
-    [Test]
+    [Fact]
     public async Task InterceptionTestV2()
     {
         //Configuration
@@ -97,19 +88,19 @@ public class InterceptionTest
             instance.MethodCall();
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.IsNotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceInjectTracer"));
-        Assert.IsNotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceStatic"));
+        Assert.Equal(1, count);
+        Assert.NotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceInjectTracer"));
+        Assert.NotNull(traceReceived.Single(o => o.Message == "IClassVoidTest_InterceptorTraceStatic"));
     }
 
     /// <summary>
     /// Test for properties == default plot
     /// </summary>
-    [Test]
+    [Fact]
     public async Task InterceptionTest_Property()
     {
         //Configuration
@@ -137,18 +128,18 @@ public class InterceptionTest
             _ = instance.Prop;
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return 
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length); //*2 because two sets and the get is not traced
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length); //*2 because two sets and the get is not traced
     }
 
     /// <summary>
     /// Test for == properties with no trace option
     /// </summary>
-    [Test]
+    [Fact]
     public async Task InterceptionTest_Property_With_custom_Option()
     {
         //Configuration
@@ -173,17 +164,17 @@ public class InterceptionTest
             _ = instance.Prop;
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // no return 
-        Assert.AreEqual(0, count);
+        Assert.Equal(0, count);
     }
 
     /// <summary>
     /// Test for attributes
     /// </summary>
-    [Test]
+    [Fact]
     public async Task InterceptionTest_Attribute()
     {
         //Configuration
@@ -218,11 +209,12 @@ public class InterceptionTest
             instance.MethodCall();
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return 
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(3, traceReceived.Length);
+        Assert.Equal(1, count);
+        Assert.Equal(3, traceReceived.Length);
     }
 }
+#pragma warning restore xUnit2002

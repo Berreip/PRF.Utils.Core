@@ -1,28 +1,23 @@
-﻿using System.IO;
-using NUnit.Framework;
+﻿using System;
+using System.IO;
+using CommonUnitTest;
 using PRF.Utils.CoreComponents.Extensions;
 using PRF.Utils.CoreComponents.XML;
 
 namespace PRF.Utils.CoreComponent.UnitTest.XML;
 
-[TestFixture]
 public class JsonSerializerWrapperTest
 {
-    private FileInfo _xmlSmallFile;
-    private DirectoryInfo _testDirectory;
-
-    [SetUp]
-    public void TestInitialize()
+    public JsonSerializerWrapperTest()
     {
-        // mock:
-        _testDirectory = new DirectoryInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, "XML"));
-
-        _xmlSmallFile = _testDirectory.GetFile("testXml.xml");
-        Assert.IsNotNull(_xmlSmallFile);
-        Assert.IsTrue(_xmlSmallFile.Exists);
+        // check that the provided test file exists
+        var xmlSmallFile = UnitTestFolder.Get("XML").GetFile("testXml.xml");
+        Assert.NotNull(xmlSmallFile);
+        Assert.True(xmlSmallFile.Exists);
     }
 
-    [Test]
+
+    [Fact]
     public void SerializeToXml_returns_correct_values()
     {
         //Configuration
@@ -33,13 +28,13 @@ public class JsonSerializerWrapperTest
         var res = dataToSerialize.SerializeToXml();
 
         //Verify
-        Assert.AreEqual(target, res);
+        Assert.Equal(target, res);
     }
       
     /// <summary>
     /// Case 1: test that deserialization is correctly done in xml
     /// </summary>
-    [Test]
+    [Fact]
     public void DeserializeFromXml()
     {
         //Configuration
@@ -49,8 +44,8 @@ public class JsonSerializerWrapperTest
         var res = str.DeserializeFromXml<TestClassToSerialize>();
 
         //Verify
-        Assert.AreEqual("Robert", res.Name);
-        Assert.AreEqual(75, res.Id);
+        Assert.Equal("Robert", res.Name);
+        Assert.Equal(75, res.Id);
     }
 }
 

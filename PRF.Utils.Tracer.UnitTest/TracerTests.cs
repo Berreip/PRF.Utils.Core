@@ -3,25 +3,23 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using PRF.Utils.Tracer.Configuration;
 using PRF.Utils.Tracer.Listener;
 
 namespace PRF.Utils.Tracer.UnitTest;
 
-[TestFixture]
+[Collection("Trace Tests Collection No SYNC #1")] // indicate to xUnit that this collection should not be run in parallel (has been set on other file too)
 public class TracerTests
 {
-    [SetUp]
-    public void TestInitialize()
+    public TracerTests()
     {
         foreach (TraceListener listener in Trace.Listeners)
         {
-            Assert.AreNotEqual(listener.Name, "MainTracerSync", "one tracer remains in the list of static tracers = pollution");
+            Assert.True(listener.Name != "MainTracerSync", "one tracer remains in the list of static tracers = pollution");
         }
     }
 
-    [Test]
+    [Fact]
     public async Task TraceListenerTestV1()
     {
         // setup
@@ -37,7 +35,7 @@ public class TracerTests
 
                 //Test
                 Trace.TraceInformation("Method1");
-                await traceListenerSync.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+                await traceListenerSync.FlushAndCompleteAddingAsync();
             }
             finally
             {
@@ -47,10 +45,10 @@ public class TracerTests
         }
 
         //Verify
-        Assert.AreEqual(1, count);
+        Assert.Equal(1, count);
     }
 
-    [Test]
+    [Fact]
     public async Task TraceListenerTestV2()
     {
         // setup
@@ -65,7 +63,7 @@ public class TracerTests
 
                 //Test
                 Trace.TraceInformation("Method1");
-                await traceListenerSync.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+                await traceListenerSync.FlushAndCompleteAddingAsync();
             }
             finally
             {
@@ -75,13 +73,13 @@ public class TracerTests
         }
 
         //Verify
-        Assert.AreEqual(1, count);
+        Assert.Equal(1, count);
     }
 
     /// <summary>
     /// Check that if you configure a tracer in DoNothing, you do not recover traces from static tracers
     /// </summary>
-    [Test]
+    [Fact]
     public async Task DoNothing()
     {
         // setup
@@ -92,29 +90,29 @@ public class TracerTests
 
             //Test
             Trace.TraceInformation("Method1");
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
-        Assert.AreEqual(0, count);
+        Assert.Equal(0, count);
     }
 
-    [Test]
+    [Fact]
     public async Task DefaultTraceLevelCheck()
     {
         // setup
         using (var ts = new TraceSourceSync())
         {
             //Verify
-            Assert.AreEqual(SourceLevels.Information, ts.TraceLevel);
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            Assert.Equal(SourceLevels.Information, ts.TraceLevel);
+            await ts.FlushAndCompleteAddingAsync();
         }
     }
 
     /// <summary>
     /// verification that we do not pollute static Listeners:
     /// </summary>
-    [Test]
+    [Fact]
     public async Task CleanListenersTest()
     {
         // setup
@@ -124,19 +122,19 @@ public class TracerTests
         using (var ts = new TraceSourceSync(config))
         {
             //Test
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
         // verification that we do not pollute static Listeners:
-        Assert.AreEqual(listenerCount, Trace.Listeners.Count);
-        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
+        Assert.Equal(listenerCount, Trace.Listeners.Count);
+        Assert.True(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
     }
 
     /// <summary>
     /// verification that we do not pollute static Listeners:
     /// </summary>
-    [Test]
+    [Fact]
     public async Task CleanListenersTestV2()
     {
         // setup
@@ -145,19 +143,19 @@ public class TracerTests
         using (var ts = new TraceSourceSync(config))
         {
             //Test
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
         // verification that we do not pollute static Listeners:
-        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
-        Assert.AreEqual(listenerCount, Trace.Listeners.Count);
+        Assert.True(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
+        Assert.Equal(listenerCount, Trace.Listeners.Count);
     }
 
     /// <summary>
     /// verification that we do not pollute static Listeners:
     /// </summary>
-    [Test]
+    [Fact]
     public async Task CleanListenersTestV3()
     {
         // setup
@@ -165,19 +163,19 @@ public class TracerTests
         using (var ts = new TraceSourceSync(config))
         {
             //Test
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
         // verification that we do not pollute the static Listeners BUT that we have removed the default listener:
-        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "Default"));
-        Assert.IsTrue(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
+        Assert.True(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "Default"));
+        Assert.True(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
     }
 
     /// <summary>
     /// verification that we do not pollute static Listeners:
     /// </summary>
-    [Test]
+    [Fact]
     public async Task CleanListenersTestV4()
     {
         // setup
@@ -185,15 +183,15 @@ public class TracerTests
         using (var ts = new TraceSourceSync(config))
         {
             //Test
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
         // checking that the list of static Listeners is empty:
-        Assert.AreEqual(0, Trace.Listeners.Count);
+        Assert.Empty(Trace.Listeners);
     }
 
-    [Test]
+    [Fact]
     public async Task TraceErrorTest()
     {
         // setup
@@ -212,16 +210,16 @@ public class TracerTests
             //Test
             Trace.TraceError("TraceError");
             Trace.TraceError("format {0} - {1}", "param1", "param2");
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
-        Assert.AreEqual(1, countCall);
-        Assert.IsTrue(traceReceived.Contains("TraceError"));
-        Assert.IsTrue(traceReceived.Contains("format {0} - {1}")); // no formatting by default => we leave the arguments aside
+        Assert.Equal(1, countCall);
+        Assert.Contains("TraceError", traceReceived);
+        Assert.Contains("format {0} - {1}", traceReceived); // no formatting by default => we leave the arguments aside
     }
 
-    [Test]
+    [Fact]
     public async Task TraceInformationTest()
     {
         // setup
@@ -240,17 +238,17 @@ public class TracerTests
             //Test
             Trace.TraceInformation("TraceInformation");
             Trace.TraceInformation("format TraceInformation {0} - {1}", "param1", "param2");
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
-        Assert.AreEqual(1, countCall);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.IsTrue(traceReceived.Contains("TraceInformation"));
-        Assert.IsTrue(traceReceived.Contains("format TraceInformation {0} - {1}"));
+        Assert.Equal(1, countCall);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Contains("TraceInformation", traceReceived);
+        Assert.Contains("format TraceInformation {0} - {1}", traceReceived);
     }
 
-    [Test]
+    [Fact]
     public async Task TraceWarningTest()
     {
         // setup
@@ -269,17 +267,17 @@ public class TracerTests
             //Test
             Trace.TraceWarning("TraceWarning");
             Trace.TraceWarning("format TraceWarning {0} - {1}", "param1", "param2");
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
-        Assert.AreEqual(1, countCall);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.IsTrue(traceReceived.Contains("TraceWarning"));
-        Assert.IsTrue(traceReceived.Contains("format TraceWarning {0} - {1}"));
+        Assert.Equal(1, countCall);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Contains("TraceWarning", traceReceived);
+        Assert.Contains("format TraceWarning {0} - {1}", traceReceived);
     }
 
-    [Test]
+    [Fact]
     public async Task WriteTest()
     {
         // setup
@@ -300,19 +298,19 @@ public class TracerTests
             Trace.Write("Write");
             Trace.Write(new object());
             Trace.Write(new object(), "Write+object");
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
-        Assert.AreEqual(1, countCall);
-        Assert.AreEqual(4, traceReceived.Length);
-        Assert.IsTrue(traceReceived.Contains("WriteLine"));
-        Assert.IsTrue(traceReceived.Contains("Write"));
-        Assert.IsTrue(traceReceived.Contains("System.Object"));
-        Assert.IsTrue(traceReceived.Contains("Write+object: System.Object"));
+        Assert.Equal(1, countCall);
+        Assert.Equal(4, traceReceived.Length);
+        Assert.Contains("WriteLine", traceReceived);
+        Assert.Contains("Write", traceReceived);
+        Assert.Contains("System.Object", traceReceived);
+        Assert.Contains("Write+object: System.Object", traceReceived);
     }
 
-    [Test]
+    [Fact]
     public async Task WriteIfTest()
     {
         // setup
@@ -331,16 +329,16 @@ public class TracerTests
             //Test
             Trace.WriteIf(true, "WriteIf true");
             Trace.WriteIf(false, "WriteIf false");
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
-        Assert.AreEqual(1, countCall);
-        Assert.AreEqual(1, traceReceived.Length);
-        Assert.IsTrue(traceReceived.Contains("WriteIf true"));
+        Assert.Equal(1, countCall);
+        Assert.Single(traceReceived);
+        Assert.Contains("WriteIf true", traceReceived);
     }
 
-    [Test]
+    [Fact]
     public async Task TraceDataTest()
     {
         // setup
@@ -359,17 +357,17 @@ public class TracerTests
             //Test
             ts.TraceData(TraceEventType.Information, 32, "param1");
             ts.TraceData(TraceEventType.Information, 32, "param2", "param3");
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
-        Assert.AreEqual(1, countCall);
-        Assert.AreEqual(2, traceReceived.Length, $"array == {string.Join(", ", traceReceived)}");
-        Assert.IsTrue(traceReceived.Contains("param1"), $"array == {string.Join(", ", traceReceived)}");
-        Assert.IsTrue(traceReceived.Contains("param2, param3"), $"array == {string.Join(", ", traceReceived)}");
+        Assert.Equal(1, countCall);
+        Assert.True(2 == traceReceived.Length, $"array == {string.Join(", ", traceReceived)}");
+        Assert.True(traceReceived.Contains("param1"), $"array == {string.Join(", ", traceReceived)}");
+        Assert.True(traceReceived.Contains("param2, param3"), $"array == {string.Join(", ", traceReceived)}");
     }
 
-    [Test]
+    [Fact]
     public async Task TraceDataTest_null()
     {
         // setup
@@ -387,16 +385,16 @@ public class TracerTests
 
             //Test
             ts.TraceData(TraceEventType.Information, 32, null);
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
-        Assert.AreEqual(1, countCall);
-        Assert.AreEqual(1, traceReceived.Length, $"array == {string.Join(", ", traceReceived)}");
-        Assert.IsTrue(traceReceived.Contains("NULL_DATA"), $"array == {string.Join(", ", traceReceived)}");
+        Assert.Equal(1, countCall);
+        Assert.True(1 == traceReceived.Length, $"array == {string.Join(", ", traceReceived)}");
+        Assert.True(traceReceived.Contains("NULL_DATA"), $"array == {string.Join(", ", traceReceived)}");
     }
 
-    [Test]
+    [Fact]
     public async Task TraceEventTest()
     {
         // setup
@@ -416,18 +414,18 @@ public class TracerTests
             ts.TraceEvent(TraceEventType.Information, 56);
             ts.TraceEvent(TraceEventType.Information, 56, "message");
             ts.TraceEvent(TraceEventType.Information, 56, "format {0} - {1}", "param1", "param2");
-            await ts.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await ts.FlushAndCompleteAddingAsync();
         }
 
         //Verify
-        Assert.AreEqual(1, countCall);
-        Assert.AreEqual(3, traceReceived.Length);
-        Assert.IsTrue(traceReceived.Contains("TraceEvent id:56"), $"array contains: {string.Join(Environment.NewLine, traceReceived)}");
-        Assert.IsTrue(traceReceived.Contains("message"), $"array contains: {string.Join(Environment.NewLine, traceReceived)}");
-        Assert.IsTrue(traceReceived.Contains("format {0} - {1}"), $"array contains: {string.Join(Environment.NewLine, traceReceived)}");
+        Assert.Equal(1, countCall);
+        Assert.Equal(3, traceReceived.Length);
+        Assert.True(traceReceived.Contains("TraceEvent id:56"), $"array contains: {string.Join(Environment.NewLine, traceReceived)}");
+        Assert.True(traceReceived.Contains("message"), $"array contains: {string.Join(Environment.NewLine, traceReceived)}");
+        Assert.True(traceReceived.Contains("format {0} - {1}"), $"array contains: {string.Join(Environment.NewLine, traceReceived)}");
     }
 
-    [Test]
+    [Fact]
     public async Task Trace_Performance()
     {
         // setup
@@ -464,14 +462,14 @@ public class TracerTests
         }
 
         // number of pages returned == 1 only
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(upper, nbTraces);
+        Assert.Equal(1, count);
+        Assert.Equal(upper, nbTraces);
     }
 
     /// <summary>
     /// performance trace using a simpler (but not necessarily faster) traceData
     /// </summary>
-    [Test]
+    [Fact]
     public async Task Trace_Performance_Trace_Data()
     {
         // setup
@@ -511,15 +509,15 @@ public class TracerTests
         }
 
         // number of pages returned == 1 only
-        Assert.AreEqual(1, count);
+        Assert.Equal(1, count);
 
-        Assert.AreEqual(upper, nbTraces);
+        Assert.Equal(upper, nbTraces);
     }
 
     /// <summary>
     /// Test that for an empty page, we send nothing when we close the buffer
     /// </summary>
-    [Test]
+    [Fact]
     public async Task FlushAndCompleteAddingAsync_EmptyPage_Test()
     {
         // setup
@@ -532,13 +530,13 @@ public class TracerTests
             await ts.FlushAndCompleteAddingAsync();
         }
 
-        Assert.AreEqual(0, count); // pas de réception de page car page vide
+        Assert.Equal(0, count); // pas de réception de page car page vide
     }
 
     /// <summary>
     /// Test that the trace does not pose a problem when the buffer has been closed
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TraceAfterCompleteAdding()
     {
         // setup
@@ -552,13 +550,13 @@ public class TracerTests
             Trace.TraceError("error test trace TU");
         }
 
-        Assert.AreEqual(0, count); // pas de réception
+        Assert.Equal(0, count); // pas de réception
     }
 
     /// <summary>
     /// Tests that the trace does not pose a problem when we have placed the traceSource
     /// </summary>
-    [Test]
+    [Fact]
     public async Task TraceAfterDispose()
     {
         // setup
@@ -573,6 +571,6 @@ public class TracerTests
 
         Trace.TraceError("error test trace TU");
 
-        Assert.AreEqual(0, count); // not received
+        Assert.Equal(0, count); // not received
     }
 }

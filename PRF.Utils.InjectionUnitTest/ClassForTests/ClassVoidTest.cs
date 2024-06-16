@@ -68,18 +68,18 @@ public sealed class ClassVoidTest : IClassVoidTest
 
     public async Task MethodCallWaitAsync(TimeSpan wait)
     {
-        await Task.Delay(wait).ConfigureAwait(false);
+        await Task.Delay(wait);
     }
 
     public async Task<int> MethodCallWaitWithReturnAsync(TimeSpan wait)
     {
-        await Task.Delay(wait).ConfigureAwait(false);
+        await Task.Delay(wait);
         return 42;
     }
 
     public async Task<CustomObject> MethodCallWaitWithReturnDataAsync(TimeSpan wait)
     {
-        await Task.Delay(wait).ConfigureAwait(false);
+        await Task.Delay(wait);
         return new CustomObject();
     }
 

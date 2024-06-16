@@ -16,9 +16,9 @@ namespace PRF.Utils.CoreComponents.Extensions
     /// By default, for DirectoryInfo and FileInfo, the Exist property returns whether the file or directory existed at the time the instance was CREATED.
     /// So the following Test fails:
     ///     var file = new FileInfo(@"C:\ProgramData\...");
-    ///     Assert.IsFalse(file.Exists); // = FALSE
+    ///     Assert.False(file.Exists); // = FALSE
     ///     file.Create();
-    ///     Assert.IsTrue(file.Exists); // FAIL! => FALSE
+    ///     Assert.True(file.Exists); // FAIL! => FALSE
     /// => You must do a prior Refresh
     /// </summary>
     public static class FilesAndDirectoryInfoExtension

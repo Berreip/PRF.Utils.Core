@@ -3,26 +3,20 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using PRF.Utils.CoreComponents.Async;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Async;
 
-[TestFixture]
 public sealed class BatchProcessingQueueTests
 {
-    private ConcurrentQueue<int?[]> _pageList;
+    private readonly ConcurrentQueue<int?[]> _pageList;
 
-    [SetUp]
-    public void TestInitialize()
+    public BatchProcessingQueueTests()
     {
-        // mock:
         _pageList = new ConcurrentQueue<int?[]>();
-
-        // software under test:
     }
 
-    [Test]
+    [Fact]
     public void Add_Item_Flushes_When_PageSize_Reached()
     {
         // Arrange
@@ -45,14 +39,14 @@ public sealed class BatchProcessingQueueTests
         var pageRetrieved = mrev.Wait(TimeSpan.FromSeconds(5));
 
         // Assert
-        Assert.IsTrue(pageRetrieved);
-        Assert.IsTrue(_pageList.TryDequeue(out var singlePage));
-        Assert.IsFalse(_pageList.TryDequeue(out _));
-        Assert.AreEqual(100, singlePage.Length);
-        Assert.AreEqual(100, singlePage.Count(o => o != null));
+        Assert.True(pageRetrieved);
+        Assert.True(_pageList.TryDequeue(out var singlePage));
+        Assert.False(_pageList.TryDequeue(out _));
+        Assert.Equal(100, singlePage.Length);
+        Assert.Equal(100, singlePage.Count(o => o != null));
     }
 
-    [Test]
+    [Fact]
     public void Add_Item_Flushes_When_Multiple_PagesSize_Reached()
     {
         // Arrange
@@ -82,19 +76,19 @@ public sealed class BatchProcessingQueueTests
         var pageRetrieved = mrev.Wait(TimeSpan.FromSeconds(15));
 
         // Assert
-        Assert.IsTrue(pageRetrieved);
+        Assert.True(pageRetrieved);
         // should be nbPageToGenerate queued
         for (var i = 0; i < nbPageToGenerate; i++)
         {
-            Assert.IsTrue(_pageList.TryDequeue(out var singlePage));
-            Assert.AreEqual(100, singlePage.Length);
-            Assert.AreEqual(100, singlePage.Count(o => o != null));
+            Assert.True(_pageList.TryDequeue(out var singlePage));
+            Assert.Equal(100, singlePage.Length);
+            Assert.Equal(100, singlePage.Count(o => o != null));
         }
         // and no more page after
-        Assert.IsFalse(_pageList.TryDequeue(out _));
+        Assert.False(_pageList.TryDequeue(out _));
     }
 
-    [Test]
+    [Fact]
     public void Add_Item_Does_Not_Flush_Before_PageSize_Reached()
     {
         // Arrange
@@ -114,11 +108,11 @@ public sealed class BatchProcessingQueueTests
         var pageRetrieved = mrev.Wait(TimeSpan.FromMilliseconds(400));
 
         // Assert
-        Assert.IsFalse(pageRetrieved);
-        Assert.IsFalse(_pageList.TryDequeue(out _));
+        Assert.False(pageRetrieved);
+        Assert.False(_pageList.TryDequeue(out _));
     }
 
-    [Test]
+    [Fact]
     public void Add_Item_Does_Flush_Before_PageSize_When_timeout_is_Reached()
     {
         // Arrange
@@ -137,15 +131,15 @@ public sealed class BatchProcessingQueueTests
         var pageRetrieved = mrev.Wait(TimeSpan.FromMilliseconds(400));
 
         // Assert
-        Assert.IsTrue(pageRetrieved);
-        Assert.IsTrue(_pageList.TryDequeue(out var singlePage));
-        Assert.AreEqual(1, singlePage.Length);
-        Assert.AreEqual(1, singlePage.Count(o => o != null));
+        Assert.True(pageRetrieved);
+        Assert.True(_pageList.TryDequeue(out var singlePage));
+        Assert.Single(singlePage);
+        Assert.Equal(1, singlePage.Count(o => o != null));
         // and no more page after
-        Assert.IsFalse(_pageList.TryDequeue(out _));
+        Assert.False(_pageList.TryDequeue(out _));
     }
 
-    [Test]
+    [Fact]
     public async Task Ensure_that_regular_adding_of_items_do_not_prevent_timer_from_beeing_raised()
     {
         // Arrange
@@ -171,7 +165,7 @@ public sealed class BatchProcessingQueueTests
                 {
                     // ReSharper disable once AccessToDisposedClosure
                     sut.Add(1);
-                    await Task.Delay(20, cts.Token).ConfigureAwait(false);
+                    await Task.Delay(20, cts.Token);
                 }
             }
             catch (OperationCanceledException)
@@ -182,11 +176,11 @@ public sealed class BatchProcessingQueueTests
 
         var pageRetrieved = mrev.Wait(TimeSpan.FromSeconds(1));
         cts.Cancel();
-        await task.ConfigureAwait(false);
+        await task;
 
         // Assert
-        Assert.IsTrue(pageRetrieved);
-        Assert.IsTrue(_pageList.TryDequeue(out _));
+        Assert.True(pageRetrieved);
+        Assert.True(_pageList.TryDequeue(out _));
         // no check on content as is may vary widely depending on the delay: we ensure that at leat one raised has been done
     }
 }

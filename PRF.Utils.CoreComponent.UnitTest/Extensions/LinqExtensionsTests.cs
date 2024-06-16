@@ -1,15 +1,13 @@
 ﻿using System;
-using NUnit.Framework;
 using System.Collections.Generic;
 using PRF.Utils.CoreComponents.Extensions;
 using System.Linq;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
-[TestFixture]
-internal sealed class LinqExtensionsTests
+public sealed class LinqExtensionsTests
 {
-    [Test]
+    [Fact]
     public void SplitInChunksOf_Nominal()
     {
         //Arrange
@@ -20,12 +18,12 @@ internal sealed class LinqExtensionsTests
 
         //Assert
         // if we split the current list in chunks of 3 elements, we will get 2 of them
-        Assert.AreEqual(2, res.Length);
-        Assert.AreEqual(3, res[0].Count());
-        Assert.AreEqual(3, res[1].Count());
+        Assert.Equal(2, res.Length);
+        Assert.Equal(3, res[0].Count());
+        Assert.Equal(3, res[1].Count());
     }
 
-    [Test]
+    [Fact]
     public void SplitInChunksOf_Nominal_Not_Complete()
     {
         //Arrange
@@ -36,12 +34,12 @@ internal sealed class LinqExtensionsTests
 
         //Assert
         // if we split the current list in chunks of 4 elements, we will get 2 of them
-        Assert.AreEqual(2, res.Length);
-        Assert.AreEqual(4, res[0].Count());
-        Assert.AreEqual(2, res[1].Count());
+        Assert.Equal(2, res.Length);
+        Assert.Equal(4, res[0].Count());
+        Assert.Equal(2, res[1].Count());
     }
 
-    [Test]
+    [Fact]
     public void SplitInChunksOf_throws_when_items_null()
     {
         //Arrange
@@ -54,7 +52,7 @@ internal sealed class LinqExtensionsTests
 
     }
         
-    [Test]
+    [Fact]
     public void SplitInChunksOf_throws_when_partition_size_lower_than_one()
     {
         //Arrange

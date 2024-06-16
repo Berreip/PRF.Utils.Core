@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.Tracer", "PRF.Uti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRF.Utils.Tracer.UnitTest", "PRF.Utils.Tracer.UnitTest\PRF.Utils.Tracer.UnitTest.csproj", "{8648E57E-A1C5-4753-B6B2-2CC6C7F657DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonUnitTest", "CommonUnitTest\CommonUnitTest.csproj", "{CCECCF25-AACC-466E-801A-90DCEC40649F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{8648E57E-A1C5-4753-B6B2-2CC6C7F657DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8648E57E-A1C5-4753-B6B2-2CC6C7F657DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8648E57E-A1C5-4753-B6B2-2CC6C7F657DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCECCF25-AACC-466E-801A-90DCEC40649F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCECCF25-AACC-466E-801A-90DCEC40649F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCECCF25-AACC-466E-801A-90DCEC40649F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCECCF25-AACC-466E-801A-90DCEC40649F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{2215E8B7-1386-4462-B357-065D9CFCAA49} = {31D1A634-E8F6-4DDE-8902-439EE8733C63}
 		{D092C455-6E6D-46B2-84E4-791A5F03BB78} = {31D1A634-E8F6-4DDE-8902-439EE8733C63}
 		{8648E57E-A1C5-4753-B6B2-2CC6C7F657DA} = {31D1A634-E8F6-4DDE-8902-439EE8733C63}
+		{CCECCF25-AACC-466E-801A-90DCEC40649F} = {31D1A634-E8F6-4DDE-8902-439EE8733C63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6041B5BB-9EB0-45FA-BA6B-97C1B4EBCFCD}

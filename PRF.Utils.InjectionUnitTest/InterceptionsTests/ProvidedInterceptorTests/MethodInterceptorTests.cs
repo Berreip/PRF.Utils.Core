@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
 using PRF.Utils.InjectionUnitTest.ClassForTests;
@@ -13,14 +12,13 @@ using PRF.Utils.Tracer.Listener.Traces;
 
 namespace PRF.Utils.InjectionUnitTest.InterceptionsTests.ProvidedInterceptorTests;
 
-[TestFixture]
+[Collection("Trace Tests Collection No SYNC #1")] // indicate to xUnit that this collection should not be run in parallel (has been set on other file too)
 public class MethodInterceptorTests
 {
-    private IInjectionContainer _container;
-    private TraceConfig _traceConfig;
+    private readonly IInjectionContainer _container;
+    private readonly TraceConfig _traceConfig;
 
-    [SetUp]
-    public void TestInitialize()
+    public MethodInterceptorTests()
     {
         // set the current culture to En-Us for testing
         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
@@ -33,7 +31,7 @@ public class MethodInterceptorTests
             MaximumTimeForFlush = TimeSpan.FromSeconds(5),
         };
 
-        // instance de test:
+        // instance de test :
         _container = new InjectionContainerSimpleInjector();
 
         // saves the type of the test class
@@ -44,7 +42,7 @@ public class MethodInterceptorTests
     /// <summary>
     /// Case 1: test that the interception done via MethodTraceInterceptor works
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV1()
     {
         //Configuration
@@ -68,20 +66,20 @@ public class MethodInterceptorTests
             instance.MethodCall();
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // a single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.AreEqual("START_IClassVoidTest.MethodCall()", traceReceived[0].Message);
-        Assert.AreEqual("STOP_IClassVoidTest.MethodCall", traceReceived[1].Message);
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Equal("START_IClassVoidTest.MethodCall()", traceReceived[0].Message);
+        Assert.Equal("STOP_IClassVoidTest.MethodCall", traceReceived[1].Message);
     }
 
     /// <summary>
     /// Case 1: test that the interception made via MethodTraceInterceptor works and is efficient
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestPerformanceV1()
     {
         //Configuration
@@ -113,17 +111,17 @@ public class MethodInterceptorTests
             watch.Stop();
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
-            Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(1), $"TOO SLOW: The time spent is {watch.ElapsedMilliseconds} ms");
+            await tracer.FlushAndCompleteAddingAsync();
+            Assert.True(watch.Elapsed < TimeSpan.FromSeconds(1), $"TOO SLOW: The time spent is {watch.ElapsedMilliseconds} ms");
         }
 
         // a single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2 * upper, traceReceived.Length);
+        Assert.Equal(1, count);
+        Assert.Equal(2 * upper, traceReceived.Length);
     }
 
 
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV2()
     {
         //Configuration
@@ -146,21 +144,21 @@ public class MethodInterceptorTests
             instance.MethodCallWithParameters("toto", 789, new CustomObject());
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.AreEqual("START_IClassVoidTest.MethodCallWithParameters(toto, 789, surchargeCustomObject)", traceReceived[0].Message);
-        Assert.AreEqual("STOP_IClassVoidTest.MethodCallWithParameters", traceReceived[1].Message);
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Equal("START_IClassVoidTest.MethodCallWithParameters(toto, 789, surchargeCustomObject)", traceReceived[0].Message);
+        Assert.Equal("STOP_IClassVoidTest.MethodCallWithParameters", traceReceived[1].Message);
     }
 
 
     /// <summary>
     /// intercept test for properties (setter exclusively)
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV3()
     {
         //Configuration
@@ -183,21 +181,21 @@ public class MethodInterceptorTests
             instance.Prop = 45;
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.AreEqual("START_IClassVoidTest.set_Prop(45)", traceReceived[0].Message);
-        Assert.AreEqual("STOP_IClassVoidTest.set_Prop", traceReceived[1].Message);
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Equal("START_IClassVoidTest.set_Prop(45)", traceReceived[0].Message);
+        Assert.Equal("STOP_IClassVoidTest.set_Prop", traceReceived[1].Message);
     }
 
 
     /// <summary>
     /// intercept test for properties =&gt; check no trace getter
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV4()
     {
         //Configuration
@@ -220,15 +218,15 @@ public class MethodInterceptorTests
             _ = instance.Prop;
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(0, count);
-        Assert.AreEqual(0, traceReceived.Length);
+        Assert.Equal(0, count);
+        Assert.Empty(traceReceived);
     }
 
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV5()
     {
         //Configuration
@@ -251,17 +249,17 @@ public class MethodInterceptorTests
             _ = instance.MethodCallWithParametersWithReturn("toto", 789, new CustomObject());
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.AreEqual("START_IClassVoidTest.MethodCallWithParametersWithReturn(toto, 789, surchargeCustomObject)", traceReceived[0].Message);
-        Assert.AreEqual("STOP_IClassVoidTest.MethodCallWithParametersWithReturn=[569.489]", traceReceived[1].Message);
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Equal("START_IClassVoidTest.MethodCallWithParametersWithReturn(toto, 789, surchargeCustomObject)", traceReceived[0].Message);
+        Assert.Equal("STOP_IClassVoidTest.MethodCallWithParametersWithReturn=[569.489]", traceReceived[1].Message);
     }
 
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV6()
     {
         //Configuration
@@ -284,17 +282,17 @@ public class MethodInterceptorTests
             _ = instance.TryGetValue(true, out _);
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.AreEqual("START_IClassVoidTest.TryGetValue(True, 0)", traceReceived[0].Message);
-        Assert.AreEqual("STOP_IClassVoidTest.TryGetValue=[True]", traceReceived[1].Message);
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Equal("START_IClassVoidTest.TryGetValue(True, 0)", traceReceived[0].Message);
+        Assert.Equal("STOP_IClassVoidTest.TryGetValue=[True]", traceReceived[1].Message);
     }
 
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV7()
     {
         //Configuration
@@ -318,20 +316,20 @@ public class MethodInterceptorTests
             _ = instance.MethodCallWithParametersWithParams("param1", "param2");
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.AreEqual("START_IClassVoidTest.MethodCallWithParametersWithParams(System.String[])", traceReceived[0].Message);
-        Assert.AreEqual("STOP_IClassVoidTest.MethodCallWithParametersWithParams=[-1]", traceReceived[1].Message);
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Equal("START_IClassVoidTest.MethodCallWithParametersWithParams(System.String[])", traceReceived[0].Message);
+        Assert.Equal("STOP_IClassVoidTest.MethodCallWithParametersWithParams=[-1]", traceReceived[1].Message);
     }
 
     /// <summary>
     /// Handling asynchronous methods
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV8()
     {
         //Configuration
@@ -355,20 +353,20 @@ public class MethodInterceptorTests
             await instance.MethodCallWaitAsync(TimeSpan.FromMilliseconds(50));
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.AreEqual("START_IClassVoidTest.MethodCallWaitAsync(00:00:00.0500000)", traceReceived[0].Message);
-        Assert.AreEqual("STOP_IClassVoidTest.MethodCallWaitAsync", traceReceived[1].Message);
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Equal("START_IClassVoidTest.MethodCallWaitAsync(00:00:00.0500000)", traceReceived[0].Message);
+        Assert.Equal("STOP_IClassVoidTest.MethodCallWaitAsync", traceReceived[1].Message);
     }
 
     /// <summary>
     /// Handling asynchronous methods with return
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV9()
     {
         //Configuration
@@ -392,20 +390,20 @@ public class MethodInterceptorTests
             _ = await instance.MethodCallWaitWithReturnAsync(TimeSpan.FromMilliseconds(50));
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
 
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.AreEqual("START_IClassVoidTest.MethodCallWaitWithReturnAsync(00:00:00.0500000)", traceReceived[0].Message);
-        Assert.AreEqual("STOP_IClassVoidTest.MethodCallWaitWithReturnAsync=[42]", traceReceived[1].Message);
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Equal("START_IClassVoidTest.MethodCallWaitWithReturnAsync(00:00:00.0500000)", traceReceived[0].Message);
+        Assert.Equal("STOP_IClassVoidTest.MethodCallWaitWithReturnAsync=[42]", traceReceived[1].Message);
     }
 
     /// <summary>
     /// Handling asynchronous methods with return
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTestV10()
     {
         //Configuration
@@ -429,19 +427,19 @@ public class MethodInterceptorTests
             _ = await instance.MethodCallWaitWithReturnDataAsync(TimeSpan.FromMilliseconds(50));
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2, traceReceived.Length);
-        Assert.AreEqual("START_IClassVoidTest.MethodCallWaitWithReturnDataAsync(00:00:00.0500000)", traceReceived[0].Message);
-        Assert.AreEqual("STOP_IClassVoidTest.MethodCallWaitWithReturnDataAsync=[surchargeCustomObject]", traceReceived[1].Message);
+        Assert.Equal(1, count);
+        Assert.Equal(2, traceReceived.Length);
+        Assert.Equal("START_IClassVoidTest.MethodCallWaitWithReturnDataAsync(00:00:00.0500000)", traceReceived[0].Message);
+        Assert.Equal("STOP_IClassVoidTest.MethodCallWaitWithReturnDataAsync=[surchargeCustomObject]", traceReceived[1].Message);
     }
 
     /// <summary>
     /// Handling asynchronous methods with return
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTest_PerfV10()
     {
         //Configuration
@@ -469,17 +467,17 @@ public class MethodInterceptorTests
             }
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2*upper, traceReceived.Length);
+        Assert.Equal(1, count);
+        Assert.Equal(2*upper, traceReceived.Length);
     }
 
     /// <summary>
     /// Handling asynchronous methods with return
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MethodInterceptorTest_PerfV11()
     {
         //Configuration
@@ -507,10 +505,10 @@ public class MethodInterceptorTests
             }
 
             //Verify
-            await tracer.FlushAndCompleteAddingAsync().ConfigureAwait(false);
+            await tracer.FlushAndCompleteAddingAsync();
         }
         // A single return (with the two traces of the interceptors)
-        Assert.AreEqual(1, count);
-        Assert.AreEqual(2 * upper, traceReceived.Length);
+        Assert.Equal(1, count);
+        Assert.Equal(2 * upper, traceReceived.Length);
     }
 }

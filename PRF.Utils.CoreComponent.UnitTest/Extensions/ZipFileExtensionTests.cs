@@ -1,14 +1,12 @@
 ﻿using System.IO;
 using System.IO.Compression;
-using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
-[TestFixture]
-internal sealed class ZipFileExtensionTests
+public sealed class ZipFileExtensionTests
 {
-    [Test]
+    [Fact]
     public void CreateFileEntryFromString()
     {
         //Arrange

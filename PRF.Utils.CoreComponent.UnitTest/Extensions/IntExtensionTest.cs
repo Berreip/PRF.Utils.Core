@@ -1,12 +1,11 @@
-﻿using NUnit.Framework;
-using PRF.Utils.CoreComponents.Extensions;
+﻿using PRF.Utils.CoreComponents.Extensions;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
-[TestFixture]
+
 public class IntExtensionTest
 {
-    [Test]
+    [Fact]
     public void IsInRangeV1()
     {
         //Configuration
@@ -16,10 +15,10 @@ public class IntExtensionTest
         var res = nb.IsInRange(40, 50);
 
         //Verify
-        Assert.IsTrue(res);
+        Assert.True(res);
     }
 
-    [Test]
+    [Fact]
     public void IsInRangeV2()
     {
         //Configuration
@@ -29,7 +28,7 @@ public class IntExtensionTest
         var res = nb.IsInRange(40, 50);
 
         //Verify
-        Assert.IsFalse(res);
+        Assert.False(res);
     }
 
 }

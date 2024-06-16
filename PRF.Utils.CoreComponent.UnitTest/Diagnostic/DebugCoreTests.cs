@@ -1,13 +1,11 @@
 ﻿using System.Threading;
-using NUnit.Framework;
 using PRF.Utils.CoreComponents.Diagnostic;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Diagnostic;
 
-[TestFixture]
-internal sealed class DebugCoreTests
+public sealed class DebugCoreTests
 {
-    [Test]
+    [Fact]
     public void Debug_Fail_does_not_throw_when_ignore_callback_has_been_registered()
     {
         //Arrange
@@ -17,10 +15,9 @@ internal sealed class DebugCoreTests
         DebugCore.Fail("message");
 
         //Assert
-        Assert.Pass();
     }
         
-    [Test]
+    [Fact]
     public void Debug_Fail_does_not_throw_when_no_callback_has_been_registered()
     {
         //Arrange
@@ -29,10 +26,9 @@ internal sealed class DebugCoreTests
         DebugCore.Fail("message");
 
         //Assert
-        Assert.Pass();
     }
 
-    [Test]
+    [Fact]
     public void Debug_Assert_false_does_not_throw_when_ignore_callback_has_been_registered()
     {
         //Arrange
@@ -42,10 +38,9 @@ internal sealed class DebugCoreTests
         DebugCore.Assert(false, "message");
 
         //Assert
-        Assert.Pass();
     }
 
-    [Test]
+    [Fact]
     public void Debug_Assert_true_does_not_calls_registered_callback()
     {
         //Arrange
@@ -60,10 +55,10 @@ internal sealed class DebugCoreTests
         DebugCore.Assert(true, "message");
 
         //Assert
-        Assert.AreEqual(0, count);
+        Assert.Equal(0, count);
     }
         
-    [Test]
+    [Fact]
     public void Debug_Fail_provide_expected_message()
     {
         //Arrange
@@ -72,7 +67,7 @@ internal sealed class DebugCoreTests
         {
                 
             Interlocked.Increment(ref count);
-            Assert.AreEqual("message", res.Message);
+            Assert.Equal("message", res.Message);
             return AssertionResponse.Ignore;
         });
 
@@ -81,13 +76,13 @@ internal sealed class DebugCoreTests
 
         //Assert
 #if DEBUG
-        Assert.AreEqual(1, count);
+        Assert.Equal(1, count);
 #else
-            Assert.AreEqual(0, count);
+            Assert.Equal(0, count);
 #endif
     }
         
-    [Test]
+    [Fact]
     public void Debug_Fail_provide_expected_SourceMethod()
     {
         //Arrange
@@ -96,7 +91,7 @@ internal sealed class DebugCoreTests
         {
                 
             Interlocked.Increment(ref count);
-            Assert.AreEqual(nameof(Debug_Fail_provide_expected_SourceMethod), res.SourceMethod);
+            Assert.Equal(nameof(Debug_Fail_provide_expected_SourceMethod), res.SourceMethod);
             return AssertionResponse.Ignore;
         });
 
@@ -105,13 +100,13 @@ internal sealed class DebugCoreTests
 
         //Assert
 #if DEBUG
-        Assert.AreEqual(1, count);
+        Assert.Equal(1, count);
 #else
-            Assert.AreEqual(0, count);
+            Assert.Equal(0, count);
 #endif
     }
         
-    [Test]
+    [Fact]
     public void Debug_Fail_provide_expected_stackTrace()
     {
         //Arrange
@@ -120,7 +115,7 @@ internal sealed class DebugCoreTests
         {
                 
             Interlocked.Increment(ref count);
-            Assert.IsNotEmpty(res.StackTrace);
+            Assert.NotEmpty(res.StackTrace);
             return AssertionResponse.Ignore;
         });
 
@@ -129,9 +124,9 @@ internal sealed class DebugCoreTests
 
         //Assert
 #if DEBUG
-        Assert.AreEqual(1, count);
+        Assert.Equal(1, count);
 #else
-            Assert.AreEqual(0, count);
+            Assert.Equal(0, count);
 #endif
     }
 }

@@ -1,14 +1,12 @@
-﻿using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PRF.Utils.CoreComponents.Extensions;
 using System.Collections.Concurrent;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
-[TestFixture]
-internal sealed class ConcurrentDictionaryExtensionsTests
+public sealed class ConcurrentDictionaryExtensionsTests
 {
-    [Test]
+    [Fact]
     public void AddRangeDifferential_Dictionary_Empty_Test()
     {
         // Arrange
@@ -18,10 +16,10 @@ internal sealed class ConcurrentDictionaryExtensionsTests
         sut.AddRangeDifferential(new Dictionary<int, object>());
 
         // Assert
-        Assert.AreEqual(0, sut.Count);
+        Assert.Empty(sut);
     }
 
-    [Test]
+    [Fact]
     public void AddRangeDifferential_Dictionary_Test()
     {
         // Arrange
@@ -33,10 +31,10 @@ internal sealed class ConcurrentDictionaryExtensionsTests
         sut.AddRangeDifferential(new Dictionary<int, object>());
 
         // Assert
-        Assert.AreEqual(0, sut.Count);
+        Assert.Empty(sut);
     }
 
-    [Test]
+    [Fact]
     public void AddRangeDifferential_Dictionary_Nominal_Test()
     {
         // Arrange
@@ -47,11 +45,11 @@ internal sealed class ConcurrentDictionaryExtensionsTests
         sut.AddRangeDifferential(addingDictionary);
 
         // Assert
-        Assert.AreEqual(1, sut.Count);
-        Assert.IsTrue(sut.ContainsKey(23));
+        Assert.Single(sut);
+        Assert.True(sut.ContainsKey(23));
     }
 
-    [Test]
+    [Fact]
     public void AddRangeDifferential_Dictionary_Nominal__Both_Not_Empty_Test()
     {
         // Arrange
@@ -70,9 +68,9 @@ internal sealed class ConcurrentDictionaryExtensionsTests
         sut.AddRangeDifferential(addingDictionary);
 
         // Assert
-        Assert.AreEqual(2, sut.Count);
-        Assert.IsTrue(sut.ContainsKey(25));
-        Assert.IsTrue(sut.ContainsKey(26));
-        Assert.IsTrue(ReferenceEquals(sut[25], targetData));
+        Assert.Equal(2, sut.Count);
+        Assert.True(sut.ContainsKey(25));
+        Assert.True(sut.ContainsKey(26));
+        Assert.True(ReferenceEquals(sut[25], targetData));
     }
 }

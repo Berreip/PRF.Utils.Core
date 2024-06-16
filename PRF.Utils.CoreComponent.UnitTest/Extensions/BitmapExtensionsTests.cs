@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Drawing;
-using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
 #pragma warning disable CA1416
-[TestFixture]
-internal sealed class BitmapExtensionsTests
+
+public sealed class BitmapExtensionsTests
 {
     private static Bitmap GetBitmapTest()
     {
@@ -20,12 +19,13 @@ internal sealed class BitmapExtensionsTests
         return sut;
     }
 
-    [Test]
+    [Fact]
     public void ToGrayScale_ShouldConvertBitmapToGrayscale()
     {
         if (!UnitTestHelpers.IsWindows)
         {
-            Assert.Pass("Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only ");
+            // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
+            return;
         }
 
         // Arrange
@@ -45,20 +45,21 @@ internal sealed class BitmapExtensionsTests
                 {
                     var pixel = sut.GetPixel(x, y);
                     var expectedGrayValue = (redPart * pixel.R + greenPart * pixel.G + bluePart * pixel.B) / 100;
-                    Assert.AreEqual(expectedGrayValue, pixel.R);
-                    Assert.AreEqual(expectedGrayValue, pixel.G);
-                    Assert.AreEqual(expectedGrayValue, pixel.B);
+                    Assert.Equal(expectedGrayValue, pixel.R);
+                    Assert.Equal(expectedGrayValue, pixel.G);
+                    Assert.Equal(expectedGrayValue, pixel.B);
                 }
             }
         }
     }
 
-    [Test]
+    [Fact]
     public void ToGrayScale_WhenInvalidColorParts_ShouldThrowArgumentException()
     {
         if (!UnitTestHelpers.IsWindows)
         {
-            Assert.Pass("Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only ");
+            // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
+            return;
         }
 
         using (var sut = GetBitmapTest())
@@ -73,12 +74,13 @@ internal sealed class BitmapExtensionsTests
         }
     }
 
-    [Test]
+    [Fact]
     public void ToGrayScale_ShouldConvertBitmapToGrayscale_with_default_values()
     {
         if (!UnitTestHelpers.IsWindows)
         {
-            Assert.Pass("Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only ");
+            // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
+            return;
         }
 
         using (var sut = GetBitmapTest())
@@ -98,20 +100,21 @@ internal sealed class BitmapExtensionsTests
                 {
                     var pixel = sut.GetPixel(x, y);
                     var expectedGrayValue = (redPart * pixel.R + greenPart * pixel.G + bluePart * pixel.B) / 100;
-                    Assert.AreEqual(expectedGrayValue, pixel.R);
-                    Assert.AreEqual(expectedGrayValue, pixel.G);
-                    Assert.AreEqual(expectedGrayValue, pixel.B);
+                    Assert.Equal(expectedGrayValue, pixel.R);
+                    Assert.Equal(expectedGrayValue, pixel.G);
+                    Assert.Equal(expectedGrayValue, pixel.B);
                 }
             }
         }
     }
 
-    [Test]
+    [Fact]
     public void ToGrayScaleCopy_ShouldReturnCopyOfGrayscaleImage()
     {
         if (!UnitTestHelpers.IsWindows)
         {
-            Assert.Pass("Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only ");
+            // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
+            return;
         }
 
         using (var sut = GetBitmapTest())
@@ -125,18 +128,19 @@ internal sealed class BitmapExtensionsTests
             var copy = sut.ToGrayScaleCopy(redPart, greenPart, bluePart);
 
             // Assert
-            Assert.AreNotSame(sut, copy);
-            Assert.AreEqual(sut.Width, copy.Width);
-            Assert.AreEqual(sut.Height, copy.Height);
+            Assert.NotSame(sut, copy);
+            Assert.Equal(sut.Width, copy.Width);
+            Assert.Equal(sut.Height, copy.Height);
         }
     }
 
-    [Test]
+    [Fact]
     public void ToGrayScaleCopy_WithoutParameters_ShouldReturnCopyWithDefaultColorDistribution()
     {
         if (!UnitTestHelpers.IsWindows)
         {
-            Assert.Pass("Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only ");
+            // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
+            return;
         }
 
         using (var sut = GetBitmapTest())
@@ -145,9 +149,9 @@ internal sealed class BitmapExtensionsTests
             var copy = sut.ToGrayScaleCopy();
 
             // Assert
-            Assert.AreNotSame(sut, copy);
-            Assert.AreEqual(sut.Width, copy.Width);
-            Assert.AreEqual(sut.Height, copy.Height);
+            Assert.NotSame(sut, copy);
+            Assert.Equal(sut.Width, copy.Width);
+            Assert.Equal(sut.Height, copy.Height);
         }
     }
 }

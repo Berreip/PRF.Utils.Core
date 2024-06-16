@@ -1,5 +1,4 @@
 ﻿using System;
-using NUnit.Framework;
 using PRF.Utils.CoreComponents.Enums;
 // ReSharper disable UnusedMember.Global
 
@@ -13,10 +12,9 @@ internal enum FooEnum
     Value2,
 }
 
-[TestFixture]
-internal sealed class EnumUtilsTests
+public sealed class EnumUtilsTests
 {
-    [Test]
+    [Fact]
     public void Constructor_assign_correct_initial_values()
     {
         //Arrange
@@ -25,10 +23,10 @@ internal sealed class EnumUtilsTests
         var sut = EnumUtils.CreateConverterWithDefault(FooEnum.Value1);
 
         //Assert
-        Assert.AreEqual(FooEnum.Value1, sut.DefaultValue);
+        Assert.Equal(FooEnum.Value1, sut.DefaultValue);
     }
 
-    [Test]
+    [Fact]
     public void Convert_all_Value_from_string()
     {
         //Arrange
@@ -39,11 +37,11 @@ internal sealed class EnumUtilsTests
         {
             var enumConverted = sut.Convert(enumValue.ToString());
             //Assert
-            Assert.AreEqual(enumValue, enumConverted);
+            Assert.Equal(enumValue, enumConverted);
         }
     }
 
-    [Test]
+    [Fact]
     public void Convert_fallback_to_default_for_unknown_value()
     {
         //Arrange
@@ -54,10 +52,10 @@ internal sealed class EnumUtilsTests
         var enumConverted = sut.Convert("fdgsdfg");
             
         //Assert
-        Assert.AreEqual(FooEnum.DefaultValue, enumConverted);
+        Assert.Equal(FooEnum.DefaultValue, enumConverted);
     }
         
-    [Test]
+    [Fact]
     public void Convert_fallback_to_default_for_string_empty()
     {
         //Arrange
@@ -67,10 +65,10 @@ internal sealed class EnumUtilsTests
         var enumConverted = sut.Convert(string.Empty);
             
         //Assert
-        Assert.AreEqual(FooEnum.DefaultValue, enumConverted);
+        Assert.Equal(FooEnum.DefaultValue, enumConverted);
     }
 
-    [Test]
+    [Fact]
     public void Convert_fallback_to_default_for_null_input()
     {
         //Arrange
@@ -80,10 +78,10 @@ internal sealed class EnumUtilsTests
         var enumConverted = sut.Convert(null);
             
         //Assert
-        Assert.AreEqual(FooEnum.DefaultValue, enumConverted);
+        Assert.Equal(FooEnum.DefaultValue, enumConverted);
     }
         
-    [Test]
+    [Fact]
     public void Convert_all_Value_from_upper_string()
     {
         //Arrange
@@ -94,11 +92,11 @@ internal sealed class EnumUtilsTests
         {
             var enumConverted = sut.Convert(enumValue.ToString().ToUpper());
             //Assert
-            Assert.AreEqual(enumValue, enumConverted);
+            Assert.Equal(enumValue, enumConverted);
         }
     }
 
-    [Test]
+    [Fact]
     public void Convert_all_Value_case_sensitive_if_specified()
     {
         //Arrange
@@ -110,7 +108,7 @@ internal sealed class EnumUtilsTests
             var enumConverted = sut.Convert(enumValue.ToString().ToUpper());
 
             //Assert
-            Assert.AreEqual(enumConverted, FooEnum.DefaultValue); // all default
+            Assert.Equal(FooEnum.DefaultValue, enumConverted); // all default
         }
     }
 }

@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
-[TestFixture]
-internal sealed class ListFilteringExtensionTest
+public sealed class ListFilteringExtensionTest
 {
-    private Random _rd;
+    private readonly Random _rd = new Random();
 
-    [SetUp]
-    public void TestInitialize()
-    {
-        _rd = new Random();
-    }
-
-    [Test]
+    [Fact]
     public void CapRandomized_filter_the_list()
     {
         //Arrange
@@ -26,10 +18,10 @@ internal sealed class ListFilteringExtensionTest
         initialList.CapRandomized(250);
 
         //Assert
-        Assert.AreEqual(250, initialList.Count);
+        Assert.Equal(250, initialList.Count);
     }
 
-    [Test]
+    [Fact]
     public void GetRandomElement_returns_an_element_from_the_list()
     {
         //Arrange
@@ -39,7 +31,7 @@ internal sealed class ListFilteringExtensionTest
         var res = initialList.GetRandomElement(_rd);
 
         //Assert
-        Assert.GreaterOrEqual(res, 0);
-        Assert.LessOrEqual(res, 1000);
+        Assert.True(res >= 0);
+        Assert.True(res <= 1000);
     }
 }

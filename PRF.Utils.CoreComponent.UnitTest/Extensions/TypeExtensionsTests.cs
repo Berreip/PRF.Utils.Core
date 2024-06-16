@@ -1,15 +1,13 @@
 ﻿using System.Linq;
-using NUnit.Framework;
 using PRF.Utils.CoreComponents.Extensions;
 
 // ReSharper disable UnusedMember.Local
 
 namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
 
-[TestFixture]
-internal sealed class TypeExtensionsTests
+public sealed class TypeExtensionsTests
 {
-    [Test]
+    [Fact]
     public void GetPublicProperties_nominal()
     {
         //Arrange
@@ -17,11 +15,11 @@ internal sealed class TypeExtensionsTests
         var res = typeof(TmpClass).GetPublicProperties().ToArray();
 
         //Assert
-        Assert.AreEqual(1, res.Length);
-        Assert.AreEqual("PublicProp", res[0].Name);
+        Assert.Single(res);
+        Assert.Equal("PublicProp", res[0].Name);
     }
 
-    [Test]
+    [Fact]
     public void IsSubclassOfRawGeneric_returns_false_if_not_derived_from_generic()
     {
         //Arrange
@@ -29,10 +27,10 @@ internal sealed class TypeExtensionsTests
         var res = typeof(TmpClass).IsSubclassOfRawGeneric(typeof(GenericTmp<>));
 
         //Assert
-        Assert.IsFalse(res);
+        Assert.False(res);
     }
 
-    [Test]
+    [Fact]
     public void IsSubclassOfRawGeneric_returns_true_if_derived_from_generic_given_type()
     {
         //Arrange
@@ -40,10 +38,10 @@ internal sealed class TypeExtensionsTests
         var res = typeof(GenericTmpChild).IsSubclassOfRawGeneric(typeof(GenericTmp<>));
 
         //Assert
-        Assert.IsTrue(res);
+        Assert.True(res);
     }
 
-    [Test]
+    [Fact]
     public void GetPublicProperties_WhenConcreteType_ShouldReturnProperties()
     {
         // Arrange
@@ -53,10 +51,10 @@ internal sealed class TypeExtensionsTests
         var properties = concreteType.GetPublicProperties();
 
         // Assert
-        Assert.IsNotEmpty(properties);
+        Assert.NotEmpty(properties);
     }
 
-    [Test]
+    [Fact]
     public void GetPublicProperties_WhenInterfaceType_ShouldReturnPropertiesFromHierarchy()
     {
         // Arrange
@@ -66,10 +64,10 @@ internal sealed class TypeExtensionsTests
         var properties = interfaceType.GetPublicProperties();
 
         // Assert
-        Assert.IsNotEmpty(properties);
+        Assert.NotEmpty(properties);
     }
 
-    [Test]
+    [Fact]
     public void GetPublicProperties_WhenInvalidType_ShouldThrowException()
     {
         // Arrange
@@ -79,7 +77,7 @@ internal sealed class TypeExtensionsTests
         var properties = invalidType.GetPublicProperties();
 
         // Assert
-        Assert.IsEmpty(properties);
+        Assert.Empty(properties);
     }
 
     private class ConcreteClass

@@ -1,31 +1,30 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using CommonUnitTest;
 using PRF.Utils.CoreComponents.Extensions;
 using PRF.Utils.CoreComponents.IO;
 
 namespace PRF.Utils.CoreComponent.UnitTest.IO;
 
-public class FileAndDirectoryTests
+public sealed class FileAndDirectoryTests : IDisposable
 {
-    private IDirectoryInfo _testDirectory;
+    private readonly IDirectoryInfo _testDirectory;
 
-    [SetUp]
-    public void TestInitialize()
+    public FileAndDirectoryTests()
     {
         // mock:
-        _testDirectory = new DirectoryInfoWrapper(Path.Combine(TestContext.CurrentContext.TestDirectory, "Extensions"));
+        _testDirectory = new DirectoryInfoWrapper(UnitTestFolder.Get("FileAndDirectoryTests"));
         _testDirectory.CleanDirectory();
     }
 
-    [TearDown]
-    public void TestCleanup()
+    public void Dispose()
     {
         _testDirectory.DeleteIfExistAndWaitDeletion(TimeSpan.FromSeconds(5));
     }
 
-    [Test]
+
+    [Fact]
     public void CreateDirectory_then_file_as_fluent()
     {
         //Arrange
@@ -34,11 +33,11 @@ public class FileAndDirectoryTests
         var res = _testDirectory.CreateSubdirectoryIfNotExists("sub1").CreateSubdirectoryIfNotExists("sub2").CreateFileIfNotExists("foo.txt");
 
         //Assert
-        Assert.IsNotNull(res);
-        Assert.AreEqual(Path.Combine(_testDirectory.FullName, "sub1", "sub2", "foo.txt"), res.FullName);
+        Assert.NotNull(res);
+        Assert.Equal(Path.Combine(_testDirectory.FullName, "sub1", "sub2", "foo.txt"), res.FullName);
     }
 
-    [Test]
+    [Fact]
     public void CreateDirectory_then_file_does_not_throw_if_duplicated()
     {
         //Arrange
@@ -48,11 +47,11 @@ public class FileAndDirectoryTests
         var res = _testDirectory.CreateSubdirectoryIfNotExists("sub1").CreateSubdirectoryIfNotExists("sub2").CreateFileIfNotExists("foo.txt");
 
         //Assert
-        Assert.IsNotNull(res);
-        Assert.AreEqual(Path.Combine(_testDirectory.FullName, "sub1", "sub2", "foo.txt"), res.FullName);
+        Assert.NotNull(res);
+        Assert.Equal(Path.Combine(_testDirectory.FullName, "sub1", "sub2", "foo.txt"), res.FullName);
     }
 
-    [Test]
+    [Fact]
     public void CreateDirectory_GetFile()
     {
         //Arrange
@@ -61,13 +60,13 @@ public class FileAndDirectoryTests
         var res = _testDirectory.CreateSubdirectoryIfNotExists("sub1").GetFile("foo.txt");
 
         //Assert
-        Assert.IsNotNull(res);
-        Assert.IsFalse(res.Exists);
-        Assert.IsFalse(res.ExistsExplicit);
-        Assert.AreEqual(Path.Combine(_testDirectory.FullName, "sub1", "foo.txt"), res.FullName);
+        Assert.NotNull(res);
+        Assert.False(res.Exists);
+        Assert.False(res.ExistsExplicit);
+        Assert.Equal(Path.Combine(_testDirectory.FullName, "sub1", "foo.txt"), res.FullName);
     }
 
-    [Test]
+    [Fact]
     public void CreateFileIfNotExist_create_the_file_even_if_directory_did_not_exists()
     {
         //Arrange
@@ -77,10 +76,10 @@ public class FileAndDirectoryTests
         var file = _testDirectory.CreateFileIfNotExists("foo.txt");
 
         //Assert
-        Assert.IsTrue(file.Exists);
+        Assert.True(file.Exists);
     }
 
-    [Test]
+    [Fact]
     public void ReadAllText_returns_file_content_as_string()
     {
         //Arrange
@@ -91,10 +90,10 @@ public class FileAndDirectoryTests
         var res = file.ReadAllText();
 
         //Assert
-        Assert.AreEqual("Lorem ipsum", res);
+        Assert.Equal("Lorem ipsum", res);
     }
 
-    [Test]
+    [Fact]
     public void ReadAllLines_returns_file_content_as_string()
     {
         //Arrange
@@ -105,10 +104,10 @@ public class FileAndDirectoryTests
         var res = file.ReadAllLines().Single();
 
         //Assert
-        Assert.AreEqual("Lorem ipsum", res);
+        Assert.Equal("Lorem ipsum", res);
     }
 
-    [Test]
+    [Fact]
     public void AppendAllText_write_file_content_as_string()
     {
         //Arrange
@@ -120,10 +119,10 @@ public class FileAndDirectoryTests
         var res = file.ReadAllText();
 
         //Assert
-        Assert.AreEqual("Lorem ipsum", res);
+        Assert.Equal("Lorem ipsum", res);
     }
 
-    [Test]
+    [Fact]
     public void GetDirectory_when_directory_does_not_exists()
     {
         //Arrange
@@ -132,12 +131,12 @@ public class FileAndDirectoryTests
         var res = _testDirectory.GetDirectory("sub1");
 
         //Assert
-        Assert.IsNotNull(res);
-        Assert.IsFalse(res.Exists);
-        Assert.AreEqual(Path.Combine(_testDirectory.FullName, "sub1"), res.FullName);
+        Assert.NotNull(res);
+        Assert.False(res.Exists);
+        Assert.Equal(Path.Combine(_testDirectory.FullName, "sub1"), res.FullName);
     }
 
-    [Test]
+    [Fact]
     public void Parent_is_valid()
     {
         //Arrange
@@ -146,13 +145,13 @@ public class FileAndDirectoryTests
         var res = _testDirectory.CreateSubdirectoryIfNotExists("sub1").CreateSubdirectoryIfNotExists("sub2").CreateFileIfNotExists("foo.txt");
 
         //Assert
-        Assert.IsNotNull(res);
-        Assert.AreEqual(Path.Combine(_testDirectory.FullName, "sub1", "sub2"), res.Directory.FullName);
-        Assert.AreEqual(Path.Combine(_testDirectory.FullName, "sub1"), res.Directory.Parent.FullName);
-        Assert.AreEqual(_testDirectory.Root.FullName, res.Directory.Root.FullName);
+        Assert.NotNull(res);
+        Assert.Equal(Path.Combine(_testDirectory.FullName, "sub1", "sub2"), res.Directory.FullName);
+        Assert.Equal(Path.Combine(_testDirectory.FullName, "sub1"), res.Directory.Parent.FullName);
+        Assert.Equal(_testDirectory.Root.FullName, res.Directory.Root.FullName);
     }
 
-    [Test]
+    [Fact]
     public void CreateSubdirectory_nominal()
     {
         //Arrange
@@ -161,11 +160,11 @@ public class FileAndDirectoryTests
         var res = _testDirectory.CreateSubdirectory("sub1");
 
         //Assert
-        Assert.IsNotNull(res);
-        Assert.AreEqual(Path.Combine(_testDirectory.FullName, "sub1"), res.FullName);
+        Assert.NotNull(res);
+        Assert.Equal(Path.Combine(_testDirectory.FullName, "sub1"), res.FullName);
     }
 
-    [Test]
+    [Fact]
     public void GetDirectories_nominal()
     {
         //Arrange
@@ -176,10 +175,10 @@ public class FileAndDirectoryTests
         var subDir = _testDirectory.GetDirectories();
 
         //Assert
-        Assert.AreEqual(2, subDir.Length);
+        Assert.Equal(2, subDir.Length);
     }
 
-    [Test]
+    [Fact]
     public void GetFiles_nominal()
     {
         //Arrange
@@ -191,10 +190,10 @@ public class FileAndDirectoryTests
         var files = _testDirectory.GetFiles();
 
         //Assert
-        Assert.AreEqual(1, files.Length);
+        Assert.Single(files);
     }
 
-    [Test]
+    [Fact]
     public void GetFiles_nominal_SearchOption_AllDirectories()
     {
         //Arrange
@@ -206,10 +205,10 @@ public class FileAndDirectoryTests
         var files = _testDirectory.GetFiles("*.*", SearchOption.AllDirectories);
 
         //Assert
-        Assert.AreEqual(1, files.Length);
+        Assert.Single(files);
     }
 
-    [Test]
+    [Fact]
     public void IsEmpty_true()
     {
         //Arrange
@@ -217,10 +216,10 @@ public class FileAndDirectoryTests
         //Act
 
         //Assert
-        Assert.IsTrue(_testDirectory.IsEmpty());
+        Assert.True(_testDirectory.IsEmpty());
     }
 
-    [Test]
+    [Fact]
     public void IsEmpty_false()
     {
         //Arrange
@@ -229,10 +228,10 @@ public class FileAndDirectoryTests
         //Act
 
         //Assert
-        Assert.IsFalse(_testDirectory.IsEmpty());
+        Assert.False(_testDirectory.IsEmpty());
     }
 
-    [Test]
+    [Fact]
     public void IsEmpty_false_file()
     {
         //Arrange
@@ -241,11 +240,11 @@ public class FileAndDirectoryTests
         //Act
 
         //Assert
-        Assert.IsFalse(_testDirectory.IsEmpty());
+        Assert.False(_testDirectory.IsEmpty());
     }
 
 
-    [Test]
+    [Fact]
     public void EnumerateDirectories_nominal()
     {
         //Arrange
@@ -256,10 +255,10 @@ public class FileAndDirectoryTests
         var subDir = _testDirectory.EnumerateDirectories();
 
         //Assert
-        Assert.AreEqual(2, subDir.Count());
+        Assert.Equal(2, subDir.Count());
     }
 
-    [Test]
+    [Fact]
     public void EnumerateFiles_nominal()
     {
         //Arrange
@@ -271,10 +270,10 @@ public class FileAndDirectoryTests
         var files = _testDirectory.EnumerateFiles();
 
         //Assert
-        Assert.AreEqual(1, files.Count());
+        Assert.Single(files);
     }
 
-    [Test]
+    [Fact]
     public void EnumerateFiles_nominal_SearchOption_AllDirectories()
     {
         //Arrange
@@ -286,10 +285,10 @@ public class FileAndDirectoryTests
         var files = _testDirectory.EnumerateFiles("*.*", SearchOption.AllDirectories);
 
         //Assert
-        Assert.AreEqual(1, files.Count());
+        Assert.Single(files);
     }
 
-    [Test]
+    [Fact]
     public void DeleteIfExist_when_does_not_exists()
     {
         //Arrange
@@ -299,11 +298,11 @@ public class FileAndDirectoryTests
         var res = file.DeleteIfExist();
 
         //Assert
-        Assert.IsFalse(res);
-        Assert.IsFalse(file.ExistsExplicit);
+        Assert.False(res);
+        Assert.False(file.ExistsExplicit);
     }
-   
-    [Test]
+
+    [Fact]
     public void DeleteIfExist_when_does_exists()
     {
         //Arrange
@@ -313,11 +312,11 @@ public class FileAndDirectoryTests
         var res = file.DeleteIfExist();
 
         //Assert
-        Assert.IsTrue(res);
-        Assert.IsFalse(file.ExistsExplicit);
+        Assert.True(res);
+        Assert.False(file.ExistsExplicit);
     }
-    
-    [Test]
+
+    [Fact]
     public void File_State_tests()
     {
         //Arrange
@@ -326,12 +325,12 @@ public class FileAndDirectoryTests
         var file = _testDirectory.CreateFileIfNotExists("foo.txt");
 
         //Assert
-        Assert.AreEqual(_testDirectory.FullName, file.DirectoryName);
-        Assert.IsFalse(file.IsReadOnly);
-        Assert.AreEqual(0, file.Length);
+        Assert.Equal(_testDirectory.FullName, file.DirectoryName);
+        Assert.False(file.IsReadOnly);
+        Assert.Equal(0, file.Length);
     }
 
-    [Test]
+    [Fact]
     public void TryDelete_ShouldDeleteFileIfNotInUse()
     {
         // Arrange
@@ -342,11 +341,11 @@ public class FileAndDirectoryTests
         var success = fileInfo.TryDelete();
 
         // Assert
-        Assert.IsTrue(success);
-        Assert.IsFalse(File.Exists(testFilePath));
+        Assert.True(success);
+        Assert.False(File.Exists(testFilePath));
     }
 
-    [Test]
+    [Fact]
     public void TryDelete_WithTimeout_ShouldDeleteFileWithinTimeout()
     {
         // Arrange
@@ -358,11 +357,11 @@ public class FileAndDirectoryTests
         var success = fileInfo.TryDelete(timeout);
 
         // Assert
-        Assert.IsTrue(success);
-        Assert.IsFalse(File.Exists(testFilePath));
+        Assert.True(success);
+        Assert.False(File.Exists(testFilePath));
     }
 
-    [Test]
+    [Fact]
     public void TryDelete_WithInvalidTimeout_ShouldThrowArgumentException()
     {
         // Arrange
@@ -374,7 +373,7 @@ public class FileAndDirectoryTests
         Assert.Throws<ArgumentException>(() => fileInfo.TryDelete(invalidTimeout));
     }
 
-    [Test]
+    [Fact]
     public void DeleteAndRetryIfLocked_ShouldDeleteFileWithRetries()
     {
         // Arrange
@@ -385,10 +384,10 @@ public class FileAndDirectoryTests
         fileInfo.DeleteAndRetryIfLocked();
 
         // Assert
-        Assert.IsFalse(File.Exists(testFilePath));
+        Assert.False(File.Exists(testFilePath));
     }
 
-    [Test]
+    [Fact]
     public void DeleteAndRetryIfLocked_returns_if_already_deleted()
     {
         // Arrange
@@ -400,10 +399,10 @@ public class FileAndDirectoryTests
         fileInfo.DeleteAndRetryIfLocked();
 
         // Assert
-        Assert.IsFalse(File.Exists(testFilePath));
+        Assert.False(File.Exists(testFilePath));
     }
 
-    [Test]
+    [Fact]
     public void DeleteAndRetryIfLocked_WhenFileIsLocked_ShouldThrowTimeoutException()
     {
         // Arrange

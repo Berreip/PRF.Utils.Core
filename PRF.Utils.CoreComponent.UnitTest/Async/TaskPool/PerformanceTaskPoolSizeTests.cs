@@ -3,27 +3,30 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using CommonUnitTest;
 using PRF.Utils.CoreComponents.Async.TaskPool;
+using Xunit.Abstractions;
 
 // ReSharper disable MethodSupportsCancellation
-
 // ReSharper disable ObjectCreationAsStatement
-
 namespace PRF.Utils.CoreComponent.UnitTest.Async.TaskPool;
 
-[TestFixture]
-internal sealed class PerformanceTaskPoolSizeTests
+public sealed class PerformanceTaskPoolSizeTests
 {
+    private readonly ITestOutputHelper _testOutputHelper;
     private const int POOL_MAXIMUM_SIZE = 10;
     private const int ITERATION = 200_000;
 
     private static readonly Dictionary<int, (int Iteration, long Total)> _means = new Dictionary<int, (int Iteration, long Total)>();
 
-    [Test]
+    public PerformanceTaskPoolSizeTests(ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
+
+    [Theory(Skip = "performance test")]
     [Repeat(10)]
-    [Ignore("performance test")]
-    public async Task Perfo_TaskPoolSizeCappedAlt()
+    public async Task Perfo_TaskPoolSizeCappedAlt(int _)
     {
         //Arrange
         var sut = new TaskPoolSizeCapped(POOL_MAXIMUM_SIZE);
@@ -49,21 +52,20 @@ internal sealed class PerformanceTaskPoolSizeTests
         });
 
         sut.AddWork(_ => tcs.SetResult(true));
-        await tcs.Task.ConfigureAwait(false);
-        await sut.WaitIdleAsync().ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(true);
+        await sut.WaitIdleAsync().ConfigureAwait(true);
         watch.Stop();
 
         //Assert
-        Assert.AreEqual(ITERATION, counter);
+        Assert.Equal(ITERATION, counter);
         // add the new iteration
         var mean = AddMean(watch, 0);
-        TestContext.WriteLine($"elapsed = {watch.ElapsedMilliseconds} ms MEAN [{mean} ms]");
+        _testOutputHelper.WriteLine($"elapsed = {watch.ElapsedMilliseconds} ms MEAN [{mean} ms]");
     }
 
-    [Test]
+    [Theory(Skip = "For Memory footprint")]
     [Repeat(10)]
-    [Ignore("For Memory footprint")]
-    public async Task TaskPoolSizeCapped_Memory_FootPrint_Ensure_Ressource_are_disposed()
+    public async Task TaskPoolSizeCapped_Memory_FootPrint_Ensure_Ressource_are_disposed(int _)
     {
         var sut = new TaskPoolSizeCapped(20);
         var startTestTotalMemory = GC.GetTotalMemory(true);
@@ -78,27 +80,27 @@ internal sealed class PerformanceTaskPoolSizeTests
                 // ReSharper disable once UnusedVariable : FOO METHOD
                 var t = r * r;
             });
-
         }
 
-        await sut.WaitIdleAsync().ConfigureAwait(false);
+        await sut.WaitIdleAsync().ConfigureAwait(true);
 
         //Assert
         var endTestTotalMemory = GC.GetTotalMemory(true);
         var sizeInBytes = endTestTotalMemory - startTestTotalMemory;
-        Console.WriteLine($"Size in bytes = {sizeInBytes}");
+        _testOutputHelper.WriteLine($"Size in bytes = {sizeInBytes}");
     }
 
     private static int AddMean(Stopwatch watch, int key)
     {
         if (_means.TryGetValue(key, out var tuple))
         {
-            _means[key] = (tuple.Iteration +1, tuple.Total + watch.ElapsedMilliseconds);
+            _means[key] = (tuple.Iteration + 1, tuple.Total + watch.ElapsedMilliseconds);
         }
         else
         {
             _means.Add(key, (1, watch.ElapsedMilliseconds));
         }
+
         return (int)Math.Round(_means[key].Total / (double)_means[key].Iteration);
     }
 }

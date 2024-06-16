@@ -1,16 +1,15 @@
 ﻿using System;
-using NUnit.Framework;
 using PRF.Utils.Tracer.Listener;
 
 namespace PRF.Utils.Tracer.UnitTest;
 
-[TestFixture]
+[Collection("Trace Tests Collection No SYNC #1")] // indicate to xUnit that this collection should not be run in parallel (has been set on other file too)
 public class TraceListenerTest
 {
     /// <summary>
     /// Tests that the flush time must be greater than or equal to 50 ms
     /// </summary>
-    [Test]
+    [Fact]
     public void CtorV1()
     {
         //Configuration
@@ -30,7 +29,7 @@ public class TraceListenerTest
     /// <summary>
     /// Tests that the buffer cannot be negative or equal to zero
     /// </summary>
-    [Test]
+    [Fact]
     public void CtorV2()
     {
         //Configuration
@@ -48,7 +47,7 @@ public class TraceListenerTest
     /// <summary>
     /// Test that dispose does not trigger any problems
     /// </summary>
-    [Test]
+    [Fact]
     public void CtorV3()
     {
         //Configuration
@@ -66,7 +65,7 @@ public class TraceListenerTest
     /// <summary>
     /// Tests the listener time limit (between a minimum and a maximum)
     /// </summary>
-    [Test]
+    [Fact]
     public void CtorV4()
     {
         //Configuration
