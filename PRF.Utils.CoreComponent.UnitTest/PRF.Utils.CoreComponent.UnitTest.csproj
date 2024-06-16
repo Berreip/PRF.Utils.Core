@@ -12,16 +12,29 @@
 
   <ItemGroup>
     <PackageReference Include="ArbitraryLib" Version="1.0.0" />
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.3" />
+    <PackageReference Include="xunit" Version="2.8.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PRF.Utils.CoreComponents\PRF.Utils.CoreComponents.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="Xunit"/>
+  </ItemGroup>
+  
   <ItemGroup>
     <None Remove="XML\testXml.xml" />
     <Content Include="XML\testXml.xml">
