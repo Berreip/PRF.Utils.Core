@@ -9,15 +9,15 @@
     <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
     <PackageTags>PRF, Injection, Interception, AOP, IOC</PackageTags>
-    <PackageReleaseNotes>Add registration of instances collections</PackageReleaseNotes>
+    <PackageReleaseNotes>Update dependencies</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <Version>2.0.4</Version>
+    <Version>2.0.5</Version>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
-    <AssemblyVersion>2.0.4.0</AssemblyVersion>
-    <FileVersion>2.0.4.0</FileVersion>
-    <PackageVersion>2.0.4.0</PackageVersion>
+    <AssemblyVersion>2.0.5.0</AssemblyVersion>
+    <FileVersion>2.0.5.0</FileVersion>
+    <PackageVersion>2.0.5.0</PackageVersion>
     <!-- Include symbol files (*.pdb) in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
