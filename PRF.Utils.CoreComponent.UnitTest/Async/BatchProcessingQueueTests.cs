@@ -140,6 +140,35 @@ public sealed class BatchProcessingQueueTests
     }
 
     [Fact]
+    public void ForceFlush_empty_the_queue()
+    {
+        // Arrange
+        var mrev = new ManualResetEventSlim();
+        using var sut = new BatchProcessingQueue<int?>(
+            pageMaximumSize: 100,
+            Timeout.InfiniteTimeSpan,
+            page =>
+            {
+                _pageList.Enqueue(page);
+                mrev.Set();
+            });
+
+        sut.Add(1);
+
+        // Act
+        sut.ForceFlush();
+        var pageRetrieved = mrev.Wait(TimeSpan.FromMilliseconds(400));
+
+        // Assert
+        Assert.True(pageRetrieved);
+        Assert.True(_pageList.TryDequeue(out var singlePage));
+        Assert.Single(singlePage);
+        Assert.Equal(1, singlePage.Count(o => o != null));
+        // and no more page after
+        Assert.False(_pageList.TryDequeue(out _));
+    }
+
+    [Fact]
     public async Task Ensure_that_regular_adding_of_items_do_not_prevent_timer_from_beeing_raised()
     {
         // Arrange
@@ -165,7 +194,7 @@ public sealed class BatchProcessingQueueTests
                 {
                     // ReSharper disable once AccessToDisposedClosure
                     sut.Add(1);
-                    await Task.Delay(20, cts.Token);
+                    await Task.Delay(20, cts.Token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -175,8 +204,8 @@ public sealed class BatchProcessingQueueTests
         });
 
         var pageRetrieved = mrev.Wait(TimeSpan.FromSeconds(1));
-        cts.Cancel();
-        await task;
+        await cts.CancelAsync().ConfigureAwait(true);
+        await task.ConfigureAwait(true);
 
         // Assert
         Assert.True(pageRetrieved);

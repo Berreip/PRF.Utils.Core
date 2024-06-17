@@ -34,6 +34,7 @@ public sealed class BatchProcessingQueue<T> : IDisposable
         {
             throw new ArgumentException($"{pageMaximumSize} should be greater thant zero");
         }
+
         _pageMaximumSize = pageMaximumSize;
         _timeout = timeout;
         _onFlushCallBack = onFlushCallBack;
@@ -55,6 +56,7 @@ public sealed class BatchProcessingQueue<T> : IDisposable
                 // as soon as we add at least one item, we start the timer:
                 _timer.Change(_timeout, Timeout.InfiniteTimeSpan);
             }
+
             _currentPage[_currentIndex] = item;
             _currentIndex++;
             if (_currentIndex == _pageMaximumSize)
@@ -70,6 +72,13 @@ public sealed class BatchProcessingQueue<T> : IDisposable
         }
     }
 
+    /// <summary>
+    /// force flushing of items currently in the queue
+    /// </summary>
+    public void ForceFlush()
+    {
+        CheckAndProcess();
+    }
 
     private void CheckAndProcess()
     {
