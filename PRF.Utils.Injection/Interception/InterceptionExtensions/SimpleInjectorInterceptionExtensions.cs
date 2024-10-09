@@ -21,7 +21,7 @@ namespace PRF.Utils.Injection.Interception.InterceptionExtensions
         public static void InterceptWith<TInterceptor>(this Container container, Func<Type, bool> predicate, InterceptionHookOption hookOption)
             where TInterceptor : class, IInterceptor
         {
-            var interceptWith = new InterceptionHelper(e => BuildInterceptorExpression<TInterceptor>(container), predicate, GetProxyGenerationHook(hookOption));
+            var interceptWith = new InterceptionHelper(_ => BuildInterceptorExpression<TInterceptor>(container), predicate, GetProxyGenerationHook(hookOption));
             container.ExpressionBuilt += interceptWith.OnExpressionBuilt;
         }
 

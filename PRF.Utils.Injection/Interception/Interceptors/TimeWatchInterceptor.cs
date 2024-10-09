@@ -31,7 +31,7 @@ namespace PRF.Utils.Injection.Interception.Interceptors
                     invocation.ReturnValue = task.InterceptAsync(
                         invocation,
                         () => StopWatchAndTrace(invocation, declaringTypeName, watch),
-                        result => StopWatchAndTrace(invocation, declaringTypeName, watch));
+                        _ => StopWatchAndTrace(invocation, declaringTypeName, watch));
                 }
                 else
                 {

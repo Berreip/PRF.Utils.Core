@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using CommonUnitTest;
+﻿using CommonUnitTest;
 using PRF.Utils.CoreComponents.Extensions;
 using PRF.Utils.CoreComponents.XML;
 
