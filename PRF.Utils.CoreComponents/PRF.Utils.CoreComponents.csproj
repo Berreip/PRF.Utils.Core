@@ -9,17 +9,17 @@
     <Description>Basics extensions for manipulating FileInfo, DirectoryInfo, String, Type, Random, TaskPool with limited size ...</Description>
     <Copyright>PRF</Copyright>
     <PackageTags>PRF, FileInfo, DirectoryInfo, Basics</PackageTags>
-    <PackageReleaseNotes>Add a BatchProcessingQueue type, replace NewtonSoft.Json by System.Text.Json, improvement of memory management for some async ressources</PackageReleaseNotes>
+    <PackageReleaseNotes>Breaking change : Rename SplitInChunksOf2 into SplitInChunksOf and returns the real underlying array of T instead of IEnumerable of T</PackageReleaseNotes>
     <PackageProjectUrl>https://www.nuget.org/packages/PRF.Utils.CoreComponents/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
     <PackageIconUrl></PackageIconUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <Version>2.6.2</Version>
-    <AssemblyVersion>2.6.2.0</AssemblyVersion>
-    <FileVersion>2.6.2.0</FileVersion>
-    <PackageVersion>2.6.2.0</PackageVersion>
+    <Version>2.7.0</Version>
+    <AssemblyVersion>2.7.0.0</AssemblyVersion>
+    <FileVersion>2.7.0.0</FileVersion>
+    <PackageVersion>2.7.0.0</PackageVersion>
     <!-- Include symbol files (*.pdb) in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <LangVersion>latest</LangVersion>
