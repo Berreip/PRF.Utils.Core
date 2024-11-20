@@ -14,7 +14,7 @@ public sealed class LinqExtensionsTests
         var sut = new List<int> { 1, 2, 3, 4, 5, 6 };
 
         //Act
-        var res = sut.SplitInChunksOf2(3).ToArray();
+        var res = sut.SplitInChunksOf(3).ToArray();
 
         //Assert
         // if we split the current list in chunks of 3 elements, we will get 2 of them
@@ -30,7 +30,7 @@ public sealed class LinqExtensionsTests
         var sut = new List<int> { 1, 2, 3, 4, 5, 6 };
 
         //Act
-        var res = sut.SplitInChunksOf2(4).ToArray();
+        var res = sut.SplitInChunksOf(4).ToArray();
 
         //Assert
         // if we split the current list in chunks of 4 elements, we will get 2 of them
@@ -46,7 +46,7 @@ public sealed class LinqExtensionsTests
 
         //Act
         // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-        Assert.Throws<ArgumentNullException>(() => ((List<int>)null).SplitInChunksOf2(6).ToArray());
+        Assert.Throws<ArgumentNullException>(() => ((List<int>)null).SplitInChunksOf(6).ToArray());
 
         //Assert
 
@@ -59,7 +59,7 @@ public sealed class LinqExtensionsTests
 
         //Act
         // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-        Assert.Throws<ArgumentException>(() => new List<int>().SplitInChunksOf2(0).ToArray());
+        Assert.Throws<ArgumentException>(() => new List<int>().SplitInChunksOf(0).ToArray());
 
         //Assert
     }

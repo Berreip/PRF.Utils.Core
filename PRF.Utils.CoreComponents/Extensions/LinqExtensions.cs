@@ -16,7 +16,7 @@ namespace PRF.Utils.CoreComponents.Extensions
         /// <param name="items">the list to separate</param>
         /// <param name="partitionSize">the size 'N' of the subsets</param>
         /// <returns>the list of subsets of N elements (except the last)</returns>
-        public static IEnumerable<IEnumerable<T>> SplitInChunksOf2<T>(this IEnumerable<T> items, int partitionSize)
+        public static IEnumerable<T[]> SplitInChunksOf<T>(this IEnumerable<T> items, int partitionSize)
         {
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
