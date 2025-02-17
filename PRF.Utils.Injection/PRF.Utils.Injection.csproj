@@ -1,51 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <Authors>Berreip</Authors>
+        <Company>PRF</Company>
+        <Description>Wrappers around simple injector that provide also interception facility using castle</Description>
+        <Copyright>PRF</Copyright>
+        <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
+        <PackageTags>PRF, Injection, Interception, AOP, IOC</PackageTags>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageIcon>PRF_icon.png</PackageIcon>
+        <LangVersion>default</LangVersion>
+        <VersionPrefix>2.7.3</VersionPrefix>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Authors>Berreip</Authors>
-    <Company>PRF</Company>
-    <Description>Wrappers around simple injector that provide also interception facility using castle</Description>
-    <Copyright>PRF</Copyright>
-    <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
-    <PackageTags>PRF, Injection, Interception, AOP, IOC</PackageTags>
-    <PackageReleaseNotes>Update dependencies</PackageReleaseNotes>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseUrl></PackageLicenseUrl>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
-    <Version>2.7.1</Version>
-    <AssemblyVersion>2.7.1.0</AssemblyVersion>
-    <FileVersion>2.7.1.0</FileVersion>
-    <PackageVersion>2.7.1.0</PackageVersion>
-    <!-- Include symbol files (*.pdb) in the built .nupkg -->
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <LangVersion>default</LangVersion>
-  </PropertyGroup>
+    <!-- Version stable en Release -->
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DocumentationFile>bin\Release\PRF.Utils.Injection.xml</DocumentationFile>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile></DocumentationFile>
-  </PropertyGroup>
+    <!-- Version pré-release en Debug avec suffixe basé sur l'UTC -->
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DocumentationFile>bin\documentation\PRF.Utils.Injection.xml</DocumentationFile>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <VersionSuffix>beta-$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</VersionSuffix>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\documentation\PRF.Utils.Injection.xml</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Castle.Core" Version="5.1.1"/>
+        <PackageReference Include="SimpleInjector" Version="5.5.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="5.1.1" />
-    <PackageReference Include="SimpleInjector" Version="5.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Ressources\LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="Ressources\PRF_Core_Component_Icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
+    <ItemGroup>
+        <None Update="LICENSE" Pack="true" PackagePath=""/>
+        <None Update="PRF_icon.png" Pack="true" PackagePath=""/>
+        <None Include="README.md" Pack="true" PackagePath=""/>
+    </ItemGroup>
 </Project>
