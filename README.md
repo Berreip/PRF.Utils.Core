@@ -12,7 +12,7 @@ This module is available as a Nuget package: [PRF.Utils.CoreComponents](https://
 
 Its mains purpose is to provide extensions methods around DirectoryInfo, FileInfo, some basics types and JSON and XML manipulation and some helpers for async dispatch
 
-***Module Details:*** [CoreComponents](PRF.Utils.CoreComponents/Ressources/CoreComponents_readme.md)
+***Module Details:*** [CoreComponents](PRF.Utils.CoreComponents/README.md)
 
 ## Injection
 
