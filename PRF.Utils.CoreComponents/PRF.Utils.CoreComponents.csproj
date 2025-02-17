@@ -29,6 +29,7 @@
     <!-- Configuration Release : version stable (aucun suffixe) -->
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DocumentationFile>bin\Release\PRF.Utils.CoreComponents.xml</DocumentationFile>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
