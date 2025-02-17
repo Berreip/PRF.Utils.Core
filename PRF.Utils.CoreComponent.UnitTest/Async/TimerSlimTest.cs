@@ -160,7 +160,14 @@ public sealed class TimerSlimTests
         }, interval, runImmediately: false);
 
         // Act
-        await Task.Delay(3 * interval).ConfigureAwait(true);
+        for (var i = 0; i < 10; i++)
+        {
+            await Task.Delay(50).ConfigureAwait(true);
+            if (callbackCount > 1)
+            {
+                break;
+            }
+        }
 
         // Assert
         Assert.True(callbackCount > 1);

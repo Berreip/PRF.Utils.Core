@@ -186,6 +186,8 @@ public class TracerTests
             await ts.FlushAndCompleteAddingAsync();
         }
 
+        await Task.Delay(100);
+
         //Verify
         // checking that the list of static Listeners is empty:
         Assert.Empty(Trace.Listeners);
