@@ -18,10 +18,10 @@ Its mains purpose is to provide extensions methods around DirectoryInfo, FileInf
 
 This module is available as a Nuget package: [PRF.Utils.Injection](https://www.nuget.org/packages/PRF.Utils.Injection)
 
-***Module Details:*** [Injection details](PRF.Utils.Injection/Ressources/Injection_readme.md)
+***Module Details:*** [Injection details](PRF.Utils.Injection/README.md)
 
 ## Tracer
 
 This module is available as a Nuget package: [PRF.Utils.Tracer](https://www.nuget.org/packages/PRF.Utils.Tracer)
 
-***Module Details:*** [Tracer details](PRF.Utils.Tracer/Ressources/Tracer_readme.md)
+***Module Details:*** [Tracer details](PRF.Utils.Tracer/README.md)
