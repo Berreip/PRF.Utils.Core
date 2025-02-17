@@ -12,12 +12,12 @@
     <PackageReleaseNotes>Update dependencies</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <Version>2.0.6</Version>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
-    <AssemblyVersion>2.0.6.0</AssemblyVersion>
-    <FileVersion>2.0.6.0</FileVersion>
-    <PackageVersion>2.0.6.0</PackageVersion>
+    <Version>2.7.1</Version>
+    <AssemblyVersion>2.7.1.0</AssemblyVersion>
+    <FileVersion>2.7.1.0</FileVersion>
+    <PackageVersion>2.7.1.0</PackageVersion>
     <!-- Include symbol files (*.pdb) in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <LangVersion>default</LangVersion>
