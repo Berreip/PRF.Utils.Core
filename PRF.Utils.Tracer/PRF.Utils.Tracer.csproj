@@ -1,44 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Authors>P.Bony</Authors>
-    <Company>PRF</Company>
-    <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
-    <PackageTags>Static, Trace, TraceSource, TraceListener</PackageTags>
-    <Description>Provide custom traceSource and TraceListener to collect and aggregate static call to Trace.TraceInformation(), TraceWarning() ...</Description>
-    <PackageReleaseNotes>Update dependencies</PackageReleaseNotes>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseUrl></PackageLicenseUrl>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageIcon>PRF_Core_Component_Icon.png</PackageIcon>
-    <Version>2.7.1</Version>
-    <AssemblyVersion>2.7.1.0</AssemblyVersion>
-    <FileVersion>2.7.1.0</FileVersion>
-    <PackageVersion>2.7.1.0</PackageVersion>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <LangVersion>default</LangVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <Authors>P.Bony</Authors>
+        <Company>PRF</Company>
+        <RepositoryUrl>https://github.com/Berreip/PRF.Utils.Core</RepositoryUrl>
+        <PackageTags>Static, Trace, TraceSource, TraceListener</PackageTags>
+        <Description>Provide custom traceSource and TraceListener to collect and aggregate static call to Trace.TraceInformation(), TraceWarning() ...</Description>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageIcon>PRF_icon.png</PackageIcon>
+        <LangVersion>default</LangVersion>
+        <VersionPrefix>2.7.3</VersionPrefix>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile></DocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DocumentationFile>bin\Release\PRF.Utils.Tracer.xml</DocumentationFile>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\documentation\PRF.Utils.Tracer.xml</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DocumentationFile>bin\documentation\PRF.Utils.Tracer.xml</DocumentationFile>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <VersionSuffix>beta-$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</VersionSuffix>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Update="LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Update="PRF_icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
+    <ItemGroup>
+        <None Update="LICENSE" Pack="true" PackagePath=""/>
+        <None Update="PRF_icon.png" Pack="true" PackagePath=""/>
+        <None Include="README.md" Pack="true" PackagePath=""/>
+    </ItemGroup>
 </Project>
