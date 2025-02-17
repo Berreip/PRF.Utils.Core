@@ -24,7 +24,7 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DocumentationFile>bin\documentation\PRF.Utils.Tracer.xml</DocumentationFile>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <VersionSuffix>beta-$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</VersionSuffix>
+        <VersionSuffix>beta.$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmm"))</VersionSuffix>
     </PropertyGroup>
 
     <ItemGroup>

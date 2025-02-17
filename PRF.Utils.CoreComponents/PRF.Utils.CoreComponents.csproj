@@ -23,7 +23,7 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DocumentationFile>bin\Debug\PRF.Utils.CoreComponents.xml</DocumentationFile>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <VersionSuffix>beta-$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</VersionSuffix>
+        <VersionSuffix>beta.$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmm"))</VersionSuffix>
     </PropertyGroup>
 
     <!-- Configuration Release : version stable (aucun suffixe) -->
