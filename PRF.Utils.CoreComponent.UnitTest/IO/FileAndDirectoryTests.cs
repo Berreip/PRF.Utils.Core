@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using CommonUnitTest;
 using PRF.Utils.CoreComponents.Extensions;
 using PRF.Utils.CoreComponents.IO;
@@ -403,13 +405,18 @@ public sealed class FileAndDirectoryTests : IDisposable
     }
 
     [Fact]
-    public void DeleteAndRetryIfLocked_WhenFileIsLocked_ShouldThrowTimeoutException()
+    public async Task DeleteAndRetryIfLocked_WhenFileIsLocked_ShouldThrowTimeoutException()
     {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            // delete while using is only enforced on windows
+            return;
+        }
         // Arrange
         var testFilePath = _testDirectory.CreateFileIfNotExists("foo.txt").FullName;
 
         // do not allow deletion
-        using (var _ = File.Open(testFilePath, FileMode.Open, FileAccess.Read, FileShare.None))
+        await using (var _ = File.Open(testFilePath, FileMode.Open, FileAccess.Read, FileShare.None))
         {
             var fileInfo = new FileInfo(testFilePath);
 

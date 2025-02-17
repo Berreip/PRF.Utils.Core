@@ -26,6 +26,7 @@ namespace PRF.Utils.Tracer.Listener
         private readonly TimeSpan _maxTimeoutForFullBuffer = TimeSpan.FromSeconds(3);
 
         private readonly object _key = new object();
+        private bool _isDisposed;
 
         /// <summary>
         /// The event raised when sending a page
@@ -71,7 +72,7 @@ namespace PRF.Utils.Tracer.Listener
         {
             lock (_key)
             {
-                if (_buffer.IsAddingCompleted) return;
+                if (_isDisposed || _buffer.IsAddingCompleted) return;
                 // add a forceFlush to the stack
                 _buffer.Add(new TraceWrapper());
 
@@ -207,7 +208,7 @@ namespace PRF.Utils.Tracer.Listener
             // the lock will stack the callers (but that's what we want)
             lock (_key)
             {
-                if (_buffer.IsAddingCompleted || _buffer.TryAdd(trace)) return;
+                if (_isDisposed || _buffer.IsAddingCompleted || _buffer.TryAdd(trace)) return;
             }
 
             // the timed call is not locked and therefore manages the catch for additions even though the collection has been marked as completed (CompleteAdding = true)
@@ -235,6 +236,12 @@ namespace PRF.Utils.Tracer.Listener
         {
             lock (_key)
             {
+                if (_isDisposed)
+                {
+                    return;
+                }
+                // signal disposed to avoid adding more items
+                _isDisposed = true;
                 FlushAndCompleteAddingAsync().Wait(TimeSpan.FromSeconds(5));
                 _buffer.Dispose();
                 _timer.Dispose();
