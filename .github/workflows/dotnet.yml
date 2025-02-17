@@ -2,44 +2,94 @@ name: .NET_PRF_Core
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
-  build:
-
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-      timeout-minutes: 5
-      continue-on-error: true
-    - name: Publish PRF.Utils.CoreComponents to Nuget
-      continue-on-error: true
-      uses: brandedoutcast/publish-nuget@v2
-      with:
-        PROJECT_FILE_PATH: PRF.Utils.CoreComponents/PRF.Utils.CoreComponents.csproj
-        NUGET_KEY: ${{secrets.NUGET_KEY}}
-    - name: Publish PRF.Utils.Injection to Nuget
-      continue-on-error: true
-      uses: brandedoutcast/publish-nuget@v2
-      with:
-        PROJECT_FILE_PATH: PRF.Utils.Injection/PRF.Utils.Injection.csproj
-        NUGET_KEY: ${{secrets.NUGET_KEY}}
-    - name: Publish PRF.Utils.Tracer to Nuget
-      continue-on-error: true
-      uses: brandedoutcast/publish-nuget@v2
-      with:
-        PROJECT_FILE_PATH: PRF.Utils.Tracer/PRF.Utils.Tracer.csproj
-        NUGET_KEY: ${{secrets.NUGET_KEY}}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --configuration Release
+
+      - name: Run unit tests
+        run: dotnet test --configuration Release --verbosity normal
+
+      - name: Pack PRF.Utils.CoreComponents package
+        run: dotnet pack PRF.Utils.CoreComponents/PRF.Utils.CoreComponents.csproj --configuration Release --output ./nupkg
+
+      - name: Pack PRF.Utils.Injection package
+        run: dotnet pack PRF.Utils.Injection/PRF.Utils.Injection.csproj --configuration Release --output ./nupkg
+
+      - name: Pack PRF.Utils.Tracer package
+        run: dotnet pack PRF.Utils.Tracer/PRF.Utils.Tracer.csproj --configuration Release --output ./nupkg
+
+      - name: Get versions from .csproj
+        id: get-versions
+        run: |
+          CORE_COMPONENTS_VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" PRF.Utils.CoreComponents/PRF.Utils.CoreComponents.csproj)
+          INJECTION_VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" PRF.Utils.Injection/PRF.Utils.Injection.csproj)
+          TRACER_VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" PRF.Utils.Tracer/PRF.Utils.Tracer.csproj)
+          echo "CORE_COMPONENTS_VERSION=${CORE_COMPONENTS_VERSION}" >> $GITHUB_ENV
+          echo "INJECTION_VERSION=${INJECTION_VERSION}" >> $GITHUB_ENV
+          echo "TRACER_VERSION=${TRACER_VERSION}" >> $GITHUB_ENV
+
+      - name: Get latest version from NuGet for PRF.Utils.CoreComponents
+        id: get-latest-core-components-version
+        run: |
+          LATEST_CORE_COMPONENTS_VERSION=$(curl -s "https://api.nuget.org/v3-flatcontainer/prf.utils.corecomponents/index.json" | jq -r '.versions[-1]')
+          echo "LATEST_CORE_COMPONENTS_VERSION=${LATEST_CORE_COMPONENTS_VERSION}" >> $GITHUB_ENV
+
+      - name: Get latest version from NuGet for PRF.Utils.Injection
+        id: get-latest-injection-version
+        run: |
+          LATEST_INJECTION_VERSION=$(curl -s "https://api.nuget.org/v3-flatcontainer/prf.utils.injection/index.json" | jq -r '.versions[-1]')
+          echo "LATEST_INJECTION_VERSION=${LATEST_INJECTION_VERSION}" >> $GITHUB_ENV
+
+      - name: Get latest version from NuGet for PRF.Utils.Tracer
+        id: get-latest-tracer-version
+        run: |
+          LATEST_TRACER_VERSION=$(curl -s "https://api.nuget.org/v3-flatcontainer/prf.utils.tracer/index.json" | jq -r '.versions[-1]')
+          echo "LATEST_TRACER_VERSION=${LATEST_TRACER_VERSION}" >> $GITHUB_ENV
+
+      - name: Push PRF.Utils.CoreComponents package to NuGet if needed
+        run: |
+          if [ "$(printf '%s\n' "${LATEST_CORE_COMPONENTS_VERSION}" "${CORE_COMPONENTS_VERSION}" | sort -V | tail -n1)" = "${CORE_COMPONENTS_VERSION}" ] && [ "${CORE_COMPONENTS_VERSION}" != "${LATEST_CORE_COMPONENTS_VERSION}" ]; then
+            echo "Publishing PRF.Utils.CoreComponents version ${CORE_COMPONENTS_VERSION} (latest on NuGet: ${LATEST_CORE_COMPONENTS_VERSION})"
+            dotnet nuget push "./nupkg/PRF.Utils.CoreComponents.${CORE_COMPONENTS_VERSION}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+          else
+            echo "Skipping publication of PRF.Utils.CoreComponents Current version (${CORE_COMPONENTS_VERSION}) is not greater than the latest on NuGet (${LATEST_CORE_COMPONENTS_VERSION})."
+          fi
+
+      - name: Push PRF.Utils.Injection package to NuGet if needed
+        run: |
+          if [ "$(printf '%s\n' "${LATEST_INJECTION_VERSION}" "${INJECTION_VERSION}" | sort -V | tail -n1)" = "${INJECTION_VERSION}" ] && [ "${INJECTION_VERSION}" != "${LATEST_INJECTION_VERSION}" ]; then
+            echo "Publishing PRF.Utils.Injection version ${INJECTION_VERSION} (latest on NuGet: ${LATEST_INJECTION_VERSION})"
+            dotnet nuget push "./nupkg/PRF.Utils.Injection.${INJECTION_VERSION}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+          else
+            echo "Skipping publication of PRF.Utils.Injection Current version (${INJECTION_VERSION}) is not greater than the latest on NuGet (${LATEST_INJECTION_VERSION})."
+          fi
+
+      - name: Push PRF.Utils.Tracer package to NuGet if needed
+        run: |
+          if [ "$(printf '%s\n' "${LATEST_TRACER_VERSION}" "${TRACER_VERSION}" | sort -V | tail -n1)" = "${TRACER_VERSION}" ] && [ "${TRACER_VERSION}" != "${LATEST_TRACER_VERSION}" ]; then
+            echo "Publishing PRF.Utils.Tracer version ${TRACER_VERSION} (latest on NuGet: ${LATEST_TRACER_VERSION})"
+            dotnet nuget push "./nupkg/PRF.Utils.Tracer.${TRACER_VERSION}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+          else
+            echo "Skipping publication of PRF.Utils.Tracer Current version (${TRACER_VERSION}) is not greater than the latest on NuGet (${LATEST_TRACER_VERSION})."
+          fi
