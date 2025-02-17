@@ -69,27 +69,39 @@ jobs:
 
       - name: Push PRF.Utils.CoreComponents package to NuGet if needed
         run: |
-          if [ "$(printf '%s\n' "${LATEST_CORE_COMPONENTS_VERSION}" "${CORE_COMPONENTS_VERSION}" | sort -V | tail -n1)" = "${CORE_COMPONENTS_VERSION}" ] && [ "${CORE_COMPONENTS_VERSION}" != "${LATEST_CORE_COMPONENTS_VERSION}" ]; then
-            echo "Publishing PRF.Utils.CoreComponents version ${CORE_COMPONENTS_VERSION} (latest on NuGet: ${LATEST_CORE_COMPONENTS_VERSION})"
-            dotnet nuget push "./nupkg/PRF.Utils.CoreComponents.${CORE_COMPONENTS_VERSION}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            echo "Push operation skipped for pull-request"
           else
-            echo "Skipping publication of PRF.Utils.CoreComponents Current version (${CORE_COMPONENTS_VERSION}) is not greater than the latest on NuGet (${LATEST_CORE_COMPONENTS_VERSION})."
+            if [ "$(printf '%s\n' "${LATEST_CORE_COMPONENTS_VERSION}" "${CORE_COMPONENTS_VERSION}" | sort -V | tail -n1)" = "${CORE_COMPONENTS_VERSION}" ] && [ "${CORE_COMPONENTS_VERSION}" != "${LATEST_CORE_COMPONENTS_VERSION}" ]; then
+              echo "Publishing PRF.Utils.CoreComponents version ${CORE_COMPONENTS_VERSION} (latest on NuGet: ${LATEST_CORE_COMPONENTS_VERSION})"
+              dotnet nuget push "./nupkg/PRF.Utils.CoreComponents.${CORE_COMPONENTS_VERSION}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+            else
+              echo "Skipping publication of PRF.Utils.CoreComponents. Current version (${CORE_COMPONENTS_VERSION}) is not greater than the latest on NuGet (${LATEST_CORE_COMPONENTS_VERSION})."
+            fi
           fi
 
       - name: Push PRF.Utils.Injection package to NuGet if needed
         run: |
-          if [ "$(printf '%s\n' "${LATEST_INJECTION_VERSION}" "${INJECTION_VERSION}" | sort -V | tail -n1)" = "${INJECTION_VERSION}" ] && [ "${INJECTION_VERSION}" != "${LATEST_INJECTION_VERSION}" ]; then
-            echo "Publishing PRF.Utils.Injection version ${INJECTION_VERSION} (latest on NuGet: ${LATEST_INJECTION_VERSION})"
-            dotnet nuget push "./nupkg/PRF.Utils.Injection.${INJECTION_VERSION}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+           echo "Push operation skipped for pull-request"
           else
-            echo "Skipping publication of PRF.Utils.Injection Current version (${INJECTION_VERSION}) is not greater than the latest on NuGet (${LATEST_INJECTION_VERSION})."
+            if [ "$(printf '%s\n' "${LATEST_INJECTION_VERSION}" "${INJECTION_VERSION}" | sort -V | tail -n1)" = "${INJECTION_VERSION}" ] && [ "${INJECTION_VERSION}" != "${LATEST_INJECTION_VERSION}" ]; then
+              echo "Publishing PRF.Utils.Injection version ${INJECTION_VERSION} (latest on NuGet: ${LATEST_INJECTION_VERSION})"
+              dotnet nuget push "./nupkg/PRF.Utils.Injection.${INJECTION_VERSION}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+            else
+              echo "Skipping publication of PRF.Utils.Injection Current version (${INJECTION_VERSION}) is not greater than the latest on NuGet (${LATEST_INJECTION_VERSION})."
+            fi
           fi
 
       - name: Push PRF.Utils.Tracer package to NuGet if needed
         run: |
-          if [ "$(printf '%s\n' "${LATEST_TRACER_VERSION}" "${TRACER_VERSION}" | sort -V | tail -n1)" = "${TRACER_VERSION}" ] && [ "${TRACER_VERSION}" != "${LATEST_TRACER_VERSION}" ]; then
-            echo "Publishing PRF.Utils.Tracer version ${TRACER_VERSION} (latest on NuGet: ${LATEST_TRACER_VERSION})"
-            dotnet nuget push "./nupkg/PRF.Utils.Tracer.${TRACER_VERSION}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+           echo "Push operation skipped for pull-request"
           else
-            echo "Skipping publication of PRF.Utils.Tracer Current version (${TRACER_VERSION}) is not greater than the latest on NuGet (${LATEST_TRACER_VERSION})."
+            if [ "$(printf '%s\n' "${LATEST_TRACER_VERSION}" "${TRACER_VERSION}" | sort -V | tail -n1)" = "${TRACER_VERSION}" ] && [ "${TRACER_VERSION}" != "${LATEST_TRACER_VERSION}" ]; then
+              echo "Publishing PRF.Utils.Tracer version ${TRACER_VERSION} (latest on NuGet: ${LATEST_TRACER_VERSION})"
+              dotnet nuget push "./nupkg/PRF.Utils.Tracer.${TRACER_VERSION}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+            else
+              echo "Skipping publication of PRF.Utils.Tracer Current version (${TRACER_VERSION}) is not greater than the latest on NuGet (${LATEST_TRACER_VERSION})."
+            fi
           fi
