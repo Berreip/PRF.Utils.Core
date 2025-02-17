@@ -1,4 +1,6 @@
-﻿using System.IO.Compression;
+﻿using System;
+using System.IO;
+using System.IO.Compression;
 using System.Text;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -44,6 +46,34 @@ namespace PRF.Utils.CoreComponents.Extensions
             using (var entry = zipArchive.CreateEntry(relativePathInArchive, compressionLevel).Open())
             {
                 entry.Write(fileContent, 0, fileContent.Length);
+            }
+        }
+
+        /// <summary>
+        /// Reads the content of the specified entry in the ZIP archive and returns it as a string.
+        /// </summary>
+        /// <param name="archive">The ZIP archive.</param>
+        /// <param name="entryName">The name of the entry to read.</param>
+        /// <returns>The content of the entry as a string.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the archive is null.</exception>
+        /// <exception cref="FileNotFoundException">Thrown if the entry is not found in the archive.</exception>
+        public static string ReadEntryAsString(this ZipArchive archive, string entryName)
+        {
+            if (archive == null)
+            {
+                throw new ArgumentNullException(nameof(archive));
+            }
+
+            var entry = archive.GetEntry(entryName);
+            if (entry == null)
+            {
+                throw new FileNotFoundException($"The entry '{entryName}' was not found in the archive.");
+            }
+
+            using (var stream = entry.Open())
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
             }
         }
     }
