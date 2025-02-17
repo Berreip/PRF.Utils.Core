@@ -42,9 +42,9 @@ jobs:
       - name: Get versions from .csproj
         id: get-versions
         run: |
-          CORE_COMPONENTS_VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" PRF.Utils.CoreComponents/PRF.Utils.CoreComponents.csproj)
-          INJECTION_VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" PRF.Utils.Injection/PRF.Utils.Injection.csproj)
-          TRACER_VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" PRF.Utils.Tracer/PRF.Utils.Tracer.csproj)
+          CORE_COMPONENTS_VERSION=$(grep -oPm1 "(?<=<VersionPrefix>)[^<]+" PRF.Utils.CoreComponents/PRF.Utils.CoreComponents.csproj)
+          INJECTION_VERSION=$(grep -oPm1 "(?<=<VersionPrefix>)[^<]+" PRF.Utils.Injection/PRF.Utils.Injection.csproj)
+          TRACER_VERSION=$(grep -oPm1 "(?<=<VersionPrefix>)[^<]+" PRF.Utils.Tracer/PRF.Utils.Tracer.csproj)
           echo "CORE_COMPONENTS_VERSION=${CORE_COMPONENTS_VERSION}" >> $GITHUB_ENV
           echo "INJECTION_VERSION=${INJECTION_VERSION}" >> $GITHUB_ENV
           echo "TRACER_VERSION=${TRACER_VERSION}" >> $GITHUB_ENV
