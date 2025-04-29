@@ -15,7 +15,7 @@
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <LangVersion>latest</LangVersion>
         <Nullable>disable</Nullable>
-        <VersionPrefix>2.7.3</VersionPrefix>
+        <VersionPrefix>2.8.0</VersionPrefix>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
