@@ -70,12 +70,17 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         private WorkBase TryAddInRunner(WorkBase work)
         {
             _pendingWorks.Enqueue(work);
-            // the number ot iteration depends on the current queue count: we resume worker if its index is greater than the remaining work count
-            // it avoid to resume too many workers if there is not enough work to do
-            var iteration = Math.Min(_poolMaximumSize, _pendingWorks.Count);
-            for (var i = 0; i < iteration; i++)
+            for (var i = 0; i < _poolMaximumSize; i++)
             {
-                _runners[i].Resume();
+                // for each runner, we check if it has been started by the current query.
+                var hasBeenStarted = _runners[i].Resume();
+                if (hasBeenStarted)
+                {
+                    // if it is, it means that the work we enqueue at least will be handled and we leave
+                    break;
+                }
+                // BUT If not, we continue to iterate because the current runner may be processing
+                // a long-running task while others are available
             }
 
             return work;
@@ -92,12 +97,19 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
                 _queue = queue;
             }
 
-            public void Resume()
+            public bool Resume()
             {
-                if (Interlocked.CompareExchange(ref _key, 1, 0) == 0)
+                if (Interlocked.CompareExchange(ref _key, 1, 0) != 0)
                 {
-                    RunnerTask = Task.Run(async () =>
+                    return false;
+                }
+
+                RunnerTask = Task.Run(async () =>
+                {
+                    // while true is used to allow retry when the queue is not empty or the freeing may not be proceed
+                    while (true)
                     {
+                        // We dequeue everything we can :
                         while (_queue.TryDequeue(out var workPending))
                         {
                             using (workPending)
@@ -119,10 +131,27 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
                             }
                         }
 
-                        // when done, reset the key
-                        _key = 0;
-                    });
-                }
+                        // when done, reset the key to be idle again using Interlocked.Exchange
+                        // to avoid memory reordering
+                        Interlocked.Exchange(ref _key, 0);
+
+                        // if the queue is empty => leave
+                        if (_queue.IsEmpty)
+                        {
+                            break;
+                        }
+
+                        // if the queue is not empty, but we are unable to acquire the lock again, we leave (another runner is starting)
+                        if (Interlocked.CompareExchange(ref _key, 1, 0) != 0)
+                        {
+                            break;
+                        }
+
+                        // else we have the lock for our runner so we do another cycle
+                    }
+                });
+
+                return true;
             }
         }
     }

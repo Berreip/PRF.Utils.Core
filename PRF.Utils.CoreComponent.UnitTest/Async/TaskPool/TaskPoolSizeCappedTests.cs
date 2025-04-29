@@ -737,7 +737,139 @@ public sealed class TaskPoolSizeCappedTests
         });
     }
 
-    private sealed class Item
+    [Fact]
+    public async Task Repro_scenario_ACH_long_running_first()
     {
+        var sut = new TaskPoolSizeCapped(10);
+        var mresFirstWaveEnd = new ManualResetEventSlim();
+        var mresSecondWaveStart = new ManualResetEventSlim();
+        const int neverEndingTasks = 4;
+        var count = 0;
+
+        for (var i = 0; i < neverEndingTasks; i++)
+        {
+            sut.AddWork(_ =>
+            {
+                Interlocked.Increment(ref count);
+                mresFirstWaveEnd.Wait();
+            });
+        }
+
+        while (count != neverEndingTasks)
+        {
+            await Task.Delay(10).ConfigureAwait(true);
+        }
+
+        //Act
+        sut.AddWork(_ => { mresSecondWaveStart.Set(); });
+
+        //Assert
+        var res = mresSecondWaveStart.Wait(TimeSpan.FromSeconds(5));
+        // free remaining
+        mresFirstWaveEnd.Set();
+        Assert.True(res);
     }
+
+    [Fact]
+    public async Task Repro_scenario_ACH_2_Long_running_but_less_than_works()
+    {
+        var sut = new TaskPoolSizeCapped(10);
+        var mresFirstWaveEnd = new ManualResetEventSlim();
+        var mresSecondWaveStart = new ManualResetEventSlim();
+        const int neverEndingTasks = 4;
+        var count = 0;
+
+        for (var i = 0; i < neverEndingTasks; i++)
+        {
+            sut.AddWork(_ =>
+            {
+                Interlocked.Increment(ref count);
+                mresFirstWaveEnd.Wait();
+            });
+        }
+
+        while (count != neverEndingTasks)
+        {
+            await Task.Delay(10).ConfigureAwait(true);
+        }
+
+        //Act
+        for (var i = 0; i < 6; i++)
+        {
+            sut.AddWork(async _ =>
+            {
+                mresSecondWaveStart.Set();
+                await Task.CompletedTask.ConfigureAwait(false);
+            });
+        }
+
+        //Assert
+        var res = mresSecondWaveStart.Wait(TimeSpan.FromSeconds(5));
+        // free remaining
+        mresFirstWaveEnd.Set();
+
+        Assert.True(res);
+    }
+
+    [Fact]
+    public async Task AddWork_from_inside_a_running_work_is_executed()
+    {
+        await XunitTimeout.TimeoutAsync(TimeSpan.FromSeconds(5), async () =>
+        {
+            // Arrange
+            var sut = new TaskPoolSizeCapped(2);
+            var counter = 0;
+            var added = new ManualResetEventSlim(false);
+
+            // Act : le premier work enchaine un second work
+            sut.AddWork(_ =>
+            {
+                sut.AddWork(_ => Interlocked.Increment(ref counter));
+                added.Set(); // publication « second work ajouté »
+            });
+
+            added.Wait(); // la seconde tâche est en file
+            await sut.WaitIdleAsync().ConfigureAwait(false); // laisse tout se vider
+
+            // Assert
+            Assert.Equal(1, counter);
+        }).ConfigureAwait(true);
+    }
+
+    // -----------------------------------------------------------------------------
+    //   Plusieurs appels concurrents à WaitIdleAsync
+    // -----------------------------------------------------------------------------
+    [Theory]
+    [InlineData(1)]
+    [InlineData(5)]
+    [InlineData(10)]
+    public async Task WaitIdleAsync_can_be_awaited_concurrently(int waiters)
+    {
+        await XunitTimeout.TimeoutAsync(TimeSpan.FromSeconds(5), async () =>
+        {
+            // Arrange
+            var sut = new TaskPoolSizeCapped(4);
+            var mrev = new ManualResetEventSlim(false);
+            var tasks = new List<Task>();
+
+            // « Bloque » un runner pour forcer un vrai travail en cours
+            sut.AddWork(_ => mrev.Wait());
+
+            // Lance N WaitIdleAsync en parallèle
+            for (var i = 0; i < waiters; i++)
+                tasks.Add(Task.Run(() => sut.WaitIdleAsync()));
+
+            // Ajoute ensuite un travail
+            sut.AddWork(_ => { });
+
+            // Act : on libère le runner bloquant → tout doit finir
+            mrev.Set();
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            // Assert
+            // Si on arrive ici, aucun deadlock ; rien de plus à vérifier
+        }).ConfigureAwait(true);
+    }
+
+    private sealed class Item;
 }
