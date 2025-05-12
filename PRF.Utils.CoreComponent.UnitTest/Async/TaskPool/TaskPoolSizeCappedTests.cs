@@ -927,5 +927,101 @@ public sealed class TaskPoolSizeCappedTests
         Assert.True(hasBeenRaised);
     }
 
+    [Fact]
+    public async Task WaitAsync_throws_when_exception_thrown_in_WorkInProgress()
+    {
+        // Arrange
+        var sut = new TaskPoolSizeCapped(1);
+        var work = sut.AddWork(_ => throw new Exception());
+
+        // Assert
+        await Assert.ThrowsAsync<Exception>(async () =>
+        {
+            // Act
+            await work.WaitAsync().ConfigureAwait(false);
+        }).ConfigureAwait(true);
+    }
+
+    [Fact]
+    public async Task WaitAsync_throws_when_exception_thrown_in_WorkInProgress_given_timeout_not_reached()
+    {
+        // Arrange
+        var sut = new TaskPoolSizeCapped(1);
+        var work = sut.AddWork(_ => throw new Exception());
+
+        // Assert
+        await Assert.ThrowsAsync<Exception>(async () =>
+        {
+            // Act
+            await work.WaitAsync(TimeSpan.FromSeconds(3)).ConfigureAwait(false);
+        }).ConfigureAwait(true);
+    }
+
+    [Fact]
+    public async Task WaitAsync_does_not_throw_when_exception_thrown_in_WorkInProgress_given_timeout_reached()
+    {
+        // Arrange
+        var sut = new TaskPoolSizeCapped(1);
+        var mrev = new ManualResetEventSlim();
+        var work = sut.AddWork(_ =>
+        {
+            mrev.Wait();
+            throw new Exception();
+        });
+
+        // Assert
+        // Act
+        await work.WaitAsync(TimeSpan.FromMilliseconds(1)).ConfigureAwait(true);
+        mrev.Set();
+    }
+
+    [Fact]
+    public async Task WaitAllAsync_throws_when_exception_thrown_in_WorkInProgress()
+    {
+        // Arrange
+        var sut = new TaskPoolSizeCapped(1);
+        var work = sut.AddWork(_ => throw new Exception());
+
+        // Assert
+        await Assert.ThrowsAsync<Exception>(async () =>
+        {
+            // Act
+            await new[] { work }.WaitAllAsync().ConfigureAwait(false);
+        }).ConfigureAwait(true);
+    }
+
+    [Fact]
+    public async Task WaitAllAsync_throws_when_exception_thrown_in_WorkInProgress_given_timeout_not_reached()
+    {
+        // Arrange
+        var sut = new TaskPoolSizeCapped(1);
+        var work = sut.AddWork(_ => throw new Exception());
+
+        // Assert
+        await Assert.ThrowsAsync<Exception>(async () =>
+        {
+            // Act
+            await new[] { work }.WaitAllAsync().ConfigureAwait(false);
+        }).ConfigureAwait(true);
+    }
+
+    [Fact]
+    public async Task WaitAllAsync_does_not_throw_when_exception_thrown_in_WorkInProgress_given_timeout_reached()
+    {
+        // Arrange
+        var sut = new TaskPoolSizeCapped(1);
+        var mrev = new ManualResetEventSlim();
+        var work = sut.AddWork(_ =>
+        {
+            mrev.Wait();
+            throw new Exception();
+        });
+
+        // Assert
+        // Act
+        await work.WaitAsync(TimeSpan.FromMilliseconds(1)).ConfigureAwait(true);
+        mrev.Set();
+    }
+
     private sealed class Item;
 }
