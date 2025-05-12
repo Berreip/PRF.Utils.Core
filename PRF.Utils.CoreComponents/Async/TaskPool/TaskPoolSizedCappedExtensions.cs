@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 // ReSharper disable UnusedMethodReturnValue.Global
 
 namespace PRF.Utils.CoreComponents.Async.TaskPool
@@ -19,7 +20,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         {
             work.WaitAsync().Wait();
         }
-        
+
         /// <summary>
         /// Do a blocking wait on the underlying work and return true if the task has finish before the timeout
         /// </summary>
@@ -39,7 +40,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
 
                 var token = cts.Token;
                 // wait either the task or the timeout in a race condition
-                await Task.WhenAny(
+                var task = await Task.WhenAny(
                     work.WaitAsync(),
                     // ReSharper disable once RedundantCast
                     Task.Run((Func<Task>)(async () =>
@@ -58,6 +59,10 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
                         }
                     }), cts.Token)).ConfigureAwait(false);
 
+                // await the result to ensure that the WhenAny throw if an exception arise
+                // (otherwise, the result is a faulted task with an exception, but it does not throw the error)
+                await task.ConfigureAwait(false);
+
                 // cancel if needed the timeout task
                 cts.Cancel();
                 return !isTimeoutReached;
@@ -73,7 +78,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
                 .WhenAll(allWorksInProgress.Select(async o => await o.WaitAsync().ConfigureAwait(false)).ToArray())
                 .ConfigureAwait(false);
         }
-        
+
         /// <summary>
         /// Do an async parallel execution of ASYNC callbacks capped by the maximum number of thread allowed by the provided ITaskPoolSizeCapped
         /// </summary>
@@ -85,9 +90,10 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
             {
                 allWorksInProgress.Add(tpsc.AddWork(async _ => await callbackAsync(item).ConfigureAwait(false)));
             }
+
             await allWorksInProgress.WaitAllAsync().ConfigureAwait(false);
         }
-        
+
         /// <summary>
         /// Do an async parallel execution of SYNC callbacks capped by the maximum number of thread allowed by the provided ITaskPoolSizeCapped
         /// </summary>
@@ -99,9 +105,10 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
             {
                 allWorksInProgress.Add(tpsc.AddWork(_ => callbackSync(item)));
             }
+
             await allWorksInProgress.WaitAllAsync().ConfigureAwait(false);
         }
-        
+
         /// <summary>
         /// </summary>
         public static void ParallelForEachSizedCapped<T>(this ITaskPoolSizeCapped tpsc, IEnumerable<T> items, Action<T> callbackSync)
@@ -109,7 +116,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
             // each callback here is sync so it is possible to call a wait here and still limit any deadlock or performance issue.
             tpsc.ParallelForEachSizedCappedAsync(items: items, callbackSync: callbackSync).Wait();
         }
-        
+
         /// <summary>
         /// Do an async parallel execution of ASYNC callbacks capped by the maximum number of thread given as poolMaximumSize
         /// </summary>
@@ -123,7 +130,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         {
             await new TaskPoolSizeCapped(poolMaximumSize).ParallelForEachSizedCappedAsync(items: items, callbackAsync: callbackAsync).ConfigureAwait(false);
         }
-        
+
         /// <summary>
         /// Do an async parallel execution of SYNC callbacks capped by the maximum number of thread given as poolMaximumSize
         /// </summary>
@@ -137,7 +144,7 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         {
             await new TaskPoolSizeCapped(poolMaximumSize).ParallelForEachSizedCappedAsync(items: items, callbackSync: callbackSync).ConfigureAwait(false);
         }
-        
+
         /// <summary>
         /// Do an parallel execution of SYNC callbacks capped by the maximum number of thread given as poolMaximumSize
         /// </summary>

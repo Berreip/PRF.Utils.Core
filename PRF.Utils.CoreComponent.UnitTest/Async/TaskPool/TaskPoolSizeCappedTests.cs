@@ -881,11 +881,12 @@ public sealed class TaskPoolSizeCappedTests
         for (var i = 0; i < 5; i++)
         {
             var work = sut.AddWork(_ => { });
-            var workAsync = sut.AddWork(async _ => { await Task.Yield();});
+            var workAsync = sut.AddWork(async _ => { await Task.Yield(); });
             worksDisposed.Add(work);
             worksDisposed.Add(workAsync);
         }
-        var cancellationBarrier = sut.AddWork(_ => {  });
+
+        var cancellationBarrier = sut.AddWork(_ => { });
         await cancellationBarrier.WaitAsync().ConfigureAwait(true);
 
         //Act
@@ -899,5 +900,32 @@ public sealed class TaskPoolSizeCappedTests
             workAlreadyDisposed.Cancel();
         }
     }
+
+    /// <summary>
+    /// Ensure the WaitAsync does not swallow the inner exception
+    /// </summary>
+    [Fact]
+    public async Task WaitAsync_throw_with_inner_exception()
+    {
+        //Arrange
+        var sut = new TaskPoolSizeCapped(1);
+        var hasBeenRaised = false;
+        var res = sut.AddWork(_ => throw new ArgumentException("specific exception"));
+
+        //Act
+        try
+        {
+            await res.WaitAsync(TimeSpan.FromMilliseconds(100)).ConfigureAwait(true);
+        }
+        catch (ArgumentException e)
+        {
+            Assert.Equal("specific exception", e.Message);
+            hasBeenRaised = true;
+        }
+
+        //Assert
+        Assert.True(hasBeenRaised);
+    }
+
     private sealed class Item;
 }
