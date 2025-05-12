@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using PRF.Utils.Tracer.Configuration;
 
@@ -17,29 +15,19 @@ public class TestSwitchLevel
         }
     }
 
+    private static TraceConfig Config(SourceLevels level) => new TraceConfig
+    {
+        TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
+        TraceLevel = level,
+    };
+
     /// <summary>
     /// TTest trace level
     /// </summary>
     [Fact]
     public async Task TestSwitchLevelInformationV1()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Information,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.TraceInformation("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.TraceInformation("test"), Config(SourceLevels.Information));
         Assert.True(received); // SourceLevels.Information + Trace.TraceInformation = ok
     }
 
@@ -49,23 +37,8 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelInformationV2()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Information,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.TraceWarning("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(
+            () => Trace.TraceWarning("test"), Config(SourceLevels.Information));
         Assert.True(received);
     }
 
@@ -75,23 +48,8 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelInformationV3()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Information,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.TraceError("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(
+            () => Trace.TraceError("test"), Config(SourceLevels.Information));
         Assert.True(received);
     }
 
@@ -101,23 +59,7 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelInformationV4()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Information,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.Write("test", "category");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.Write("test", "category"), Config(SourceLevels.Information));
         Assert.True(received);
     }
 
@@ -127,23 +69,7 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelErrorV1()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.TraceInformation("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.TraceInformation("test"), Config(SourceLevels.Error));
         Assert.False(received);
     }
 
@@ -153,23 +79,7 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelErrorV2()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.TraceWarning("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.TraceWarning("test"), Config(SourceLevels.Error));
         Assert.False(received);
     }
 
@@ -179,23 +89,7 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelErrorV3()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.TraceError("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.TraceError("test"), Config(SourceLevels.Error));
         Assert.True(received);
     }
 
@@ -205,23 +99,7 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelErrorV4()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.Write("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.Write("test"), Config(SourceLevels.Error));
         Assert.True(received);
     }
 
@@ -231,23 +109,7 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelWarningV1()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Warning,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.TraceInformation("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.TraceInformation("test"), Config(SourceLevels.Warning));
         Assert.False(received);
     }
 
@@ -257,49 +119,17 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelWarningV2()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Warning,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.TraceWarning("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.TraceWarning("test"), Config(SourceLevels.Warning));
         Assert.True(received);
     }
 
     /// <summary>
-    /// TTest trace level
+    /// Test trace level
     /// </summary>
     [Fact]
     public async Task TestSwitchLevelWarningV3()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Warning,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.TraceError("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.TraceError("test"), Config(SourceLevels.Warning));
         Assert.True(received);
     }
 
@@ -309,23 +139,7 @@ public class TestSwitchLevel
     [Fact]
     public async Task TestSwitchLevelWarningV4()
     {
-        // setup
-        var received = false;
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Warning,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += _ => { received = true; };
-
-            Trace.Write("test");
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
+        var received = await TraceTestHelper.AwaitTraceAsync(() => Trace.Write("test"), Config(SourceLevels.Warning));
         Assert.True(received);
     }
 
@@ -336,40 +150,25 @@ public class TestSwitchLevel
     public async Task TestSwitchChangeLevelV1()
     {
         // setup
-        var key = new object();
-        var listMessages = new List<string>();
-
-        var config = new TraceConfig
-        {
-            TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
-            TraceLevel = SourceLevels.Error,
-        };
-
-        using (var ts = new TraceSourceSync(config))
-        {
-            ts.OnTracesSent += t =>
+        var messages = await TraceTestHelper.CaptureTraceMessagesAsync(ts =>
             {
-                lock (key)
-                {
-                    listMessages.AddRange(t.Select(o => o.Message));
-                }
-            };
+                Trace.TraceInformation("test1"); // ignoré
 
-            Trace.TraceInformation("test1"); // pas tracé
+                ts.TraceLevel = SourceLevels.Information;
+                Trace.TraceInformation("test2"); // capturé
 
-            ts.TraceLevel = SourceLevels.Information;
-            Trace.TraceInformation("test2"); // tracé
+                ts.TraceLevel = SourceLevels.Warning;
+                Trace.TraceInformation("test3"); // ignoré
+            },
+            new TraceConfig
+            {
+                TraceBehavior = TraceStaticBehavior.AddListenerToStaticAccessAndRemoveDefaultTracer,
+                TraceLevel = SourceLevels.Error,
+            });
 
-            ts.TraceLevel = SourceLevels.Warning;
-            Trace.TraceInformation("test3"); // pas tracé
-
-            await ts.FlushAndCompleteAddingAsync();
-        }
-
-        //Verify
-        Assert.Single(listMessages);
-        Assert.Contains("test2", listMessages);
-        Assert.DoesNotContain("test1", listMessages);
-        Assert.DoesNotContain("test3", listMessages);
+        Assert.Single(messages);
+        Assert.Contains("test2", messages);
+        Assert.DoesNotContain("test1", messages);
+        Assert.DoesNotContain("test3", messages);
     }
 }

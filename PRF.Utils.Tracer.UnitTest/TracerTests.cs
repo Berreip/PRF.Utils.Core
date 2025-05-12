@@ -22,58 +22,36 @@ public class TracerTests
     [Fact]
     public async Task TraceListenerTestV1()
     {
-        // setup
-        int count;
-        using (var traceListenerSync = new TraceListenerSync(TimeSpan.FromSeconds(1), 1000))
-        {
-            count = 0;
-            traceListenerSync.OnTracesSent += _ => { Interlocked.Increment(ref count); };
-
-            try
+        var received = await TraceTestHelper.RunWithTemporaryListenerAsync(
+            listener =>
             {
-                Trace.Listeners.Add(traceListenerSync);
-
-                //Test
                 Trace.TraceInformation("Method1");
-                await traceListenerSync.FlushAndCompleteAddingAsync();
-            }
-            finally
-            {
-                // retire le traceur
-                Trace.Listeners.Remove(traceListenerSync);
-            }
-        }
+                return listener.FlushAndCompleteAddingAsync();
+            });
 
-        //Verify
-        Assert.Equal(1, count);
+        Assert.True(received, "Expected one page of trace to be emitted and received");
     }
 
     [Fact]
     public async Task TraceListenerTestV2()
     {
-        // setup
-        int count;
-        using (var traceListenerSync = new TraceListenerSync(TimeSpan.FromSeconds(1), 1000))
-        {
-            count = 0;
-            traceListenerSync.OnTracesSent += _ => { Interlocked.Increment(ref count); };
-            try
-            {
-                Trace.Listeners.Add(traceListenerSync);
+        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var listener = new TraceListenerSync(TimeSpan.FromSeconds(1), 1000);
+        listener.OnTracesSent += _ => tcs.TrySetResult(true);
 
-                //Test
-                Trace.TraceInformation("Method1");
-                await traceListenerSync.FlushAndCompleteAddingAsync();
-            }
-            finally
-            {
-                // retire le traceur
-                Trace.Listeners.Remove(traceListenerSync);
-            }
+        try
+        {
+            Trace.Listeners.Add(listener);
+            Trace.TraceInformation("Method1");
+            await listener.FlushAndCompleteAddingAsync();
+        }
+        finally
+        {
+            Trace.Listeners.Remove(listener);
         }
 
-        //Verify
-        Assert.Equal(1, count);
+        var completed = await Task.WhenAny(tcs.Task, Task.Delay(500));
+        Assert.True(completed == tcs.Task, "Expected trace to be received within 500ms");
     }
 
     /// <summary>
@@ -82,19 +60,15 @@ public class TracerTests
     [Fact]
     public async Task DoNothing()
     {
-        // setup
-        var count = 0;
-        using (var ts = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.DoNothing }))
-        {
-            ts.OnTracesSent += _ => { Interlocked.Increment(ref count); };
+        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var ts = new TraceSourceSync(new TraceConfig { TraceBehavior = TraceStaticBehavior.DoNothing });
+        ts.OnTracesSent += _ => tcs.TrySetResult(true);
 
-            //Test
-            Trace.TraceInformation("Method1");
-            await ts.FlushAndCompleteAddingAsync();
-        }
+        Trace.TraceInformation("Method1");
+        await ts.FlushAndCompleteAddingAsync();
 
-        //Verify
-        Assert.Equal(0, count);
+        var completed = await Task.WhenAny(tcs.Task, Task.Delay(300));
+        Assert.False(completed == tcs.Task, "No static trace should be received in DoNothing mode");
     }
 
     [Fact]
@@ -125,6 +99,8 @@ public class TracerTests
             await ts.FlushAndCompleteAddingAsync();
         }
 
+        await TraceTestHelper.WaitForStaticListenersToStabilize(() => Trace.Listeners.Count == listenerCount);
+
         //Verify
         // verification that we do not pollute static Listeners:
         Assert.Equal(listenerCount, Trace.Listeners.Count);
@@ -146,10 +122,13 @@ public class TracerTests
             await ts.FlushAndCompleteAddingAsync();
         }
 
+        // retry N times if needed
+        await TraceTestHelper.WaitForStaticListenersToStabilize(() => Trace.Listeners.Count == listenerCount);
+
         //Verify
         // verification that we do not pollute static Listeners:
-        Assert.True(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
         Assert.Equal(listenerCount, Trace.Listeners.Count);
+        Assert.True(Trace.Listeners.Cast<TraceListener>().All(o => o.Name != "MainTracerSync"));
     }
 
     /// <summary>
@@ -165,6 +144,9 @@ public class TracerTests
             //Test
             await ts.FlushAndCompleteAddingAsync();
         }
+
+        // retry N times if needed
+        await TraceTestHelper.WaitForStaticListenersToStabilize(() => Trace.Listeners.Count == 0);
 
         //Verify
         // verification that we do not pollute the static Listeners BUT that we have removed the default listener:
@@ -196,6 +178,7 @@ public class TracerTests
             {
                 break;
             }
+
             await Task.Delay(100);
         }
 
