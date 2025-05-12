@@ -46,7 +46,22 @@ namespace PRF.Utils.CoreComponents.Async.TaskPool
         /// <inheritdoc />
         public void Cancel()
         {
-            _cts.Cancel();
+            // handle the case where the token
+            // is disposed before cancellation.
+            // (TaskCompletionSource does not handle this case)
+            try
+            {
+                if (_disposed)
+                {
+                    return;
+                }
+                _cts.Cancel();
+            }
+            catch (ObjectDisposedException)
+            {
+                // already disposed
+            }
+
             _tcs.TrySetCanceled();
         }
 

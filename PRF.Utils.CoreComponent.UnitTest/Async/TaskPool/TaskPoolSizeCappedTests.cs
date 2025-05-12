@@ -871,5 +871,33 @@ public sealed class TaskPoolSizeCappedTests
         }).ConfigureAwait(true);
     }
 
+    [Fact]
+    public async Task Test_Cancel_after_dispose_from_runner_using_block()
+    {
+        //Arrange
+        var sut = new TaskPoolSizeCapped(1);
+        var worksDisposed = new List<IWorkInProgress>();
+
+        for (var i = 0; i < 5; i++)
+        {
+            var work = sut.AddWork(_ => { });
+            var workAsync = sut.AddWork(async _ => { await Task.Yield();});
+            worksDisposed.Add(work);
+            worksDisposed.Add(workAsync);
+        }
+        var cancellationBarrier = sut.AddWork(_ => {  });
+        await cancellationBarrier.WaitAsync().ConfigureAwait(true);
+
+        //Act
+        //Assert
+        foreach (var workAlreadyDisposed in worksDisposed)
+        {
+            // Ensure the task is waitable even after being disposed
+            await workAlreadyDisposed.WaitAsync().ConfigureAwait(true);
+
+            // Ensure the task is cancellable even after being disposed
+            workAlreadyDisposed.Cancel();
+        }
+    }
     private sealed class Item;
 }
