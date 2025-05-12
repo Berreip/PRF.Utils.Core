@@ -186,11 +186,22 @@ public class TracerTests
             await ts.FlushAndCompleteAddingAsync();
         }
 
-        await Task.Delay(100);
+        var isEmpty = false;
+
+        // retry N times if needed
+        for (var i = 0; i < 20; i++)
+        {
+            isEmpty = Trace.Listeners.Count == 0;
+            if (isEmpty)
+            {
+                break;
+            }
+            await Task.Delay(100);
+        }
 
         //Verify
         // checking that the list of static Listeners is empty:
-        Assert.Empty(Trace.Listeners);
+        Assert.True(isEmpty);
     }
 
     [Fact]
