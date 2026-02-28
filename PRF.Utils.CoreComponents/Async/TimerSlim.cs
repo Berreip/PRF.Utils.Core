@@ -29,7 +29,7 @@ public sealed class TimerSlim : IDisposable
 
     private readonly Action<CancellationToken> _syncCallback;
     private readonly Func<CancellationToken, Task> _asyncCallback;
-    private readonly int _periodMs;
+    private readonly long _periodMs;
 
     /// <summary>
     /// Initializes a new instance of TimerSlim with a synchronous callback
@@ -37,7 +37,7 @@ public sealed class TimerSlim : IDisposable
     /// <param name="callback">Synchronous callback method</param>
     /// <param name="periodMs">Interval between executions in milliseconds</param>
     /// <param name="runImmediately">Whether to run the first execution immediately</param>
-    public TimerSlim(Action callback, int periodMs, bool runImmediately = false) : this(_ => callback(), periodMs, runImmediately)
+    public TimerSlim(Action callback, long periodMs, bool runImmediately = false) : this(_ => callback(), periodMs, runImmediately)
     {
     }
 
@@ -47,7 +47,7 @@ public sealed class TimerSlim : IDisposable
     /// <param name="callback">Synchronous callback method</param>
     /// <param name="periodMs">Interval between executions in milliseconds</param>
     /// <param name="runImmediately">Whether to run the first execution immediately</param>
-    public TimerSlim(Action<CancellationToken> callback, int periodMs, bool runImmediately = false) : this(periodMs, runImmediately)
+    public TimerSlim(Action<CancellationToken> callback, long periodMs, bool runImmediately = false) : this(periodMs, runImmediately)
     {
         _syncCallback = callback;
     }
@@ -58,7 +58,16 @@ public sealed class TimerSlim : IDisposable
     /// <param name="asyncCallback">Asynchronous callback method</param>
     /// <param name="periodMs">Interval between executions in milliseconds</param>
     /// <param name="runImmediately">Whether to run the first execution immediately</param>
-    public TimerSlim(Func<Task> asyncCallback, int periodMs, bool runImmediately = false) : this(async _ => await asyncCallback().ConfigureAwait(false), periodMs, runImmediately)
+    public TimerSlim(Func<Task> asyncCallback, long periodMs, bool runImmediately = false) : this(async _ => await asyncCallback().ConfigureAwait(false), periodMs, runImmediately)
+    {
+    }
+    /// <summary>
+    /// Initializes a new instance of TimerSlim with an asynchronous callback
+    /// </summary>
+    /// <param name="asyncCallback">Asynchronous callback method</param>
+    /// <param name="period">Interval between executions </param>
+    /// <param name="runImmediately">Whether to run the first execution immediately</param>
+    public TimerSlim(Func<Task> asyncCallback, TimeSpan period, bool runImmediately = false) : this(async _ => await asyncCallback().ConfigureAwait(false), (long)period.TotalMilliseconds, runImmediately)
     {
     }
 
@@ -68,18 +77,18 @@ public sealed class TimerSlim : IDisposable
     /// <param name="asyncCallback">Asynchronous callback method</param>
     /// <param name="periodMs">Interval between executions in milliseconds</param>
     /// <param name="runImmediately">Whether to run the first execution immediately</param>
-    public TimerSlim(Func<CancellationToken, Task> asyncCallback, int periodMs, bool runImmediately = false) : this(periodMs, runImmediately)
+    public TimerSlim(Func<CancellationToken, Task> asyncCallback, long periodMs, bool runImmediately = false) : this(periodMs, runImmediately)
     {
         _asyncCallback = asyncCallback ?? throw new ArgumentNullException(nameof(asyncCallback));
     }
 
-    private TimerSlim(int periodMs, bool runImmediately = false)
+    private TimerSlim(long periodMs, bool runImmediately = false)
     {
         _periodMs = periodMs;
         _timer = new Timer(
             callback: TimerCallback,
             state: null,
-            dueTime: runImmediately ? 0 : periodMs,
+            dueTime: runImmediately ? 0L : periodMs,
             period: Timeout.Infinite // NO repeat : Manual scheduling for non-reentrant execution.
         );
     }
