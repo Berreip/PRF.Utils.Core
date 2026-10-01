@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.Versioning;
 // ReSharper disable UnusedMember.Global
 
 // ReSharper disable UnusedType.Global
@@ -11,6 +12,7 @@ namespace PRF.Utils.CoreComponents.Extensions
     /// <summary>
     /// Extension methods for Bitmaps
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public static class BitmapExtensions
     {
         /// <summary>
