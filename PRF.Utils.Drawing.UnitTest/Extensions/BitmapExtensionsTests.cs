@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Drawing;
-using PRF.Utils.CoreComponents.Extensions;
+using PRF.Utils.Drawing.Extensions;
 
-namespace PRF.Utils.CoreComponent.UnitTest.Extensions;
+namespace PRF.Utils.Drawing.UnitTest.Extensions;
 
 #pragma warning disable CA1416
 
@@ -22,7 +22,7 @@ public sealed class BitmapExtensionsTests
     [Fact]
     public void ToGrayScale_ShouldConvertBitmapToGrayscale()
     {
-        if (!UnitTestHelpers.IsWindows)
+        if (!OperatingSystem.IsWindows())
         {
             // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
             return;
@@ -56,7 +56,7 @@ public sealed class BitmapExtensionsTests
     [Fact]
     public void ToGrayScale_WhenInvalidColorParts_ShouldThrowArgumentException()
     {
-        if (!UnitTestHelpers.IsWindows)
+        if (!OperatingSystem.IsWindows())
         {
             // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
             return;
@@ -77,7 +77,7 @@ public sealed class BitmapExtensionsTests
     [Fact]
     public void ToGrayScale_ShouldConvertBitmapToGrayscale_with_default_values()
     {
-        if (!UnitTestHelpers.IsWindows)
+        if (!OperatingSystem.IsWindows())
         {
             // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
             return;
@@ -111,7 +111,7 @@ public sealed class BitmapExtensionsTests
     [Fact]
     public void ToGrayScaleCopy_ShouldReturnCopyOfGrayscaleImage()
     {
-        if (!UnitTestHelpers.IsWindows)
+        if (!OperatingSystem.IsWindows())
         {
             // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
             return;
@@ -137,7 +137,7 @@ public sealed class BitmapExtensionsTests
     [Fact]
     public void ToGrayScaleCopy_WithoutParameters_ShouldReturnCopyWithDefaultColorDistribution()
     {
-        if (!UnitTestHelpers.IsWindows)
+        if (!OperatingSystem.IsWindows())
         {
             // Only works on windows due to bitmap: see https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only
             return;
