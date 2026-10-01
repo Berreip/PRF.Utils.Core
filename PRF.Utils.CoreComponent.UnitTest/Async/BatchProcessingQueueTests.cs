@@ -1,215 +1,223 @@
-﻿using System;
-using System.Collections.Concurrent;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Time.Testing;
 using PRF.Utils.CoreComponents.Async;
 
 namespace PRF.Utils.CoreComponent.UnitTest.Async;
 
 public sealed class BatchProcessingQueueTests
 {
-    private readonly ConcurrentQueue<int?[]> _pageList;
+    private static readonly TimeSpan TIMEOUT = TimeSpan.FromSeconds(10);
+    private readonly List<int[]> _pages = new();
+    private readonly CountingTimeProvider _timeProvider = new();
 
-    public BatchProcessingQueueTests()
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void Invalid_Page_Size_Is_Rejected(int pageSize)
     {
-        _pageList = new ConcurrentQueue<int?[]>();
+        Assert.Throws<ArgumentException>(() => new BatchProcessingQueue<int>(pageSize, TIMEOUT, _pages.Add, _timeProvider));
     }
 
     [Fact]
-    public void Add_Item_Flushes_When_PageSize_Reached()
+    public void Null_TimeProvider_Is_Rejected()
     {
-        // Arrange
-        var mrev = new ManualResetEventSlim();
-        using var sut = new BatchProcessingQueue<int?>(
-            pageMaximumSize: 100,
-            TimeSpan.FromMinutes(1),
-            page =>
-            {
-                _pageList.Enqueue(page);
-                mrev.Set();
-            });
-
-        // Act
-        for (var i = 0; i < 100; i++)
-        {
-            sut.Add(i);
-        }
-
-        var pageRetrieved = mrev.Wait(TimeSpan.FromSeconds(5));
-
-        // Assert
-        Assert.True(pageRetrieved);
-        Assert.True(_pageList.TryDequeue(out var singlePage));
-        Assert.False(_pageList.TryDequeue(out _));
-        Assert.Equal(100, singlePage.Length);
-        Assert.Equal(100, singlePage.Count(o => o != null));
+        Assert.Throws<ArgumentNullException>(() => new BatchProcessingQueue<int>(10, TIMEOUT, _pages.Add, null));
     }
 
     [Fact]
-    public void Add_Item_Flushes_When_Multiple_PagesSize_Reached()
+    public void Original_Constructor_Flushes_A_Full_Page()
     {
-        // Arrange
-        var mrev = new ManualResetEventSlim();
-        const int pageMaximumSize = 100;
-        const int nbPageToGenerate = 70;
-        using var sut = new BatchProcessingQueue<int?>(
-            pageMaximumSize: pageMaximumSize,
-            TimeSpan.FromMinutes(1),
-            page =>
-            {
-                _pageList.Enqueue(page);
-                if (_pageList.Count == nbPageToGenerate)
-                {
-                    mrev.Set();
-                }
-            });
+        using var sut = new BatchProcessingQueue<int>(2, Timeout.InfiniteTimeSpan, _pages.Add);
 
-        // Act
-        const int nbItems = pageMaximumSize*nbPageToGenerate;
-
-        for (var i = 0; i < nbItems; i++)
-        {
-            sut.Add(i);
-        }
-
-        var pageRetrieved = mrev.Wait(TimeSpan.FromSeconds(15));
-
-        // Assert
-        Assert.True(pageRetrieved);
-        // should be nbPageToGenerate queued
-        for (var i = 0; i < nbPageToGenerate; i++)
-        {
-            Assert.True(_pageList.TryDequeue(out var singlePage));
-            Assert.Equal(100, singlePage.Length);
-            Assert.Equal(100, singlePage.Count(o => o != null));
-        }
-        // and no more page after
-        Assert.False(_pageList.TryDequeue(out _));
-    }
-
-    [Fact]
-    public void Add_Item_Does_Not_Flush_Before_PageSize_Reached()
-    {
-        // Arrange
-        var mrev = new ManualResetEventSlim();
-        using var sut = new BatchProcessingQueue<int?>(
-            pageMaximumSize: 100,
-            TimeSpan.FromMinutes(10),
-            page =>
-            {
-                _pageList.Enqueue(page);
-                mrev.Set();
-            });
-
-        // Act
         sut.Add(1);
         sut.Add(2);
-        var pageRetrieved = mrev.Wait(TimeSpan.FromMilliseconds(400));
 
-        // Assert
-        Assert.False(pageRetrieved);
-        Assert.False(_pageList.TryDequeue(out _));
+        Assert.Equal(new[] { 1, 2 }, Assert.Single(_pages));
     }
 
     [Fact]
-    public void Add_Item_Does_Flush_Before_PageSize_When_timeout_is_Reached()
+    public void Full_Pages_Preserve_All_Items_And_Disarm_The_Timer()
     {
         // Arrange
-        var mrev = new ManualResetEventSlim();
-        using var sut = new BatchProcessingQueue<int?>(
-            pageMaximumSize: 100,
-            TimeSpan.FromMilliseconds(100),
-            page =>
-            {
-                _pageList.Enqueue(page);
-                mrev.Set();
-            });
+        using var sut = new BatchProcessingQueue<int>(100, TIMEOUT, _pages.Add, _timeProvider);
 
         // Act
-        sut.Add(1);
-        var pageRetrieved = mrev.Wait(TimeSpan.FromMilliseconds(400));
+        for (var i = 0; i < 7000; i++)
+        {
+            sut.Add(i);
+        }
+        _timeProvider.Advance(TimeSpan.FromHours(1));
 
         // Assert
-        Assert.True(pageRetrieved);
-        Assert.True(_pageList.TryDequeue(out var singlePage));
-        Assert.Single(singlePage);
-        Assert.Equal(1, singlePage.Count(o => o != null));
-        // and no more page after
-        Assert.False(_pageList.TryDequeue(out _));
+        Assert.Equal(70, _pages.Count);
+        Assert.All(_pages, page => Assert.Equal(100, page.Length));
+        Assert.Equal(Enumerable.Range(0, 7000), _pages.SelectMany(page => page));
+        Assert.Equal(0, _timeProvider.CallbackCount);
     }
 
     [Fact]
-    public void ForceFlush_empty_the_queue()
+    public void Empty_Queue_Does_Not_Wake_And_First_Item_Starts_The_Timeout()
     {
         // Arrange
-        var mrev = new ManualResetEventSlim();
-        using var sut = new BatchProcessingQueue<int?>(
-            pageMaximumSize: 100,
-            Timeout.InfiniteTimeSpan,
-            page =>
-            {
-                _pageList.Enqueue(page);
-                mrev.Set();
-            });
+        using var sut = new BatchProcessingQueue<int>(10, TIMEOUT, _pages.Add, _timeProvider);
+        _timeProvider.Advance(TimeSpan.FromHours(1));
+        Assert.Equal(0, _timeProvider.CallbackCount);
 
+        // Act / Assert
         sut.Add(1);
+        _timeProvider.Advance(TimeSpan.FromSeconds(9));
+        Assert.Empty(_pages);
+        Assert.Equal(0, _timeProvider.CallbackCount);
+
+        _timeProvider.Advance(TimeSpan.FromSeconds(1));
+        Assert.Equal(new[] { 1 }, Assert.Single(_pages));
+        Assert.Equal(1, _timeProvider.CallbackCount);
+
+        _timeProvider.Advance(TimeSpan.FromHours(1));
+        Assert.Single(_pages);
+        Assert.Equal(1, _timeProvider.CallbackCount);
+    }
+
+    [Fact]
+    public void Regular_Additions_Do_Not_Postpone_The_First_Item_Deadline()
+    {
+        // Arrange
+        using var sut = new BatchProcessingQueue<int>(10, TIMEOUT, _pages.Add, _timeProvider);
+        sut.Add(1);
+
+        // Act
+        for (var i = 2; i <= 4; i++)
+        {
+            _timeProvider.Advance(TimeSpan.FromSeconds(3));
+            sut.Add(i);
+        }
+        Assert.Empty(_pages);
+        _timeProvider.Advance(TimeSpan.FromSeconds(1));
+
+        // Assert
+        Assert.Equal(new[] { 1, 2, 3, 4 }, Assert.Single(_pages));
+        Assert.Equal(1, _timeProvider.CallbackCount);
+    }
+
+    [Fact]
+    public void ForceFlush_Emits_Only_Pending_Items_And_Disarms_The_Timer()
+    {
+        // Arrange
+        using var sut = new BatchProcessingQueue<int>(10, TIMEOUT, _pages.Add, _timeProvider);
+        sut.ForceFlush();
+        Assert.Empty(_pages);
+        sut.Add(1);
+        sut.Add(2);
 
         // Act
         sut.ForceFlush();
-        var pageRetrieved = mrev.Wait(TimeSpan.FromMilliseconds(400));
+        sut.ForceFlush();
+        _timeProvider.Advance(TimeSpan.FromHours(1));
 
         // Assert
-        Assert.True(pageRetrieved);
-        Assert.True(_pageList.TryDequeue(out var singlePage));
-        Assert.Single(singlePage);
-        Assert.Equal(1, singlePage.Count(o => o != null));
-        // and no more page after
-        Assert.False(_pageList.TryDequeue(out _));
+        Assert.Equal(new[] { 1, 2 }, Assert.Single(_pages));
+        Assert.Equal(0, _timeProvider.CallbackCount);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void New_Page_Starts_A_Fresh_Timeout_After_Flushing(bool fillPage)
+    {
+        // Arrange
+        using var sut = new BatchProcessingQueue<int>(2, TIMEOUT, _pages.Add, _timeProvider);
+        sut.Add(1);
+        _timeProvider.Advance(TimeSpan.FromSeconds(6));
+        if (fillPage)
+        {
+            sut.Add(2);
+        }
+        else
+        {
+            sut.ForceFlush();
+        }
+        Assert.Single(_pages);
+
+        // Act / Assert
+        sut.Add(3);
+        _timeProvider.Advance(TimeSpan.FromSeconds(4));
+        // L'ancienne échéance ne doit ni réveiller le timer ni vider la nouvelle page.
+        Assert.Single(_pages);
+        Assert.Equal(0, _timeProvider.CallbackCount);
+
+        _timeProvider.Advance(TimeSpan.FromSeconds(6));
+        Assert.Equal(2, _pages.Count);
+        Assert.Equal(new[] { 3 }, _pages[1]);
+        Assert.Equal(1, _timeProvider.CallbackCount);
     }
 
     [Fact]
-    public async Task Ensure_that_regular_adding_of_items_do_not_prevent_timer_from_beeing_raised()
+    public void New_Page_Can_Time_Out_After_A_Previous_Timeout()
     {
-        // Arrange
-        var mrev = new ManualResetEventSlim();
-        using var sut = new BatchProcessingQueue<int?>(
-            pageMaximumSize: 100_000,
-            TimeSpan.FromMilliseconds(300),
-            page =>
-            {
-                _pageList.Enqueue(page);
-                mrev.Set();
-            });
-        var cts =new CancellationTokenSource();
-
-        // Act
+        using var sut = new BatchProcessingQueue<int>(10, TIMEOUT, _pages.Add, _timeProvider);
         sut.Add(1);
-        // ReSharper disable once MethodSupportsCancellation
-        var task = Task.Run(async () =>
+        _timeProvider.Advance(TIMEOUT);
+
+        sut.Add(2);
+        _timeProvider.Advance(TIMEOUT);
+
+        Assert.Equal(2, _pages.Count);
+        Assert.Equal(new[] { 1 }, _pages[0]);
+        Assert.Equal(new[] { 2 }, _pages[1]);
+        Assert.Equal(2, _timeProvider.CallbackCount);
+    }
+
+    [Fact]
+    public void Infinite_Timeout_Requires_An_Explicit_Or_Full_Page_Flush()
+    {
+        using var sut = new BatchProcessingQueue<int>(10, Timeout.InfiniteTimeSpan, _pages.Add, _timeProvider);
+        sut.Add(1);
+
+        _timeProvider.Advance(TimeSpan.FromDays(1));
+        Assert.Empty(_pages);
+        Assert.Equal(0, _timeProvider.CallbackCount);
+        sut.ForceFlush();
+
+        Assert.Equal(new[] { 1 }, Assert.Single(_pages));
+    }
+
+    [Fact]
+    public void Dispose_Abandons_Pending_Items_And_Stops_The_Timer()
+    {
+        var sut = new BatchProcessingQueue<int>(10, TIMEOUT, _pages.Add, _timeProvider);
+        sut.Add(1);
+
+        sut.Dispose();
+        sut.Dispose();
+        sut.ForceFlush();
+        _timeProvider.Advance(TimeSpan.FromHours(1));
+
+        Assert.Empty(_pages);
+        Assert.Equal(0, _timeProvider.CallbackCount);
+        Assert.Throws<ObjectDisposedException>(() => sut.Add(2));
+    }
+
+    // Compter les callbacks du timer permet de détecter les réveils à vide,
+    // même lorsqu'ils ne produisent aucune page visible par le consommateur.
+    private sealed class CountingTimeProvider : FakeTimeProvider
+    {
+        public int CallbackCount { get; private set; }
+
+        public override ITimer CreateTimer(TimerCallback callback, object state, TimeSpan dueTime, TimeSpan period)
         {
-            try
-            {
-                while (!cts.IsCancellationRequested)
-                {
-                    // ReSharper disable once AccessToDisposedClosure
-                    sut.Add(1);
-                    await Task.Delay(20, cts.Token).ConfigureAwait(false);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // nominal cancellation
-            }
-        });
+            return base.CreateTimer(InvokeCallback, new CallbackState(this, callback, state), dueTime, period);
+        }
 
-        var pageRetrieved = mrev.Wait(TimeSpan.FromSeconds(1));
-        await cts.CancelAsync().ConfigureAwait(true);
-        await task.ConfigureAwait(true);
+        private static void InvokeCallback(object state)
+        {
+            var invocation = (CallbackState)state;
+            invocation.Provider.CallbackCount++;
+            invocation.Callback(invocation.State);
+        }
 
-        // Assert
-        Assert.True(pageRetrieved);
-        Assert.True(_pageList.TryDequeue(out _));
-        // no check on content as is may vary widely depending on the delay: we ensure that at leat one raised has been done
+        private sealed record CallbackState(CountingTimeProvider Provider, TimerCallback Callback, object State);
     }
 }
