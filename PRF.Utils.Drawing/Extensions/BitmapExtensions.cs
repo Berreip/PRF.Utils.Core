@@ -7,7 +7,7 @@ using System.Runtime.Versioning;
 // ReSharper disable UnusedType.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace PRF.Utils.CoreComponents.Extensions
+namespace PRF.Utils.Drawing.Extensions
 {
     /// <summary>
     /// Extension methods for Bitmaps

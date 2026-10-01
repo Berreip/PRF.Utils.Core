@@ -6,7 +6,9 @@ CoreComponents now targets **.NET 10**. Consumers must target .NET 10 or later;
 applications using .NET Framework or .NET 8/9 must remain on the 2.x package.
 The other PRF packages keep their existing target frameworks.
 
-The bitmap extensions use `System.Drawing.Common` and are supported on Windows only.
+The bitmap extensions have moved to the separate, non-packable `PRF.Utils.Drawing`
+project in this repository. CoreComponents no longer depends on `System.Drawing.Common`.
+The drawing extensions remain Windows-only and are not distributed as a NuGet package.
 
 This module is available as a Nuget package: [PRF.Utils.CoreComponents](https://www.nuget.org/packages/PRF.Utils.CoreComponents)
 
