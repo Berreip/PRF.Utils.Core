@@ -4,6 +4,9 @@ using PRF.Utils.Tracer.Configuration;
 
 namespace PRF.Utils.Tracer.UnitTest;
 
+// Ces tests partagent Trace.Listeners et les messages statiques avec les autres tests de traces.
+// La même collection les sérialise pour éviter de capter les messages d'un autre test.
+[Collection("Trace Tests Collection No SYNC #1")]
 public class TestSwitchLevel
 {
     public TestSwitchLevel()
