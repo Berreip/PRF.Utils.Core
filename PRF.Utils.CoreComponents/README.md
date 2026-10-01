@@ -12,3 +12,22 @@ This module is available as a Nuget package: [PRF.Utils.CoreComponents](https://
 
 Its mains purpose is to provide extensions methods around DirectoryInfo, FileInfo, some basics types and JSON and XML manipulation and some helpers for async dispatch
 
+## Batch processing and TimeProvider
+
+`BatchProcessingQueue<T>` accepts a `TimeProvider` as its fourth constructor argument.
+The existing three-argument constructor uses `TimeProvider.System`.
+
+The timer stays inactive while the queue is empty. The first item starts a one-shot
+timeout; subsequent items do not postpone it. Reaching the page size or calling
+`ForceFlush()` flushes the page and cancels its timeout. The next page starts a new
+timeout with its first item. `Timeout.InfiniteTimeSpan` disables timeout flushing.
+
+The page callback runs synchronously outside the queue lock. Dispatch work from it
+when asynchronous processing is needed. Callbacks can overlap when producers or
+timer callbacks run concurrently; consumers needing serial processing must provide it.
+Disposing the queue cancels the timer without flushing pending items. Call
+`ForceFlush()` before disposal when those items must be processed.
+
+Tests can supply `FakeTimeProvider` from `Microsoft.Extensions.TimeProvider.Testing`
+and advance time explicitly, without real delays.
+
